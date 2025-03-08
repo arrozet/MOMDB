@@ -1,3 +1,11 @@
+# ------------------- VISUAL PARADIGM -------------------
+.vpprefdata/
+*.vpp~*
+*.vpp.working
+*.vpp.working-journal
+*.lock
+tmp/*
+
 # ------------------- JAVA -------------------
 # Compiled class file
 *.class
