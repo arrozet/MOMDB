@@ -4,7 +4,9 @@
 *.vpp.working
 *.vpp.working-journal
 *.lock
+**/*.vpp.bak_*
 tmp/*
+
 
 # ------------------- JAVA -------------------
 # Compiled class file
