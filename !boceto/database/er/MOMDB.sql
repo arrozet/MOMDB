@@ -210,10 +210,9 @@ COLLATE = utf8mb4_unicode_ci;
 DROP TABLE IF EXISTS `moviedb`.`Favorite` ;
 
 CREATE TABLE IF NOT EXISTS `moviedb`.`Favorite` (
-  `id` INT NOT NULL AUTO_INCREMENT,
   `movie_id` INT NOT NULL,
   `user_id` INT NOT NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`movie_id`, `user_id`),
   UNIQUE INDEX `uq_user_movie_favorite` (`user_id` ASC, `movie_id` ASC) VISIBLE,
   INDEX `fk_Favorite_Movie_idx` (`movie_id` ASC) VISIBLE,
   INDEX `fk_Favorite_User_idx` (`user_id` ASC) VISIBLE,
@@ -443,12 +442,11 @@ COLLATE = utf8mb4_unicode_ci;
 DROP TABLE IF EXISTS `moviedb`.`Review` ;
 
 CREATE TABLE IF NOT EXISTS `moviedb`.`Review` (
-  `id` INT NOT NULL AUTO_INCREMENT,
   `movie_id` INT NOT NULL,
   `user_id` INT NOT NULL,
   `content` TEXT NULL DEFAULT NULL,
   `rating` DOUBLE NOT NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`movie_id`, `user_id`),
   UNIQUE INDEX `uq_user_movie_review` (`user_id` ASC, `movie_id` ASC) VISIBLE,
   INDEX `fk_Review_Movie_idx` (`movie_id` ASC) VISIBLE,
   INDEX `fk_Review_User_idx` (`user_id` ASC) VISIBLE,
@@ -473,10 +471,9 @@ COLLATE = utf8mb4_unicode_ci;
 DROP TABLE IF EXISTS `moviedb`.`Watchlist` ;
 
 CREATE TABLE IF NOT EXISTS `moviedb`.`Watchlist` (
-  `id` INT NOT NULL AUTO_INCREMENT,
   `movie_id` INT NOT NULL,
   `user_id` INT NOT NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`movie_id`, `user_id`),
   UNIQUE INDEX `uq_user_movie_watchlist` (`user_id` ASC, `movie_id` ASC) VISIBLE,
   INDEX `fk_Watchlist_Movie_idx` (`movie_id` ASC) VISIBLE,
   INDEX `fk_Watchlist_User_idx` (`user_id` ASC) VISIBLE,
