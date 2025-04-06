@@ -17,7 +17,7 @@ public class Controlador {
 
     @GetMapping("/")
     public String doProbar (Model model) {
-        Movie m = this.movieRepository.findById(2).orElse(null);
+        Movie m = this.movieRepository.findById(1).orElse(null);
         model.addAttribute("primeraPeli", m);
 
         return "HelloWorld";
