@@ -1,11 +1,11 @@
 package es.uma.taw.momdb.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -18,5 +18,8 @@ public class Productioncountry {
 
     @Column(name = "country", nullable = false)
     private String country;
+
+    @ManyToMany(mappedBy = "productioncountries")
+    private Set<Movie> movies = new LinkedHashSet<>();
 
 }

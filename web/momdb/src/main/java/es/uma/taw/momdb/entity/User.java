@@ -4,12 +4,16 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 @Getter
 @Setter
 @Entity
 @Table(name = "user")
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -28,5 +32,14 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "role_id", nullable = false)
     private Userrole role;
+
+    @ManyToMany(mappedBy = "favorite_users")
+    private Set<Movie> favorite_movies = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<Review> reviews_movies = new LinkedHashSet<>();
+
+    @ManyToMany(mappedBy = "favorite_users")
+    private Set<Movie> watchlist_movies = new LinkedHashSet<>();
 
 }

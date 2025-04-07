@@ -7,6 +7,8 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -14,6 +16,7 @@ import java.time.LocalDate;
 @Table(name = "movie")
 public class Movie {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -60,5 +63,32 @@ public class Movie {
     @ColumnDefault("0")
     @Column(name = "vote_count")
     private Integer voteCount;
+
+    @OneToMany(mappedBy = "movie")
+    private Set<Crew> crews = new LinkedHashSet<>();
+
+    @ManyToMany
+    private Set<User> favorite_users = new LinkedHashSet<>();
+
+    @ManyToMany
+    private Set<Genre> genres = new LinkedHashSet<>();
+
+    @ManyToMany
+    private Set<Keyword> keywords = new LinkedHashSet<>();
+
+    @ManyToMany
+    private Set<Productioncompany> productioncompanies = new LinkedHashSet<>();
+
+    @ManyToMany
+    private Set<Productioncountry> productioncountries = new LinkedHashSet<>();
+
+    @ManyToMany
+    private Set<Spokenlanguage> spokenlanguages = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "movie")
+    private Set<Review> reviews_users = new LinkedHashSet<>();
+
+    @ManyToMany
+    private Set<User> watchlist_users = new LinkedHashSet<>();
 
 }
