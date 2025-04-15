@@ -35,10 +35,7 @@ public class LoginController {
             String roleName = user.getRole().getName();
             if(roleName.equals("admin")){
                 return "redirect:/admin/";
-            }
-            else if(roleName.equals("user")){
-                return "redirect:/home/";
-            } // Falta la lógica para el resto de roles
+            } // TODO: falta la lógica para el resto de roles
             else{
                 model.addAttribute("error", "Invalid username or password");
                 return "login";
@@ -46,4 +43,5 @@ public class LoginController {
         }
 
     }
+    //TODO: implementar logout
 }

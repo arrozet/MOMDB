@@ -10,6 +10,12 @@
 <head>
     <title>Welcome to MOMDB!</title>
 </head>
+<%
+    String error = (String) request.getAttribute("error");
+    if (error == null) {
+        error = "";
+    }
+%>
 <body>
 <form method="post" action="/authenticate">
     <table>
@@ -26,5 +32,6 @@
         </tr>
     </table>
 </form>
+<p style="color: red"><%=error%></p>
 </body>
 </html>
