@@ -35,13 +35,7 @@ public class LoginController {
         else{
             session.setAttribute("user", user);
             String roleName = user.getRole().getName();
-
-            //Si estas leyendo esto tengo que matarte
-            Random rd = new Random();
-            int ruletaRusa = rd.nextInt(100);
-            if (ruletaRusa < 10) {
-                return "redirect:https://es.pornhub.com/view_video.php?viewkey=64961b1e62481";
-            }
+            
             if(roleName.equals("admin")){
                 return "redirect:/admin/";
             } if(roleName.equals("analista")){
