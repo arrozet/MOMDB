@@ -31,7 +31,7 @@ public class User {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "role_id", nullable = false)
-    private Userrole role;
+    private UserRole role;
 
     @ManyToMany(mappedBy = "favorite_users")
     private Set<Movie> favorite_movies = new LinkedHashSet<>();
