@@ -71,12 +71,22 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <!-- Es buena práctica especificar la versión del plugin también -->
+                <version>3.13.0</version> <!-- O la versión que te marque tu parent -->
                 <configuration>
+                    <!-- Asegúrate que tu IDE y Maven usan Java 17 -->
+                    <source>17</source>
+                    <target>17</target>
+                    <!-- Importante para Spring obtener nombres de parámetros -->
+                    <parameters>true</parameters>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+                            <!-- Añade la versión que estás usando -->
+                            <version>${lombok.version}</version> <!-- O pon directamente 1.18.36 si no tienes la propiedad -->
                         </path>
+                        <!-- Si tuvieras otros procesadores como MapStruct, irían aquí también -->
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
