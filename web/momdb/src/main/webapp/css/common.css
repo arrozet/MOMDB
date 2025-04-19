@@ -1,0 +1,29 @@
+/* Importar Bulma desde CDN (Necesario en todas las páginas que usen Bulma) */
+@import url('https://cdn.jsdelivr.net/npm/bulma@1.0.1/css/bulma.min.css');
+
+/* Importar Font Awesome desde CDN (Necesario en todas las páginas que usen Font Awesome) */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css');
+
+@font-face {
+    font-family: 'Excalifont';
+    src: url('./fonts/Excalifont-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Estilos generales */
+html {
+    height: 100%; /* Puede ser útil globalmente */
+}
+
+body {
+    font-family: 'Excalifont', sans-serif;
+}
+
+/* Clases de utilidad comunes */
+/* Nota: Bulma ya incluye clases como 'mt-4'. Define esto solo si necesitas un valor diferente o específico */
+/* .mt-4 {
+    margin-top: 1.5rem;
+} */
+
+/* Estilos para otros elementos comunes como header, footer, etc. irían aquí */

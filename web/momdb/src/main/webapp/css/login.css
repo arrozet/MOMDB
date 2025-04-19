@@ -1,0 +1,34 @@
+/* Estilos específicos para la página de login */
+
+html,
+body.login-page {
+    height: 100%; /* Asegura que el body ocupe toda la altura para centrar verticalmente */
+}
+
+body.login-page {
+    display: flex;
+    align-items: center; /* Centra verticalmente el .login-box */
+    justify-content: center; /* Centra horizontalmente el .login-box */
+    background-color: #f5f5f5; /* Fondo gris claro específico para login */
+}
+
+.login-box {
+    width: 30%; /* Ancho específico del cuadro de login */
+    padding: 2rem;
+    background-color: #e9ecef;
+    border-radius: 6px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: black;
+    box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02);
+}
+
+/* El texto dentro de la caja de logueo */
+.login-box .title, .login-box .label {
+    color: #000; /* Black */
+}
+
+.login-box .button.login{
+    background-color: #00ac1c;
+    color: white;
+}
