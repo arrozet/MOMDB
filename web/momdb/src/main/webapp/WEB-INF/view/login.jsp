@@ -20,6 +20,7 @@
     }
 %>
 <body class="login-page">
+<jsp:include page="banner.jsp"/>
     <div class="login-box">
         <h1 class="title has-text-centered">Welcome back to MOMDB!</h1>
 
@@ -27,7 +28,7 @@
             <div class="field">
                 <label class="label" for="username">Username</label>
                 <div class="control has-icons-left">
-                    <input class="input" type="text" name="username" id="username" placeholder="e.g. jorge_user" required>
+                    <input class="input is-info" type="text" name="username" id="username" placeholder="e.g. jorge_user" required>
                     <span class="icon is-small is-left">
                             <i class="fas fa-user"></i>
                     </span>
@@ -37,7 +38,7 @@
             <div class="field">
                 <label class="label" for="password">Password</label>
                 <div class="control has-icons-left">
-                    <input class="input" type="password" name="password" id="password" placeholder="********" required>
+                    <input class="input is-info" type="password" name="password" id="password" placeholder="********" required>
                     <span class="icon is-small is-left">
                             <i class="fas fa-lock"></i>
                     </span>

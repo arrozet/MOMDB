@@ -20,6 +20,29 @@ body {
     font-family: 'Excalifont', sans-serif;
 }
 
+/* Estilos personalizados para el Banner MOMDB */
+.momdb-banner {
+    width: 100%;
+    padding: 2rem 0;
+    text-align: center;
+}
+
+.momdb-banner-title {
+    font-family: 'Excalifont', sans-serif;
+    font-size: 4rem;
+    color: black;
+    margin-bottom: 0.2rem;
+    line-height: 1;
+    text-align: center;
+}
+
+.momdb-banner-subtitle {
+    font-family: 'Excalifont', sans-serif;
+    font-size: 1.5rem;
+    color: black;
+    line-height: 1.25;
+    text-align: center;
+}
 /* Clases de utilidad comunes */
 /* Nota: Bulma ya incluye clases como 'mt-4'. Define esto solo si necesitas un valor diferente o específico */
 /* .mt-4 {
