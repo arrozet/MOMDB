@@ -1,5 +1,6 @@
 <%@ page import="es.uma.taw.momdb.entity.User" %>
-<%@ page import="java.util.List" %><%--
+<%@ page import="java.util.List" %>
+<%@ page import="es.uma.taw.momdb.entity.UserRole" %><%--
   Created by IntelliJ IDEA.
   User: roz
   Date: 15/04/2025
@@ -13,26 +14,47 @@
 </head>
 <%
     List<User> users = (List<User>) request.getAttribute("users");
+    List<UserRole> userRoles = (List<UserRole>) request.getAttribute("userRoles");
     User myUser = (User) session.getAttribute("user");
 %>
 <body>
-<h1>Welcome back, <%= myUser.getUsername() %>!<br></h1>
-<table border="1">
-    <tr>
-        <th>User</th>
-        <th>Role</th>
-    </tr>
-    <%
-        for(User u : users){
+    <h1>Welcome back, <%= myUser.getUsername() %>!<br></h1>
 
-    %>
-    <tr>
-        <td><%= u.getUsername()%></td>
-        <td><%= u.getRole().getName()%></td>
-    </tr>
-    <%
-        }
-    %>
-</table>
+    <form method="post" action="/admin/changeUser">
+        <table border="1">
+            <tr>
+                <th>User</th>
+                <th>Role</th>
+            </tr>
+
+            <%
+                for(User u : users){
+            %>
+            <tr>
+                <td><%= u.getUsername()%></td>
+                <td>
+                    <select name="<%= u.getId() %>">
+                        <%
+                            for(UserRole ur : userRoles){
+                                String selected = "";
+                                if(ur.getId() == u.getRole().getId()){
+                                    selected = "selected";
+                                }
+                        %>
+                        <option  <%=selected%> value="<%=ur.getId()%>"> <%=ur.getName()%></option>
+                        <%
+                            }
+                        %>
+                    </select>
+                </td>
+            </tr>
+            <%
+                }
+            %>
+        </table>
+        <br>
+        <input type="submit" value="Save changes">
+    </form>
+
 </body>
 </html>
