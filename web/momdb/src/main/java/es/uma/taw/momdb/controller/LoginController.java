@@ -40,6 +40,8 @@ public class LoginController {
                 return "redirect:/admin/";
             } if(roleName.equals("analista")){
                 return "redirect:/analyst/";
+            } if (roleName.equals("usuario")){
+                return "redirect:/user/";
             }
 
             // TODO: falta la lógica para el resto de roles
