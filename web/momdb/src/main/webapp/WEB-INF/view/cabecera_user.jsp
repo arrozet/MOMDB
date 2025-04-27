@@ -10,7 +10,7 @@
 
 <table width="100%">
     <tr>
-        <td><b>Esto debería ser una barra lateral</b></td>
+        <td><b>This should be a sidebar menu:</b></td>
         <td><a href="/user/">My Movies</a></td>
         <td>My shows</td>
         <td>My reviews</td>

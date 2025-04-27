@@ -15,7 +15,7 @@
 
 <jsp:include page="cabecera_user.jsp" />
 
-<h1 style="justify-content: center">MOMDB<br>Where your fantasies come true</h1>
+<h1>MOMDB<br>Where your fantasies come true</h1>
 
 <form method="POST" action="/user/filtrar">
     <input type="text" name="filter" placeholder="Search...">
