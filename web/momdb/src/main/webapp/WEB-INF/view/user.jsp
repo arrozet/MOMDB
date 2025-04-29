@@ -6,75 +6,83 @@
 <html>
 <head>
     <title>My movies | MOMDB</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/user.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
+
 <%
     User myUser = (User) session.getAttribute("user");
     List<Movie> movies = (List<Movie>) request.getAttribute("movies");
 %>
-<body>
 
+<body class="has-background-white-ter">
 <jsp:include page="cabecera_user.jsp" />
 
-<h1>MOMDB<br>Where your fantasies come true</h1>
-
-<form method="POST" action="/user/filtrar">
-    <input type="text" name="filter" placeholder="Search...">
-    <input type="submit" value="Filtrar">
-</form>
-
-<div class="movie-grid">
-    <% if(movies != null) {
-        for (Movie movie: movies) {
-    %>
-    <div class="movie-card">
-        <a href="/user/movie?id=<%= movie.getId() %>" class="movie-link">
-            <div class="movie-title"><%= movie.getOriginalTitle() %></div>
-        </a>
+<section class="hero is-light is-small"> <%-- Hero es básicamente para los títulos --%>
+    <div class="hero-body">
+        <div class="container has-text-centered">
+            <h1 class="title">MOMDB</h1>
+            <h2 class="subtitle">Where your fantasies come true</h2>
+        </div>
     </div>
-    <%
-        }
-    } else {
-    %>
-    <div class="no-movies">No hay películas disponibles</div>
-    <% } %>
-</div>
+</section>
 
-<style>
-    h1 {
-        text-align: center;
-        margin: 20px 0;
-        font-size: 28px;
-    }
+<section class="section">
+    <div class="container">
+        <div class="columns">
+            <div class="column is-half is-offset-one-quarter">
+                <form method="POST" action="/user/filtrar">
+                    <div class="field has-addons">
+                        <div class="control is-expanded">
+                            <input class="input is-info has-background-grey" type="text" name="filter" placeholder="Search movies...">
+                        </div>
+                        <div class="control">
+                            <button type="submit" class="button is-info">
+                                <span class="icon">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <span>Filter</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
 
-    .movie-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 20px;
-        padding: 20px;
-    }
-
-    .movie-card {
-        text-align: center;
-    }
-
-    .movie-title {
-        margin-top: 8px;
-        font-size: 18px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    .movie-link {
-        text-decoration: none;
-        color: inherit;
-    }
-
-    .movie-link:hover .movie-title {
-        color: #007bff;
-        text-decoration: underline;
-    }
-</style>
+        <div class="columns is-multiline is-mobile mt-4">
+            <% if(movies != null && !movies.isEmpty()) {
+                for (Movie movie: movies) {
+            %>
+            <div class="column is-6-mobile is-4-tablet is-3-desktop is-2-widescreen">
+                <div class="card movie-card has-background-grey">
+                    <div class="card-content">
+                        <div class="content has-text-centered">
+                            <a href="/user/movie?id=<%= movie.getId() %>" class="movie-link">
+                                <div class="movie-poster mb-2">
+                                    <span class="icon is-large has-text-info">
+                                        <i class="fas fa-film fa-3x"></i>
+                                    </span>
+                                </div>
+                                <p class="title is-5"><%= movie.getOriginalTitle() %></p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <%
+                }
+            } else {
+            %>
+            <div class="column is-12">
+                <div class="notification is-info is-light">
+                    <p class="has-text-centered">No movies available</p>
+                </div>
+            </div>
+            <% } %>
+        </div>
+    </div>
+</section>
 
 </body>
 </html>

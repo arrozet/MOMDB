@@ -8,75 +8,76 @@
 %>
 <head>
     <title>Movie Details | MOMDB</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> <%-- Importante para responsive con Bulma --%>
 </head>
 
-<body>
+<body class="has-background-white-ter">
 
 <jsp:include page="cabecera_user.jsp" />
 
-<div class="container">
-    <div class="movie-header">
-        <h1 class="movie-title"><%= movie.getOriginalTitle() %></h1>
+<section class="section">
+    <div class="container">
+        <div class="box has-background-grey">
+            <div class="has-text-centered mb-5">
+                <h1 class="title is-2"><%= movie.getOriginalTitle() %></h1>
+            </div>
+
+            <div class="content">
+                <div class="columns">
+                    <div class="column is-4 has-text-centered">
+                        <div class="tags has-addons is-centered mt-3">
+                            <span class="tag is-dark is-size-5">Rating</span>
+                            <span class="tag is-info is-size-5">
+                                <%= movie.getVoteAverage() != null ? movie.getVoteAverage() : "N/A" %>
+                                <span class="icon is-small ml-3">
+                                    <i class="fas fa-star"></i>
+                                </span>
+                            </span>
+                        </div>
+
+                        <div class="tags has-addons is-centered mt-3">
+                            <span class="tag is-dark is-size-5">Votes</span>
+                            <span class="tag is-info is-size-5">
+                                <%= movie.getVoteCount() != null ? movie.getVoteCount() : "0" %>
+                            </span>
+                        </div>
+
+                        <div class="tags has-addons is-centered mt-3">
+                            <span class="tag is-dark is-size-5">Release date</span>
+                            <span class="tag is-info is-size-5">
+                                <span><%= movie.getReleaseDate() != null ? movie.getReleaseDate() : "No disponible" %></span>
+                                <span class="icon">
+                                    <i class="fas fa-calendar"></i>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="column is-8">
+                        <div class="content">
+                            <h3 class="title is-4">Overview</h3>
+                            <div class="box has-background-dark" style="color: white">
+                                <p><%= movie.getOverview() != null ? movie.getOverview() : "No hay descripción disponible" %></p>
+                            </div>
+
+                            <!-- Aquí se pueden añadir más detalles sobre la película según sea necesario -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="has-text-centered mt-5">
+                <a href="/user/" class="button is-info">
+                    <span class="icon">
+                        <i class="fas fa-arrow-left"></i>
+                    </span>
+                    <span>Volver</span>
+                </a>
+            </div>
+        </div>
     </div>
+</section>
 
-    <div class="movie-info">
-        <p><strong>Fecha de lanzamiento:</strong> <%= movie.getReleaseDate() != null ? movie.getReleaseDate() : "No disponible" %></p>
-        <p><strong>Puntuación:</strong> <%= movie.getVoteAverage() != null ? movie.getVoteAverage() : "No disponible" %>
-            (<%= movie.getVoteCount() != null ? movie.getVoteCount() : "0" %> votos)</p>
-        <p><strong>Descripción:</strong></p>
-        <p><%= movie.getOverview() != null ? movie.getOverview() : "No hay descripción disponible" %></p>
-    </div>
-
-    <div class="movie-actions">
-        <a href="/user/" class="btn-volver">Volver</a>
-    </div>
-</div>
-
-<style>
-    .container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: #f9f9f9;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    .movie-header {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    .movie-title {
-        font-size: 28px;
-        font-weight: bold;
-        color: #333;
-    }
-    .movie-info p {
-        margin: 10px 0;
-        font-size: 16px;
-        line-height: 1.5;
-        color: #555;
-    }
-    .movie-info strong {
-        color: #000;
-    }
-
-    .movie-actions {
-        text-align: center;
-        margin-top: 20px;
-    }
-
-    .btn-volver {
-        display: inline-block;
-        background-color: #007bff;
-        color: white;
-        padding: 10px 15px;
-        text-decoration: none;
-        border-radius: 4px;
-        margin-top: 20px;
-    }
-    .btn-volver:hover {
-        background-color: #0056b3;
-    }
-</style>
 </body>
 </html>

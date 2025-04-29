@@ -1,0 +1,27 @@
+.movie-card {
+    height: 100%;
+    transition: transform 0.3s;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.movie-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.movie-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.movie-poster {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+}
+
+.movie-link:hover .title {
+    color: #3273dc;
+}
