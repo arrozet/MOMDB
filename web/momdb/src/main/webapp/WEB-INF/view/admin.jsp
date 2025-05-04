@@ -2,10 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="es.uma.taw.momdb.entity.User" %>
 <%@ page import="java.util.List" %>
-<%@ page import="es.uma.taw.momdb.entity.UserRole" %>
-<%@ page import="es.uma.taw.momdb.dto.UserDTO" %>
-<%@ page import="es.uma.taw.momdb.dto.UsersFormDTO" %><%--
-  Created by IntelliJ IDEA.
+<%---
+Created by IntelliJ IDEA.
   User: roz
   Date: 15/04/2025
   Time: 13:27
@@ -17,34 +15,49 @@
     <title>Welcome back, Admin!</title>
 </head>
 <%
-    UsersFormDTO usersForm = (UsersFormDTO) request.getAttribute("usersForm");
-    List<UserRole> userRoles = (List<UserRole>) request.getAttribute("userRoles");
     User myUser = (User) session.getAttribute("user");
+    List<String> everyEntity = (List<String>) request.getAttribute("everyEntity");
 %>
 <body>
     <h1>Welcome back, <%= myUser.getUsername() %>!<br></h1>
+    <table>
+        <tr>
+            <!-- TABLA DE PARES <USUARIO, ROL> -->
+            <td>
+                <form:form method="post" action="/admin/changeUser" modelAttribute="usersForm">
+                    <table border="1">
+                        <tr>
+                            <th>User</th>
+                            <th>Role</th>
+                        </tr>
+                        <!--usersForm.users accede directamente al modelo. Lo mismo con userRoles.
+                        El $ {} hace el request.getAttribute directamente -->
+                        <c:forEach var="user" items="${usersForm.users}" varStatus="status">
+                            <tr>
+                                <td>
+                                    ${user.username}
+                                    <form:hidden path="users[${status.index}].userId" />
+                                </td>
+                                <td>
+                                    <form:select path="users[${status.index}].roleId" items="${userRoles}" itemValue="id" itemLabel="name"/>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </table>
+                    <br>
+                    <form:button>Save changes</form:button>
+                </form:form>
+            </td>
 
-    <form:form method="post" action="/admin/changeUser" modelAttribute="usersForm">
-        <table border="1">
-            <tr>
-                <th>User</th>
-                <th>Role</th>
-            </tr>
-            <c:forEach var="user" items="${usersForm.users}" varStatus="status">
-                <tr>
-                    <td>
-                        ${user.username}
-                        <form:hidden path="users[${status.index}].userId" />
-                    </td>
-                    <td>
-                        <form:select path="users[${status.index}].roleId" items="${userRoles}" itemValue="id" itemLabel="name"/>
-                    </td>
-                </tr>
-            </c:forEach>
-        </table>
-        <br>
-        <form:button>Save changes</form:button>
-    </form:form>
+            <!-- TABLA DE PARES <ID, VALUE>-->
+            <td>
+                <form:form method="post" action="/admin/showEntities" modelAttribute="genericEntity">
+                    <form:select path="selectedEntity" items="${everyEntity}"/>
+                </form:form>
+            </td>
+        </tr>
+    </table>
+
 
 </body>
 </html>
