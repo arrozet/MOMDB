@@ -17,6 +17,7 @@ Created by IntelliJ IDEA.
 <%
     User myUser = (User) session.getAttribute("user");
     List<String> everyEntity = (List<String>) request.getAttribute("everyEntity");
+    List<?> entities = (List<?>) request.getAttribute("entities");
 %>
 <body>
     <h1>Welcome back, <%= myUser.getUsername() %>!<br></h1>
@@ -49,11 +50,23 @@ Created by IntelliJ IDEA.
                 </form:form>
             </td>
 
-            <!-- TABLA DE PARES <ID, VALUE>-->
+            <!-- TABLA DE ENTIDADES SELECCIONADAS -->
             <td>
                 <form:form method="post" action="/admin/showEntities" modelAttribute="genericEntity">
-                    <form:select path="selectedEntity" items="${everyEntity}"/>
+                    <form:select path="selectedEntity" items="${everyEntity}" onchange="this.form.submit()"/>
                 </form:form>
+                <table border="1">
+                    <tr>
+                        <th>ID</th>
+                        <th>VALUE</th>
+                    </tr>
+                    <c:forEach var="entity" items="${entities}">
+                        <tr>
+                            <td>${entity.id}</td>
+                            <td>${entity.name}</td>
+                        </tr>
+                    </c:forEach>
+                </table>
             </td>
         </tr>
     </table>

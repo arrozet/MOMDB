@@ -1,7 +1,6 @@
 package es.uma.taw.momdb.controller;
 
-import es.uma.taw.momdb.dao.UserRepository;
-import es.uma.taw.momdb.dao.UserRoleRepository;
+import es.uma.taw.momdb.dao.*;
 import es.uma.taw.momdb.dto.GenericEntityDTO;
 import es.uma.taw.momdb.dto.UserDTO;
 import es.uma.taw.momdb.dto.UsersFormDTO;
@@ -22,6 +21,12 @@ public class AdminController extends BaseController {
 
     @Autowired private UserRepository userRepository;
     @Autowired private UserRoleRepository userRoleRepository;
+    @Autowired private CrewRoleRepository crewRoleRepository;
+    @Autowired private GenreRepository genreRepository;
+    @Autowired private KeywordRepository keywordRepository;
+    @Autowired private ProductionCompanyRepository productionCompanyRepository;
+    @Autowired private ProductionCountryRepository productionCountryRepository;
+    @Autowired private SpokenLanguageRepository spokenLanguageRepository;
 
     @GetMapping("/")
     public String doInit(HttpSession session,
@@ -30,6 +35,15 @@ public class AdminController extends BaseController {
             return "redirect:/";
         }
 
+        // Añado lo necesario al modelo
+        GenericEntityDTO genericEntity = new GenericEntityDTO();
+        genericEntity.setSelectedEntity("Genre");
+        handleData(prepareUsersFormDTO(), genericEntity, model);
+
+        return "admin";
+    }
+
+    private UsersFormDTO prepareUsersFormDTO() {
         // Cojo todos los usuarios
         List<User> users = this.userRepository.findAll();
 
@@ -47,10 +61,7 @@ public class AdminController extends BaseController {
         }
         usersFormDTO.setUsers(userDTOs);
 
-        // Añado lo necesario al modelo
-        handleData(usersFormDTO, new GenericEntityDTO(), model);
-
-        return "admin";
+        return usersFormDTO;
     }
 
     @PostMapping("/changeUser")
@@ -81,10 +92,28 @@ public class AdminController extends BaseController {
         if(!checkAuth(session, model)) {
             return "redirect:/";
         }
-        switch(genericEntity.getSelectedEntity()){
-            case "Genre":
-        }
-        return "redirect:/admin/";
+        List<?> entities = null;
+        String entityType = genericEntity.getSelectedEntity();
+
+        entities = switch (entityType) {
+            case "Genre" -> genreRepository.findAll();
+            case "Keyword" -> keywordRepository.findAll();
+            case "ProductionCompany" -> productionCompanyRepository.findAll();
+            case "ProductionCountry" -> productionCountryRepository.findAll();
+            case "SpokenLanguage" -> spokenLanguageRepository.findAll();
+            case "CrewRole" -> crewRoleRepository.findAll();
+            case "UserRole" -> userRoleRepository.findAll();
+            default -> entities;
+        };
+
+        model.addAttribute("entities", entities);
+        model.addAttribute("entityType", entityType);
+
+        // Para mantener también las tablas anteriores
+        UsersFormDTO usersFormDTO = prepareUsersFormDTO();
+        handleData(usersFormDTO, genericEntity, model);
+
+        return "admin";
     }
 
     private Boolean checkAuth(HttpSession session, Model model) {

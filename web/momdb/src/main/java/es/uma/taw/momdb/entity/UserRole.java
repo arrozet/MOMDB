@@ -11,7 +11,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "userrole")
-public class UserRole {
+public class UserRole implements EntityWithNameAndId{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -22,5 +22,4 @@ public class UserRole {
 
     @OneToMany(mappedBy = "role")
     private Set<User> users = new LinkedHashSet<>();
-
 }

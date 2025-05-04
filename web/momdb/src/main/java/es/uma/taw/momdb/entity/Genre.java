@@ -11,7 +11,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "genre")
-public class Genre {
+public class Genre implements EntityWithNameAndId {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -26,4 +26,8 @@ public class Genre {
             inverseJoinColumns = @JoinColumn(name = "movie_id"))
     private Set<Movie> movies = new LinkedHashSet<>();
 
+    @Override
+    public String getName() {
+        return genre;
+    }
 }

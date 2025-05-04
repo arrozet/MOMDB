@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -11,7 +12,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "spokenlanguage")
-public class Spokenlanguage {
+public class Spokenlanguage implements EntityWithNameAndId {
     @Id
     @Column(name = "iso_639_1", nullable = false, length = 5)
     private String iso6391;
@@ -21,5 +22,15 @@ public class Spokenlanguage {
 
     @ManyToMany(mappedBy = "spokenlanguages")
     private Set<Movie> movies = new LinkedHashSet<>();
+
+    @Override
+    public String getId(){
+        return iso6391;
+    }
+
+    @Override
+    public String getName() {
+        return language;
+    }
 
 }
