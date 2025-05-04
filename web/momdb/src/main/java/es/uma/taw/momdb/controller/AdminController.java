@@ -35,9 +35,33 @@ public class AdminController extends BaseController {
             return "redirect:/";
         }
 
+
+        // Obtener la entidad seleccionada de la sesión si existe. Si no existe, es Genre
+        String selectedEntity = (String) session.getAttribute("selectedEntity");
+        selectedEntity = selectedEntity != null ? selectedEntity : "Genre";
+
+
+        // Cargar las entidades según la selección
+        List<?> entities = null;
+        entities = switch (selectedEntity) {
+            case "Genre" -> genreRepository.findAll();
+            case "Keyword" -> keywordRepository.findAll();
+            case "ProductionCompany" -> productionCompanyRepository.findAll();
+            case "ProductionCountry" -> productionCountryRepository.findAll();
+            case "SpokenLanguage" -> spokenLanguageRepository.findAll();
+            case "CrewRole" -> crewRoleRepository.findAll();
+            case "UserRole" -> userRoleRepository.findAll();
+            default -> entities;
+        };
+
         // Añado lo necesario al modelo
         GenericEntityDTO genericEntity = new GenericEntityDTO();
-        genericEntity.setSelectedEntity("Genre");
+        genericEntity.setSelectedEntity(selectedEntity);
+
+        model.addAttribute("entities", entities);
+        model.addAttribute("entityType", selectedEntity);
+
+        // Resto de datos necesarios
         handleData(prepareUsersFormDTO(), genericEntity, model);
 
         return "admin";
@@ -92,28 +116,10 @@ public class AdminController extends BaseController {
         if(!checkAuth(session, model)) {
             return "redirect:/";
         }
-        List<?> entities = null;
-        String entityType = genericEntity.getSelectedEntity();
 
-        entities = switch (entityType) {
-            case "Genre" -> genreRepository.findAll();
-            case "Keyword" -> keywordRepository.findAll();
-            case "ProductionCompany" -> productionCompanyRepository.findAll();
-            case "ProductionCountry" -> productionCountryRepository.findAll();
-            case "SpokenLanguage" -> spokenLanguageRepository.findAll();
-            case "CrewRole" -> crewRoleRepository.findAll();
-            case "UserRole" -> userRoleRepository.findAll();
-            default -> entities;
-        };
+        session.setAttribute("selectedEntity", genericEntity.getSelectedEntity());
 
-        model.addAttribute("entities", entities);
-        model.addAttribute("entityType", entityType);
-
-        // Para mantener también las tablas anteriores
-        UsersFormDTO usersFormDTO = prepareUsersFormDTO();
-        handleData(usersFormDTO, genericEntity, model);
-
-        return "admin";
+        return "redirect:/admin/";
     }
 
     private Boolean checkAuth(HttpSession session, Model model) {

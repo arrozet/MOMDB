@@ -57,8 +57,8 @@ Created by IntelliJ IDEA.
                 </form:form>
                 <table border="1">
                     <tr>
-                        <th>ID</th>
-                        <th>VALUE</th>
+                        <th>Id</th>
+                        <th>Value</th>
                     </tr>
                     <c:forEach var="entity" items="${entities}">
                         <tr>
