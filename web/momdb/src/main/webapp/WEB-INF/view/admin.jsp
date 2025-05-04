@@ -32,10 +32,11 @@
             </tr>
             <c:forEach var="user" items="${usersForm.users}" varStatus="status">
                 <tr>
-                    <td>${user.username}</td>
                     <td>
+                        ${user.username}
                         <form:hidden path="users[${status.index}].userId" />
-                        <form:hidden path="users[${status.index}].username" />
+                    </td>
+                    <td>
                         <form:select path="users[${status.index}].roleId" items="${userRoles}" itemValue="id" itemLabel="name"/>
                     </td>
                 </tr>
