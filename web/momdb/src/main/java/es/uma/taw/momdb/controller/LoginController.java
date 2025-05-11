@@ -42,6 +42,8 @@ public class LoginController {
                 return "redirect:/analyst/";
             } if (roleName.equals("usuario")){
                 return "redirect:/user/";
+            } if (roleName.equals("editor")) {
+                return "redirect:/editor/";
             }
 
             // TODO: falta la lógica para el resto de roles
