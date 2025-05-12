@@ -1,0 +1,382 @@
+---
+title: "Destilado de CSVs a tablas"
+author: "arrozet"
+editor: visual
+---
+
+# Carga de librerias, datasets y funciones de parseo
+```{r setup_and_load_data}
+# Cargar librerías necesarias
+library(tidyverse)
+library(jsonlite)
+
+# Cargar los datasets (asegúrate que las rutas son correctas respecto a tu directorio de trabajo)
+# Asumiendo que el Rmd se ejecuta con el directorio de trabajo en la raíz del proyecto MOMDB
+raw_credits <- read_csv("./database/datasets/tmdb_5000_credits.csv")
+raw_movies <- read_csv("./database/datasets/tmdb_5000_movies.csv")
+
+# Función para parsear JSON de forma segura
+parse_json_safely <- function(json_string) {
+  tryCatch({
+    if (is.na(json_string) || json_string == "" || json_string == "[]" || !jsonlite::validate(json_string)[1]) {
+      # Devuelve un data frame vacío con estructura esperada si es posible, o NA genérico
+      return(tibble()) # O NA, dependiendo de cómo quieras manejarlo después
+    }
+    fromJSON(json_string)
+  }, error = function(e) {
+    # message("Error parsing JSON: ", json_string, " - ", e$message) # Opcional para depuración
+    return(tibble()) # O NA
+  })
+}
+```
+
+# Dataset Movies (películas y todo lo relacionado con ellas)
+## Movie
+```{r}
+# 1. Procesar el dataframe de películas (raw_movies)
+
+# Dataframe base de películas (sin las columnas JSON que se procesarán por separado)
+movie <- raw_movies |>
+  select(
+    movie_id = id, # Renombrar id a movie_id para claridad
+    original_title,
+    budget,
+    homepage,
+    original_language,
+    overview,
+    popularity,
+    release_date,
+    revenue,
+    runtime,
+    status_name = status, # Se usará para crear la tabla Status
+    tagline,
+    title,
+    vote_average,
+    vote_count
+  ) |>
+  mutate(release_date = as.Date(release_date)) |>
+  arrange(movie_id)
+
+cat("--- Movies creado ---\n")
+head(movie)
+```
+
+## Status
+```{r}
+# Tabla de Status únicos
+status <- movie |>
+  distinct(status_name) |>
+  filter(!is.na(status_name)) |>
+  mutate(status_id = row_number())
+
+cat("\n--- Status creado ---\n")
+head(status)
+```
+
+## Genres y Movie_Genre
+```{r}
+# Procesar Genres
+movie_genre <- raw_movies |>
+  select(movie_id = id, genres) |>
+  mutate(parsed_data = map(genres, parse_json_safely)) |>
+  filter(map_lgl(parsed_data, ~is.data.frame(.x) && nrow(.x) > 0)) |>
+  unnest(parsed_data, names_repair = "unique") |>
+  rename(
+    genre_id = id,  # Rename the 'id' column (from JSON) to 'genre_id_json'
+    genre_name = name    # Rename the 'name' column (from JSON) to 'genre_name'
+  ) |>
+  # Now columns are: movie_id, genres, genre_id_json, genre_name
+  select(movie_id, genre_id, genre_name) |>
+  arrange(movie_id, genre_id)
+
+genre <- movie_genre |>
+  distinct(genre_id, genre_name) |>
+  arrange(genre_id)
+
+movie_genre <- movie_genre |>
+  select(-genre_name)
+
+cat("\n--- Relacion Movies - Genre creada ---\n")
+head(movie_genre)
+
+cat("\n--- Genre creado ---\n")
+head(genre)
+```
+
+## Keywords y Movie_Keywords
+```{r}
+# Procesar Keywords
+movie_keywords <- raw_movies |>
+  select(movie_id = id, keywords) |>
+  mutate(parsed_data = map(keywords, parse_json_safely)) |>
+  filter(map_lgl(parsed_data, ~is.data.frame(.x) && nrow(.x) > 0)) |>
+  unnest(parsed_data, names_repair = "unique") |>
+  rename(keyword_id_json = id...3, keyword_name = name) |>
+  select(movie_id = movie_id...1, keyword_id_json, keyword_name)
+
+keywords <- movie_keywords |>
+  distinct(keyword_id_json, keyword_name)
+
+cat("\n--- movie_keywords y keywords Creados ---\n")
+head(movie_keywords)
+head(keywords)
+```
+
+## ProductionCompany y Movie_ProductionCompany
+```{r}
+# Procesar Production Companies
+movie_company <- raw_movies |>
+  select(movie_id = id, production_companies) |>
+  mutate(parsed_data = map(production_companies, parse_json_safely)) |>
+  filter(map_lgl(parsed_data, ~is.data.frame(.x) && nrow(.x) > 0)) |>
+  unnest(parsed_data, names_repair = "unique") |>
+  rename(company_id = id, company_name = name) |>
+  select(movie_id = movie_id, company_id, company_name) |>
+  arrange(movie_id, company_id)
+
+company <- movie_company |>
+  distinct(company_id, company_name) |>
+  arrange(company_id)
+
+movie_company <- movie_company |>
+  select(-company_name)
+
+cat("\n--- movie_company y company Creados ---\n")
+head(movie_company)
+head(company)
+```
+
+## ProductionCountry y Movie_ProductionCountry
+```{r}
+# Procesar Production Countries
+movie_country <- raw_movies |>
+  select(movie_id = id, production_countries) |>
+  mutate(parsed_data = map(production_countries, parse_json_safely)) |>
+  filter(map_lgl(parsed_data, ~is.data.frame(.x) && nrow(.x) > 0)) |>
+  unnest(parsed_data, names_repair = "unique") |>
+  rename(country_iso = iso_3166_1, country_name = name) |>
+  select(movie_id, country_iso, country_name) |>
+  arrange(movie_id, country_iso)
+
+country <- movie_country |>
+  distinct(country_iso, country_name) |>
+  arrange(country_iso)
+
+movie_country <- movie_country |>
+  select(-country_name)
+
+cat("\n--- movie_country y country Creados ---\n")
+head(movie_country)
+head(country)
+```
+
+## SpokenLanguages y Movie_SpokenLanguages
+```{r}
+# Procesar Spoken Languages
+movie_language <- raw_movies |>
+  select(movie_id = id, spoken_languages) |>
+  mutate(parsed_data = map(spoken_languages, parse_json_safely)) |>
+  filter(map_lgl(parsed_data, ~is.data.frame(.x) && nrow(.x) > 0)) |>
+  unnest(parsed_data, names_repair = "unique") |>
+  rename(lang_iso = iso_639_1, lang_name = name) |>
+  select(movie_id, lang_iso, lang_name) |>
+  arrange(movie_id, lang_iso)
+
+language <- movie_language |>
+  distinct(lang_iso, lang_name) |>
+  arrange(lang_iso)
+
+movie_language <- movie_language |>
+  select(-lang_name)
+
+cat("\n--- movie_language y language Creados ---\n")
+head(movie_language)
+head(language)
+```
+Los lenguajes que salen con `lang_name` vacio es literalmente porque no tienen nombre en la base de datos de TMDB. Por ejemplo, `lang_iso = "bo"` está en la película con `original_title = "2012"`, y en `name` tiene la cadena vacía.
+
+# Dataset Credits (toda la parte de Crew, Person...)
+
+## Preprocesamiento
+```{r}
+# Process the 'crew' JSON column
+credits_crew_raw <- raw_credits |>
+  select(movie_id, crew_json = crew) |>
+  mutate(parsed_crew = map(crew_json, parse_json_safely)) |>
+  filter(map_lgl(parsed_crew, ~is.data.frame(.x) && nrow(.x) > 0)) |>
+  unnest(parsed_crew, names_repair = "unique") |>
+  rename(
+    person_id = id, 
+    original_crew_credit_id = credit_id, 
+    job_name = job,
+    person_name_crew = name
+  ) |>
+  select(movie_id, original_crew_credit_id, person_id, person_name_crew, job_name, department, gender) |>
+  arrange(movie_id, original_crew_credit_id, person_id, job_name)
+
+# Process the 'cast' JSON column
+credits_cast_raw <- raw_credits |>
+  select(movie_id, cast_json = cast) |>
+  mutate(parsed_cast = map(cast_json, parse_json_safely)) |>
+  filter(map_lgl(parsed_cast, ~is.data.frame(.x) && nrow(.x) > 0)) |>
+  unnest(parsed_cast, names_repair = "unique") |>
+  rename(
+    person_id = id, 
+    original_cast_credit_id = credit_id, 
+    character_name_raw = character,
+    person_name_cast = name
+  ) |>
+  select(movie_id, original_cast_credit_id, person_id, person_name_cast, character_name_raw, gender, order, cast_id) |>
+  arrange(movie_id, original_cast_credit_id, person_id, order)
+
+cat("--- Preliminary credits_crew_raw and credits_cast_raw processed ---\n")
+cat("Head of credits_crew_raw:\n")
+head(credits_crew_raw)
+cat("\nHead of credits_cast_raw:\n")
+head(credits_cast_raw)
+```	
+
+## Person
+```{r}
+person_from_crew <- credits_crew_raw |>
+  distinct(person_id, person_name = person_name_crew)
+
+person_from_cast <- credits_cast_raw |>
+  distinct(person_id, person_name = person_name_cast)
+
+person <- bind_rows(person_from_crew, person_from_cast) |>
+  distinct(person_id, person_name) |>
+  filter(!is.na(person_id), !is.na(person_name), person_name != "") |>
+  # The ERD shows Person.id as INT. TMDB person_id is already an INT.
+  # We will use person_id from TMDB as the primary key 'id' for the Person table.
+  rename(id = person_id, name = person_name) |>
+  arrange(id)
+
+cat("\n--- Person created ---\n")
+head(person)
+```
+
+## CrewRole
+```{r}
+roles_from_crew_jobs <- credits_crew_raw |>
+  distinct(role_name = job_name)
+
+# Add "Actor" role for cast members, as they are part of the crew concept here.
+actor_role_tibble <- tibble(role_name = "Actor")
+
+crew_role <- bind_rows(roles_from_crew_jobs, actor_role_tibble) |>
+  distinct(role_name) |>
+  filter(!is.na(role_name), role_name != "") |>
+  arrange(role_name) |>
+  mutate(id = row_number()) |> # ERD shows CrewRole.id as INT PK
+  select(id, role = role_name) |> # ERD shows CrewRole.role VARCHAR
+  arrange(id)
+
+cat("\n--- CrewRole created ---\n")
+head(crew_role)
+```
+
+## Character
+```{r}
+character <- credits_cast_raw |>
+  distinct(character_name = character_name_raw) |>
+  filter(!is.na(character_name), character_name != "") |>
+  arrange(character_name) |>
+  mutate(id = row_number()) |> # ERD shows Character.id as INT PK
+  select(id, character = character_name) |> # ERD shows Character.character VARCHAR
+  arrange(id)
+
+cat("\n--- Character created ---\n")
+head(character)
+```
+```
+
+## Crew
+DE AQUI PARA ABAJO NO ESTA TERMINADO. HASTA CHARACTER TODO OK, REVISADO POR RUBEN
+```{r}
+# Get crewRole_id for "Actor"
+actor_role_id_value <- crew_role |> 
+  filter(role == "Actor") |> 
+  pull(id)
+
+# If "Actor" role wasn't found (e.g., if crew_role was empty or "Actor" wasn't in jobs),
+# this might be empty. Ensure it's handled.
+if(length(actor_role_id_value) == 0){
+  if (!("Actor" %in% crew_role$role)) {
+    new_id_for_actor <- if (nrow(crew_role) > 0) max(crew_role$id) + 1 else 1
+    crew_role <- bind_rows(crew_role, tibble(id = new_id_for_actor, role = "Actor"))
+    actor_role_id_value <- new_id_for_actor
+    cat("--- 'Actor' role dynamically added to crew_role with id:", actor_role_id_value, "---\n")
+  } else {
+     # This case should ideally not be reached if logic is sound
+     actor_role_id_value <- crew_role |> filter(role == "Actor") |> pull(id)
+  }
+}
+
+
+# Combine all credit entries (crew and cast) to generate a unique crew_id (INT)
+# Storing original_credit_id to link with characters later if needed for cast.
+combined_credits_for_crew_table <- bind_rows(
+  # Crew members
+  credits_crew_raw |>
+    left_join(crew_role, by = c("job_name" = "role")) |>
+    filter(!is.na(id)) |> # Ensure the role was found in crew_role
+    select(
+      original_credit_id_str = original_crew_credit_id,
+      movie_id,
+      person_id, # This is Person.id
+      crewRole_id = id, # This is CrewRole.id
+      type = "crew_member"
+    ),
+  # Cast members (as "Actor" crew)
+  credits_cast_raw |>
+    mutate(crewRole_id = actor_role_id_value) |>
+    select(
+      original_credit_id_str = original_cast_credit_id,
+      movie_id,
+      person_id, # This is Person.id
+      crewRole_id, # This is CrewRole.id for "Actor"
+      character_name = character_name_raw, # Keep for CrewCharacter
+      type = "cast_member"
+    )
+) |>
+  # The original_credit_id_str is unique for a (movie, person, role/character)
+  # We need a new integer crew_id for the Crew table as per ERD
+  distinct(original_credit_id_str, movie_id, person_id, crewRole_id, .keep_all = TRUE) |>
+  arrange(movie_id, person_id, crewRole_id) |>
+  mutate(crew_id = row_number()) # This is the new PK for Crew table (Crew.crew_id INT)
+
+# Create the final Crew table
+crew <- combined_credits_for_crew_table |>
+  select(
+    crew_id, # PK
+    movie_id, # FK to Movie
+    person_id, # FK to Person
+    crewRole_id # FK to CrewRole
+  ) |>
+  arrange(crew_id)
+
+cat("\n--- Crew created ---\n")
+head(crew)
+```
+
+## CrewCharacter
+```{r}
+crew_character <- combined_credits_for_crew_table |>
+  filter(type == "cast_member") |> # Only cast members play characters
+  filter(!is.na(character_name), character_name != "") |>
+  left_join(character_table, by = c("character_name" = "character")) |> # Join to get Character.id
+  filter(!is.na(id)) |> # Ensure the character was found in character_table
+  select(
+    crew_id, # FK to Crew.crew_id
+    character_id = id # FK to Character.id
+  ) |>
+  distinct() |>
+  arrange(crew_id, character_id)
+
+cat("\n--- CrewCharacter created ---\n")
+head(crew_character)
+```
+
+
+La parte de `User`, `UserRole` etc no está en los csv. Por eso no hay extracción de datos de esos datasets.
