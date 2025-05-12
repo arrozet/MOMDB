@@ -4,6 +4,7 @@ import es.uma.taw.momdb.dao.CrewRoleRepository;
 import es.uma.taw.momdb.dao.MovieRepository;
 import es.uma.taw.momdb.entity.Movie;
 import es.uma.taw.momdb.entity.User;
+import es.uma.taw.momdb.ui.Filtro;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,6 +31,7 @@ public class EditorController extends BaseController{
             // Lógica para el editor
             List<Movie> movies = this.movieRepository.findAll();
             model.addAttribute("movies", movies);
+            model.addAttribute("filtro", new Filtro());
             return "editor";
         }
     }
