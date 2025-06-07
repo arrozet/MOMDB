@@ -1,20 +1,26 @@
 package es.uma.taw.momdb.entity;
 
+import es.uma.taw.momdb.dto.DTO;
+import es.uma.taw.momdb.dto.GenreDTO;
+import es.uma.taw.momdb.dto.MovieDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "movie")
-public class Movie {
+public class Movie implements Serializable, DTO<MovieDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -90,5 +96,23 @@ public class Movie {
 
     @ManyToMany
     private Set<User> watchlist_users = new LinkedHashSet<>();
+
+    public MovieDTO toDTO () {
+        MovieDTO movie = new MovieDTO();
+        movie.setId(this.id);
+        movie.setTitulo(this.title);
+        movie.setIdiomaOriginal(this.originalLanguage);
+        movie.setFechaDeSalida(this.releaseDate);
+        movie.setIngresos(this.revenue);
+
+        List<GenreDTO> listaGeneros = new ArrayList<>();
+
+        this.genres.forEach((final Genre genero) -> listaGeneros.add(genero.toDTO()));
+        movie.setGeneros(listaGeneros);
+
+
+        return movie;
+
+    }
 
 }

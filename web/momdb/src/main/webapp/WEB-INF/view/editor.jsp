@@ -1,6 +1,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page import="es.uma.taw.momdb.entity.Movie" %>
-<%@ page import="java.util.List" %><%--
+<%@ page import="java.util.List" %>
+<%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>
+<%@ page import="es.uma.taw.momdb.entity.User" %><%--
   Created by IntelliJ IDEA.
   User: usuario
   Date: 11/05/2025
@@ -15,8 +17,12 @@
     <link rel="stylesheet" href="/css/user.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
+
+<body class="has-background-white-ter">
+<jsp:include page="cabecera_user.jsp" />
+
 <%
-    List<Movie> movies = (List<Movie>) request.getAttribute("movies");
+    List<MovieDTO> movies = (List<MovieDTO>) request.getAttribute("movies");
 %>
 <body>
 <section class="hero is-light is-small"> <%-- Hero es básicamente para los títulos --%>
@@ -32,7 +38,7 @@
     <div class="container">
         <div class="columns">
             <div class="column is-half is-offset-one-quarter">
-                <form:form method="POST" action="/user/filtrar" modelAttribute="filtro">
+                <form:form method="POST" action="/editor/filtrar" modelAttribute="filtro">
                     <div class="field has-addons">
                         <div class="control is-expanded">
                             <form:input path="texto" class="input is-info has-background-grey" placeholder="Search movies..."/>
@@ -52,7 +58,7 @@
 
         <div class="columns is-multiline is-mobile mt-4">
             <% if(movies != null && !movies.isEmpty()) {
-                for (Movie movie: movies) {
+                for (MovieDTO movie: movies) {
             %>
             <div class="column is-6-mobile is-4-tablet is-3-desktop is-2-widescreen">
                 <div class="card movie-card has-background-grey">
@@ -64,7 +70,7 @@
                                         <i class="fas fa-film fa-3x"></i>
                                     </span>
                                 </div>
-                                <p class="title is-5"><%= movie.getOriginalTitle() %></p>
+                                <p class="title is-5"><%= movie.getTitulo() %></p>
                             </a>
                         </div>
                     </div>

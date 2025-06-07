@@ -7,4 +7,5 @@ public class UserDTO {
     int userId;
     int roleId;
     String username;
+    byte[] profilePic;
 }

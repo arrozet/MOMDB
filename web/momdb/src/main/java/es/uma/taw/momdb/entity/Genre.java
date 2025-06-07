@@ -1,9 +1,12 @@
 package es.uma.taw.momdb.entity;
 
+import es.uma.taw.momdb.dto.DTO;
+import es.uma.taw.momdb.dto.GenreDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -11,7 +14,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "genre")
-public class Genre implements EntityWithNameAndId {
+public class Genre implements EntityWithNameAndId, Serializable, DTO<GenreDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -29,5 +32,12 @@ public class Genre implements EntityWithNameAndId {
     @Override
     public String getName() {
         return genre;
+    }
+
+    public GenreDTO toDTO () {
+        GenreDTO genero = new GenreDTO();
+        genero.setId(this.id);
+        genero.setGenero(this.genre);
+        return genero;
     }
 }

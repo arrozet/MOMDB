@@ -1,17 +1,24 @@
 package es.uma.taw.momdb.entity;
 
+import es.uma.taw.momdb.dto.DTO;
+import es.uma.taw.momdb.dto.GenreDTO;
+import es.uma.taw.momdb.dto.MovieDTO;
+import es.uma.taw.momdb.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "user")
-public class User {
+public class User implements Serializable, DTO<UserDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -41,5 +48,16 @@ public class User {
 
     @ManyToMany(mappedBy = "favorite_users")
     private Set<Movie> watchlist_movies = new LinkedHashSet<>();
+
+    public UserDTO toDTO () {
+        UserDTO user = new UserDTO();
+        user.setUserId(this.id);
+        user.setRoleId(this.role.getId());
+        user.setUsername(this.username);
+        user.setProfilePic(this.profilePic);
+
+        return user;
+
+    }
 
 }
