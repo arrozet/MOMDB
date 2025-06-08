@@ -31,7 +31,7 @@ public class UserController extends BaseController{
     }
 
     @PostMapping("/filtrar")
-    public String doFiltrar(HttpSession session, @ModelAttribute("filter") Filtro filter, Model model) {
+    public String doFiltrar(HttpSession session, @ModelAttribute("filtro") Filtro filter, Model model) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
         } else {

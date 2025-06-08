@@ -33,7 +33,7 @@
     <div class="container">
         <div class="columns">
             <div class="column is-half is-offset-one-quarter">
-                <form:form method="POST" action="/user/filtrar" modelAttribute="filter">
+                <form:form method="POST" action="/user/filtrar" modelAttribute="filtro">
                     <div class="field has-addons">
                         <div class="control is-expanded">
                             <form:input path="texto" class="input is-info has-background-grey" placeholder="Search movies..."/>
