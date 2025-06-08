@@ -77,18 +77,30 @@ public class Movie implements Serializable, DTO<MovieDTO> {
     private Set<User> favorite_users = new LinkedHashSet<>();
 
     @ManyToMany
+    @JoinTable(name = "movie_genre",
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id"))
     private Set<Genre> genres = new LinkedHashSet<>();
 
     @ManyToMany
     private Set<Keyword> keywords = new LinkedHashSet<>();
 
     @ManyToMany
+    @JoinTable(name = "movie_productioncompany",
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "productioncompany_id"))
     private Set<Productioncompany> productioncompanies = new LinkedHashSet<>();
 
     @ManyToMany
+    @JoinTable(name = "movie_productioncountry",
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "iso_3166_1"))
     private Set<Productioncountry> productioncountries = new LinkedHashSet<>();
 
     @ManyToMany
+    @JoinTable(name = "movie_spokenlanguage",
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "iso_639_1"))
     private Set<Spokenlanguage> spokenlanguages = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "movie")
