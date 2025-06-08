@@ -32,4 +32,13 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
         return this.entity2DTO(movies);
     }
 
+    public MovieDTO findPeliculaById (int id) {
+        Movie movie = this.movieRepository.findById(id).orElse(null);
+
+        if (movie != null){
+            return movie.toDTO();
+        } else {
+            return null;
+        }
+    }
 }

@@ -1,6 +1,8 @@
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page import="es.uma.taw.momdb.entity.Movie" %>
 <%@ page import="java.util.List" %>
 <%@ page import="es.uma.taw.momdb.entity.User" %>
+<%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -11,13 +13,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
-<%
-    User myUser = (User) session.getAttribute("user");
-    List<Movie> movies = (List<Movie>) request.getAttribute("movies");
-%>
-
 <body class="has-background-white-ter">
 <jsp:include page="cabecera_user.jsp" />
+
+<%
+    List<MovieDTO> movies = (List<MovieDTO>) request.getAttribute("movies");
+%>
 
 <section class="hero is-light is-small"> <%-- Hero es básicamente para los títulos --%>
     <div class="hero-body">
@@ -32,27 +33,27 @@
     <div class="container">
         <div class="columns">
             <div class="column is-half is-offset-one-quarter">
-                <form method="POST" action="/user/filtrar">
+                <form:form method="POST" action="/user/filtrar" modelAttribute="filter">
                     <div class="field has-addons">
                         <div class="control is-expanded">
-                            <input class="input is-info has-background-grey" type="text" name="filter" placeholder="Search movies...">
+                            <form:input path="texto" class="input is-info has-background-grey" placeholder="Search movies..."/>
                         </div>
                         <div class="control">
-                            <button type="submit" class="button is-info">
+                            <form:button class="button is-info">
                                 <span class="icon">
                                     <i class="fas fa-search"></i>
                                 </span>
                                 <span>Filter</span>
-                            </button>
+                            </form:button>
                         </div>
                     </div>
-                </form>
+                </form:form>
             </div>
         </div>
 
         <div class="columns is-multiline is-mobile mt-4">
             <% if(movies != null && !movies.isEmpty()) {
-                for (Movie movie: movies) {
+                for (MovieDTO movie: movies) {
             %>
             <div class="column is-6-mobile is-4-tablet is-3-desktop is-2-widescreen">
                 <div class="card movie-card has-background-grey">
@@ -64,7 +65,7 @@
                                         <i class="fas fa-film fa-3x"></i>
                                     </span>
                                 </div>
-                                <p class="title is-5"><%= movie.getOriginalTitle() %></p>
+                                <p class="title is-5"><%= movie.getTitulo() %></p>
                             </a>
                         </div>
                     </div>

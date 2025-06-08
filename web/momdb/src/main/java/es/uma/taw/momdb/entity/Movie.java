@@ -104,6 +104,9 @@ public class Movie implements Serializable, DTO<MovieDTO> {
         movie.setIdiomaOriginal(this.originalLanguage);
         movie.setFechaDeSalida(this.releaseDate);
         movie.setIngresos(this.revenue);
+        movie.setMediaVotos(this.voteAverage);
+        movie.setVotos(this.voteCount);
+        movie.setDescripcion(this.overview);
 
         List<GenreDTO> listaGeneros = new ArrayList<>();
 

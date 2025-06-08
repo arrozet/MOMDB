@@ -2,6 +2,7 @@ package es.uma.taw.momdb.dto;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -13,4 +14,7 @@ public class MovieDTO {
     private LocalDate fechaDeSalida;
     private Long Ingresos;
     private List<GenreDTO> generos;
+    private BigDecimal mediaVotos;
+    private Integer votos;
+    private String descripcion;
 }
