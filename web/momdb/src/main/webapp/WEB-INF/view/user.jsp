@@ -65,9 +65,15 @@ Author: projectGeorge (Jorge Repullo)
                         <div class="content has-text-centered">
                             <a href="/user/movie?id=<%= movie.getId() %>" class="movie-link">
                                 <div class="movie-poster mb-2">
+                                    <% if (movie.getImageLink() != null && !movie.getImageLink().isEmpty()) { %>
+                                    <figure class="image is-2by3">
+                                        <img src="<%= movie.getImageLink() %>" alt="Póster de <%= movie.getTitulo() %>">
+                                    </figure>
+                                    <% } else { %>
                                     <span class="icon is-large has-text-info">
                                         <i class="fas fa-film fa-3x"></i>
                                     </span>
+                                    <% } %>
                                 </div>
                                 <p class="title is-5"><%= movie.getTitulo() %></p>
                             </a>

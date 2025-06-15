@@ -21,4 +21,5 @@ public class MovieDTO {
     private BigDecimal mediaVotos;
     private Integer votos;
     private String descripcion;
+    private String imageLink;
 }

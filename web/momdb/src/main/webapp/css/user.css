@@ -20,10 +20,7 @@ Author: projectGeorge (Jorge Repullo)
 }
 
 .movie-poster {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100px;
+    /* No properties needed here for now */
 }
 
 .movie-link:hover .title {
