@@ -11,6 +11,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Random;
 
+/*
+ * @author - arrozet (Rubén Oliva)
+ * @co-authors - Artur797 (Artur Vargas), edugbau (Eduardo González)
+ */
+
 @Controller
 @RequestMapping("/")
 public class LoginController {

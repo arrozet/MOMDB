@@ -5,6 +5,11 @@ import es.uma.taw.momdb.dto.DTO;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+ * @author - Artur797 (Artur Vargas)
+ * @co-authors -
+ */
+
 public abstract class DTOService<DTOClass, EntityClass> {
 
     protected List<DTOClass> entity2DTO (List<EntityClass> entidades) {

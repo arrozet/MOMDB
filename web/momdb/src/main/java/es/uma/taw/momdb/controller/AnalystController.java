@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
+/*
+ * @author - edugbau (Eduardo González)
+ * @co-authors -
+ */
 
 @Controller
 @RequestMapping("/analyst")

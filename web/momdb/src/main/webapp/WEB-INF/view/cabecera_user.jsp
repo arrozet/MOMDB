@@ -1,3 +1,7 @@
+<%--
+Author: projectGeorge (Jorge Repullo)
+--%>
+
 <%@ page import="es.uma.taw.momdb.entity.User" %>
 <%@ page import="java.util.Date" %>
 

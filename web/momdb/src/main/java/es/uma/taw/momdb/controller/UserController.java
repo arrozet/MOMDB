@@ -14,6 +14,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/*
+ * @author - projectGeorge (Jorge Repullo)
+ * @co-authors -
+ */
+
 @Controller
 @RequestMapping("/user")
 public class UserController extends BaseController{

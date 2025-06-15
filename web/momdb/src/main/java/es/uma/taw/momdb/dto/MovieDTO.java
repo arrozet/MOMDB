@@ -6,6 +6,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+/*
+ * @author - Artur797 (Artur Vargas)
+ * @co-authors -
+ */
 @Data
 public class MovieDTO {
     private Integer id = -1;

@@ -1,13 +1,14 @@
-<%@ page import="es.uma.taw.momdb.entity.Movie" %>
-<%@ page import="java.util.List" %>
-<%@ page import="es.uma.taw.momdb.entity.User" %>
 <%--
   Created by IntelliJ IDEA.
-  User: edugbau
+  User: edugbau (Eduardo González)
   Date: 23/04/2025
   Time: 13:27
   To change this template use File | Settings | File Templates.
 --%>
+
+<%@ page import="es.uma.taw.momdb.entity.Movie" %>
+<%@ page import="java.util.List" %>
+<%@ page import="es.uma.taw.momdb.entity.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>

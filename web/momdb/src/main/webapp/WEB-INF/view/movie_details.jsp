@@ -1,3 +1,7 @@
+<%--
+Author: projectGeorge (Jorge Repullo)
+--%>
+
 <%@ page import="es.uma.taw.momdb.entity.Movie" %>
 <%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>
 

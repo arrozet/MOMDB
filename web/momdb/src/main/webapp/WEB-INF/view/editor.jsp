@@ -1,14 +1,16 @@
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ page import="es.uma.taw.momdb.entity.Movie" %>
-<%@ page import="java.util.List" %>
-<%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>
-<%@ page import="es.uma.taw.momdb.entity.User" %><%--
+<%--
   Created by IntelliJ IDEA.
-  User: usuario
+  User: Artur797 (Artur Vargas)
   Date: 11/05/2025
   Time: 20:22
   To change this template use File | Settings | File Templates.
 --%>
+
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ page import="es.uma.taw.momdb.entity.Movie" %>
+<%@ page import="java.util.List" %>
+<%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>
+<%@ page import="es.uma.taw.momdb.entity.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>

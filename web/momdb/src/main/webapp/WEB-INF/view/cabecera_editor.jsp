@@ -1,3 +1,7 @@
+<%--
+Author: Artur797 (Artur Vargas)
+--%>
+
 <%@ page import="java.util.Date" %>
 <%@ page import="es.uma.taw.momdb.dto.UserDTO" %>
 

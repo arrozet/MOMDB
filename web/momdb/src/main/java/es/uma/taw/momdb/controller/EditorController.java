@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
+/*
+ * @author - Artur797 (Artur Vargas)
+ * @co-authors -
+ */
+
 @Controller
 @RequestMapping("/editor")
 public class EditorController extends BaseController{

@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+ * @author - arrozet (Rubén Oliva)
+ * @co-authors -
+ */
+
 @Controller
 @RequestMapping("/admin")
 public class AdminController extends BaseController {

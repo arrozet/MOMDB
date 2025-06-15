@@ -1,3 +1,7 @@
+/*
+Author: arrozet (Rubén Oliva)
+*/
+
 /* Importar Bulma desde CDN (Necesario en todas las páginas que usen Bulma) */
 @import url('https://cdn.jsdelivr.net/npm/bulma@1.0.1/css/bulma.min.css');
 

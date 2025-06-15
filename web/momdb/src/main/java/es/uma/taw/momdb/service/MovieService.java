@@ -1,3 +1,5 @@
+
+
 package es.uma.taw.momdb.service;
 
 import es.uma.taw.momdb.dao.GenreRepository;
@@ -8,6 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+/*
+ * @author - Artur797 (Artur Vargas)
+ * @co-authors -
+ */
 
 @Service
 public class MovieService extends DTOService<MovieDTO, Movie>{
