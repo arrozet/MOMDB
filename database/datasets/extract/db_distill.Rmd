@@ -29,6 +29,64 @@ parse_json_safely <- function(json_string) {
   })
 }
 ```
+## Enriquecer raw_movies con posters
+
+```{r fetch_poster_paths, cache=TRUE}
+# Este bloque obtiene los poster_path usando la API de TMDB
+# Instala httr si no lo tienes: install.packages("httr")
+library(httr)
+
+# --- CONFIGURACIÓN ---
+# ¡IMPORTANTE! Pega aquí tu clave de API v3 de TMDB
+tmdb_api_key <- "AQUÍ_VA_TU_CLAVE_DE_API_V3" 
+poster_cache_file <- "posters_cache.csv" # Fichero para guardar resultados
+
+# --- FUNCIÓN PARA LLAMAR A LA API ---
+get_poster_path <- function(movie_id, api_key) {
+  if (is.na(movie_id)) return(NA_character_)
+  url <- paste0("https://api.themoviedb.org/3/movie/", movie_id, "?api_key=", api_key)
+  tryCatch({
+    res <- GET(url)
+    if (status_code(res) == 200) {
+      content(res, "parsed")$poster_path
+    } else {
+      NA_character_
+    }
+  }, error = function(e) { NA_character_ })
+}
+
+# --- LÓGICA DE CACHÉ Y EJECUCIÓN ---
+if (file.exists(poster_cache_file)) {
+  cat("Cargando poster_path desde el archivo cache...\n")
+  posters_df <- read_csv(poster_cache_file, col_types = cols(id = col_double(), poster_path = col_character()))
+} else {
+  if (tmdb_api_key == "AQUÍ_VA_TU_CLAVE_DE_API_V3") {
+    stop("Por favor, introduce una clave de API de TMDB válida.")
+  }
+  cat("No se encontró archivo cache. Obteniendo poster_path desde la API...\n")
+  cat("Esto puede tardar varios minutos. Se imprimirá un punto por cada 10 películas.\n")
+  
+  movie_ids <- raw_movies$id
+  poster_paths <- map_chr(seq_along(movie_ids), function(i) {
+    id <- movie_ids[i]
+    path <- get_poster_path(id, tmdb_api_key)
+    Sys.sleep(0.025) # Pausa para no sobrecargar la API
+    if (i %% 10 == 0) cat(".")
+    if (i %% 1000 == 0) cat("\n") # Salto de línea cada 1000
+    return(if (is.null(path)) NA_character_ else path)
+  })
+  
+  posters_df <- tibble(id = raw_movies$id, poster_path = poster_paths)
+  write_csv(posters_df, poster_cache_file)
+  cat("\n¡Listo! Paths de los pósters guardados en", poster_cache_file, "\n")
+}
+
+# Unimos los paths de póster a nuestro dataframe principal
+raw_movies <- raw_movies |>
+  left_join(posters_df, by = "id")
+
+cat("--- raw_movies ha sido enriquecido con poster_path ---\n")
+```
 
 # Dataset Movies (películas y todo lo relacionado con ellas)
 ## Movie
@@ -52,9 +110,19 @@ movie <- raw_movies |>
     tagline,
     title,
     vote_average,
-    vote_count
+    vote_count,
+    poster_path # Ahora sí existe esta columna
   ) |>
-  mutate(release_date = as.Date(release_date)) |>
+  mutate(
+    release_date = as.Date(release_date),
+    # Creamos la nueva columna 'image_link' con la URL completa
+    image_link = if_else(
+      !is.na(poster_path) & poster_path != "",
+      paste0("https://image.tmdb.org/t/p/w500", poster_path),
+      NA_character_ # Dejamos NA si no hay poster_path
+    )
+  ) |>
+  select(-poster_path) |> # Eliminamos la columna original que ya no necesitamos
   arrange(movie_id)
 
 cat("--- Movies creado ---\n")
@@ -71,6 +139,17 @@ status <- movie |>
 
 cat("\n--- Status creado ---\n")
 head(status)
+
+# Actualizar movie con status id
+movie <- movie |>
+  left_join(status, by = "status_name") |>
+  # Eliminar la columna de nombre de status original
+  select(-status_name) |>
+  # Renombrar status_id a status para que coincida con el ERD (FK)
+  rename(status = status_id)
+
+cat("\n--- 'movie' actualizado con ID de status ---\n")
+head(movie)
 ```
 
 ## Genres y Movie_Genre
@@ -111,13 +190,16 @@ movie_keywords <- raw_movies |>
   mutate(parsed_data = map(keywords, parse_json_safely)) |>
   filter(map_lgl(parsed_data, ~is.data.frame(.x) && nrow(.x) > 0)) |>
   unnest(parsed_data, names_repair = "unique") |>
-  rename(keyword_id_json = id, keyword_name = name) |>
-  select(movie_id = movie_id, keyword_id_json, keyword_name) |>
-  arrange(movie_id, keyword_id_json, keyword_name)
+  rename(keyword_id = id, keyword_name = name) |>
+  select(movie_id = movie_id, keyword_id, keyword_name) |>
+  arrange(movie_id, keyword_id, keyword_name)
 
 keywords <- movie_keywords |>
-  distinct(keyword_id_json, keyword_name) |>
-  arrange(keyword_id_json, keyword_name)
+  distinct(keyword_id, keyword_name) |>
+  arrange(keyword_id, keyword_name)
+
+movie_keywords <- movie_keywords |>
+  select(-keyword_name)
 
 cat("\n--- movie_keywords y keywords Creados ---\n")
 head(movie_keywords)
@@ -409,11 +491,10 @@ status_to_save <- status |>
   rename(id = status_id, status = status_name)
 write_csv(status_to_save, file.path(output_dir, "Status.csv"))
 
-# Movie (ajustando FK a Status)
+# Movie
+# El dataframe 'movie' ya está limpio, solo renombramos la columna de id.
 movie_to_save <- movie |>
-  left_join(status, by = "status_name") |>
-  select(-status_name) |>
-  rename(id = movie_id, status = status_id)
+  rename(id = movie_id)
 write_csv(movie_to_save, file.path(output_dir, "Movie.csv"))
 
 # Genre
@@ -426,12 +507,12 @@ write_csv(movie_genre, file.path(output_dir, "Movie_Genre.csv"))
 
 # Keywords
 keywords_to_save <- keywords |>
-  rename(id = keyword_id_json, keyword = keyword_name)
+  rename(id = keyword_id, keyword = keyword_name)
 write_csv(keywords_to_save, file.path(output_dir, "Keywords.csv"))
 
 # Movie_Keywords
 movie_keywords_to_save <- movie_keywords |>
-  select(movie_id, keywords_id = keyword_id_json)
+  select(movie_id, keywords_id = keyword_id)
 write_csv(movie_keywords_to_save, file.path(output_dir, "Movie_Keywords.csv"))
 
 # ProductionCompany
