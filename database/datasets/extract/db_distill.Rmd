@@ -12,8 +12,8 @@ library(jsonlite)
 
 # Cargar los datasets (asegúrate que las rutas son correctas respecto a tu directorio de trabajo)
 # Asumiendo que el Rmd se ejecuta con el directorio de trabajo en la raíz del proyecto MOMDB
-raw_credits <- read_csv("./database/datasets/tmdb_5000_credits.csv")
-raw_movies <- read_csv("./database/datasets/tmdb_5000_movies.csv")
+raw_credits <- read_csv("D:/UMA/UMA_CODE/3/2cuatri/TAW/MOMDB/database/datasets/tmdb_5000_credits.csv")
+raw_movies <- read_csv("D:/UMA/UMA_CODE/3/2cuatri/TAW/MOMDB/database/datasets/tmdb_5000_movies.csv")
 
 # Función para parsear JSON de forma segura
 parse_json_safely <- function(json_string) {
@@ -111,11 +111,13 @@ movie_keywords <- raw_movies |>
   mutate(parsed_data = map(keywords, parse_json_safely)) |>
   filter(map_lgl(parsed_data, ~is.data.frame(.x) && nrow(.x) > 0)) |>
   unnest(parsed_data, names_repair = "unique") |>
-  rename(keyword_id_json = id...3, keyword_name = name) |>
-  select(movie_id = movie_id...1, keyword_id_json, keyword_name)
+  rename(keyword_id_json = id, keyword_name = name) |>
+  select(movie_id = movie_id, keyword_id_json, keyword_name) |>
+  arrange(movie_id, keyword_id_json, keyword_name)
 
 keywords <- movie_keywords |>
-  distinct(keyword_id_json, keyword_name)
+  distinct(keyword_id_json, keyword_name) |>
+  arrange(keyword_id_json, keyword_name)
 
 cat("\n--- movie_keywords y keywords Creados ---\n")
 head(movie_keywords)
@@ -289,89 +291,99 @@ character <- credits_cast_raw |>
 cat("\n--- Character created ---\n")
 head(character)
 ```
-```
 
 ## Crew
-DE AQUI PARA ABAJO NO ESTA TERMINADO. HASTA CHARACTER TODO OK, REVISADO POR RUBEN
-```{r}
+
+```{r crew_generation}
+# --- Crew table construction ---
+
 # Get crewRole_id for "Actor"
 actor_role_id_value <- crew_role |> 
   filter(role == "Actor") |> 
   pull(id)
 
-# If "Actor" role wasn't found (e.g., if crew_role was empty or "Actor" wasn't in jobs),
-# this might be empty. Ensure it's handled.
+# Defensive check if actor role exists
 if(length(actor_role_id_value) == 0){
-  if (!("Actor" %in% crew_role$role)) {
-    new_id_for_actor <- if (nrow(crew_role) > 0) max(crew_role$id) + 1 else 1
-    crew_role <- bind_rows(crew_role, tibble(id = new_id_for_actor, role = "Actor"))
-    actor_role_id_value <- new_id_for_actor
-    cat("--- 'Actor' role dynamically added to crew_role with id:", actor_role_id_value, "---\n")
-  } else {
-     # This case should ideally not be reached if logic is sound
-     actor_role_id_value <- crew_role |> filter(role == "Actor") |> pull(id)
-  }
+  # This should not happen if CrewRole was created correctly
+  stop("The 'Actor' role was not found in the crew_role table.")
 }
 
-
-# Combine all credit entries (crew and cast) to generate a unique crew_id (INT)
-# Storing original_credit_id to link with characters later if needed for cast.
-combined_credits_for_crew_table <- bind_rows(
-  # Crew members
-  credits_crew_raw |>
-    left_join(crew_role, by = c("job_name" = "role")) |>
-    filter(!is.na(id)) |> # Ensure the role was found in crew_role
-    select(
-      original_credit_id_str = original_crew_credit_id,
-      movie_id,
-      person_id, # This is Person.id
-      crewRole_id = id, # This is CrewRole.id
-      type = "crew_member"
-    ),
-  # Cast members (as "Actor" crew)
-  credits_cast_raw |>
-    mutate(crewRole_id = actor_role_id_value) |>
-    select(
-      original_credit_id_str = original_cast_credit_id,
-      movie_id,
-      person_id, # This is Person.id
-      crewRole_id, # This is CrewRole.id for "Actor"
-      character_name = character_name_raw, # Keep for CrewCharacter
-      type = "cast_member"
-    )
-) |>
-  # The original_credit_id_str is unique for a (movie, person, role/character)
-  # We need a new integer crew_id for the Crew table as per ERD
-  distinct(original_credit_id_str, movie_id, person_id, crewRole_id, .keep_all = TRUE) |>
-  arrange(movie_id, person_id, crewRole_id) |>
-  mutate(crew_id = row_number()) # This is the new PK for Crew table (Crew.crew_id INT)
-
-# Create the final Crew table
-crew <- combined_credits_for_crew_table |>
+# 1. Get crew members from the 'crew' data (non-actors)
+crew_from_jobs <- credits_crew_raw |>
+  left_join(crew_role, by = c("job_name" = "role")) |>
+  # Ensure the role was found in crew_role and person_id is valid
+  filter(!is.na(id), !is.na(person_id)) |>
   select(
-    crew_id, # PK
-    movie_id, # FK to Movie
-    person_id, # FK to Person
-    crewRole_id # FK to CrewRole
-  ) |>
-  arrange(crew_id)
+    movie_id,
+    person_id,
+    crewRole_id = id
+  )
+
+# 2. Get crew members from the 'cast' data (they are all "Actor")
+crew_from_cast <- credits_cast_raw |>
+  # For the Crew table, we only need one entry per actor per movie
+  distinct(movie_id, person_id) |>
+  filter(!is.na(person_id)) |>
+  mutate(crewRole_id = actor_role_id_value)
+
+# 3. Combine them and create the final Crew table
+crew <- bind_rows(crew_from_jobs, crew_from_cast) |>
+  # A person might have multiple jobs (e.g., Director and Writer), or be an actor and a director.
+  # We need to remove any pure duplicates that might have come from the data source.
+  distinct(movie_id, person_id, crewRole_id) |>
+  # The ERD wants a surrogate key `crew_id`. Let's create it.
+  arrange(movie_id, person_id, crewRole_id) |>
+  mutate(crew_id = row_number()) |>
+  # Final selection and ordering as per schema (crew_id as PK)
+  select(crew_id, movie_id, person_id, crewRole_id)
 
 cat("\n--- Crew created ---\n")
 head(crew)
 ```
 
 ## CrewCharacter
-```{r}
-crew_character <- combined_credits_for_crew_table |>
-  filter(type == "cast_member") |> # Only cast members play characters
-  filter(!is.na(character_name), character_name != "") |>
-  left_join(character_table, by = c("character_name" = "character")) |> # Join to get Character.id
-  filter(!is.na(id)) |> # Ensure the character was found in character_table
-  select(
-    crew_id, # FK to Crew.crew_id
-    character_id = id # FK to Character.id
+```{r crew_character_generation}
+# --- CrewCharacter table construction ---
+
+# This table links a cast member's crew entry to the character they played.
+# A cast member is an "Actor" in the Crew table.
+# We need actor_role_id_value again. It was defined in the chunk above.
+if(length(actor_role_id_value) == 0){
+  stop("The 'Actor' role id is missing.")
+}
+
+# 1. Filter the main `crew` table to get only the entries for actors.
+crew_actors_only <- crew |>
+  filter(crewRole_id == actor_role_id_value)
+
+# 2. Start with the raw cast data, which has the movie-person-character link.
+crew_character <- credits_cast_raw |>
+  select(movie_id, person_id, character_name_raw) |>
+  filter(!is.na(character_name_raw), character_name_raw != "") |>
+  
+  # 3. Join with `crew_actors_only` to get the correct `crew_id`.
+  # This finds the unique crew entry for an actor in a specific movie.
+  left_join(
+    crew_actors_only, 
+    by = c("movie_id", "person_id")
   ) |>
-  distinct() |>
+  
+  # 4. Join with the `character` table to get the `character_id`.
+  left_join(
+    character,
+    by = c("character_name_raw" = "character")
+  ) |>
+  
+  # 5. Filter out any rows where joins failed (e.g., character not found).
+  filter(!is.na(crew_id), !is.na(id)) |>
+  
+  # 6. Select the final columns for the CrewCharacter table.
+  select(
+    crew_id,
+    character_id = id
+  ) |>
+  
+  distinct() |> # An actor could be listed twice for the same character.
   arrange(crew_id, character_id)
 
 cat("\n--- CrewCharacter created ---\n")
