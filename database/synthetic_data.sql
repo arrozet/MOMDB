@@ -47,7 +47,7 @@ INSERT INTO `UserRole` (`id`, `name`) VALUES
 -- -----------------------------------------------------
 -- Populate `User`
 -- -----------------------------------------------------
-INSERT INTO `User` (`id`, `username`, `email`, `password`, `profile_pic`, `role_id`) VALUES
+INSERT INTO `User` (`id`, `username`, `email`, `password`, `profile_pic_linkmovie`, `role_id`) VALUES
 (1, 'ruben_admin', 'ruben@momdb.com', 'ruben', NULL, 1), -- Password should be hashed in a real app
 (2, 'artur_editor', 'artur@momdb.com', 'artur', NULL, 2),
 (3, 'edu_analyst', 'edu@momdb.com', 'edu', NULL, 3),

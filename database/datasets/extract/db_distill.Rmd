@@ -392,3 +392,100 @@ head(crew_character)
 
 
 La parte de `User`, `UserRole` etc no está en los csv. Por eso no hay extracción de datos de esos datasets.
+
+```{r save_cleaned_csvs}
+# --- Guardado de todos los dataframes a CSVs ---
+
+# 1. Definir el directorio de salida
+output_dir <- file.path("cleaned")
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir, recursive = TRUE)
+}
+
+# 2. Preparar y guardar cada tabla, ajustando nombres de columnas para coincidir con el ERD
+
+# Status
+status_to_save <- status |>
+  rename(id = status_id, status = status_name)
+write_csv(status_to_save, file.path(output_dir, "Status.csv"))
+
+# Movie (ajustando FK a Status)
+movie_to_save <- movie |>
+  left_join(status, by = "status_name") |>
+  select(-status_name) |>
+  rename(id = movie_id, status = status_id)
+write_csv(movie_to_save, file.path(output_dir, "Movie.csv"))
+
+# Genre
+genre_to_save <- genre |>
+  rename(id = genre_id, genre = genre_name)
+write_csv(genre_to_save, file.path(output_dir, "Genre.csv"))
+
+# Movie_Genre
+write_csv(movie_genre, file.path(output_dir, "Movie_Genre.csv"))
+
+# Keywords
+keywords_to_save <- keywords |>
+  rename(id = keyword_id_json, keyword = keyword_name)
+write_csv(keywords_to_save, file.path(output_dir, "Keywords.csv"))
+
+# Movie_Keywords
+movie_keywords_to_save <- movie_keywords |>
+  select(movie_id, keywords_id = keyword_id_json)
+write_csv(movie_keywords_to_save, file.path(output_dir, "Movie_Keywords.csv"))
+
+# ProductionCompany
+company_to_save <- company |>
+  rename(id = company_id, company = company_name)
+write_csv(company_to_save, file.path(output_dir, "ProductionCompany.csv"))
+
+# Movie_ProductionCompany
+movie_company_to_save <- movie_company |>
+  rename(productionCompany_id = company_id)
+write_csv(movie_company_to_save, file.path(output_dir, "Movie_ProductionCompany.csv"))
+
+# ProductionCountry
+country_to_save <- country |>
+  rename(iso_3166_1 = country_iso, country = country_name)
+write_csv(country_to_save, file.path(output_dir, "ProductionCountry.csv"))
+
+# Movie_ProductionCountry
+movie_country_to_save <- movie_country |>
+  rename(productionCountry_id = country_iso)
+write_csv(movie_country_to_save, file.path(output_dir, "Movie_ProductionCountry.csv"))
+
+# SpokenLanguage
+language_to_save <- language |>
+  rename(iso_639_1 = lang_iso, language = lang_name)
+write_csv(language_to_save, file.path(output_dir, "SpokenLanguage.csv"))
+
+# Movie_SpokenLanguage
+movie_language_to_save <- movie_language |>
+  rename(spokenLanguage_id = lang_iso)
+write_csv(movie_language_to_save, file.path(output_dir, "Movie_SpokenLanguage.csv"))
+
+# Person
+# La tabla person ya tiene los nombres correctos: id, name
+write_csv(person, file.path(output_dir, "Person.csv"))
+
+# CrewRole
+# La tabla crew_role ya tiene los nombres correctos: id, role
+write_csv(crew_role, file.path(output_dir, "CrewRole.csv"))
+
+# Character
+# La tabla character ya tiene los nombres correctos: id, character
+write_csv(character, file.path(output_dir, "Character.csv"))
+
+# Crew
+crew_to_save <- crew |>
+  rename(id = crew_id)
+write_csv(crew_to_save, file.path(output_dir, "Crew.csv"))
+
+# CrewCharacter
+crew_character_to_save <- crew_character |>
+  rename(crew_id = crew_id) # Mantenemos crew_id como FK
+write_csv(crew_character_to_save, file.path(output_dir, "CrewCharacter.csv"))
+
+cat("\n--- Todos los CSVs han sido guardados en la carpeta 'cleaned' ---\n")
+```
+
