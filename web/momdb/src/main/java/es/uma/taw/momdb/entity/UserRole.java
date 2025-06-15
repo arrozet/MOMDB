@@ -22,4 +22,5 @@ public class UserRole implements EntityWithNameAndId{
 
     @OneToMany(mappedBy = "role")
     private Set<User> users = new LinkedHashSet<>();
+
 }

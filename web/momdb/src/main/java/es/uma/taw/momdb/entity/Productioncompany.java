@@ -11,7 +11,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "productioncompany")
-public class Productioncompany implements EntityWithNameAndId {
+public class Productioncompany implements EntityWithNameAndId{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

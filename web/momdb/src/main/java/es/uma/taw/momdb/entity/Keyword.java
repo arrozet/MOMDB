@@ -30,4 +30,5 @@ public class Keyword implements EntityWithNameAndId {
     public String getName() {
         return keyword;
     }
+
 }

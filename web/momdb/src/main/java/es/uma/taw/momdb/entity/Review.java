@@ -24,7 +24,7 @@ public class Review {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private es.uma.taw.momdb.entity.User user;
 
     @Lob
     @Column(name = "content")

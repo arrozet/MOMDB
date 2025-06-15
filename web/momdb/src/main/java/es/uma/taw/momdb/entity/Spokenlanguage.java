@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -12,7 +11,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "spokenlanguage")
-public class Spokenlanguage implements EntityWithNameAndId {
+public class Spokenlanguage implements EntityWithNameAndId{
     @Id
     @Column(name = "iso_639_1", nullable = false, length = 5)
     private String iso6391;
@@ -32,5 +31,4 @@ public class Spokenlanguage implements EntityWithNameAndId {
     public String getName() {
         return language;
     }
-
 }

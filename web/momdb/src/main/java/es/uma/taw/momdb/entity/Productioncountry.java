@@ -11,7 +11,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "productioncountry")
-public class Productioncountry implements EntityWithNameAndId {
+public class Productioncountry implements EntityWithNameAndId{
     @Id
     @Column(name = "iso_3166_1", nullable = false, length = 5)
     private String iso31661;

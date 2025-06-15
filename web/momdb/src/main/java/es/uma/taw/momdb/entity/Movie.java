@@ -60,6 +60,9 @@ public class Movie implements Serializable, DTO<MovieDTO> {
     @Column(name = "tagline")
     private String tagline;
 
+    @Column(name = "image_link", length = 2048)
+    private String imageLink;
+
     @Column(name = "title", nullable = false)
     private String title;
 
@@ -74,7 +77,7 @@ public class Movie implements Serializable, DTO<MovieDTO> {
     private Set<Crew> crews = new LinkedHashSet<>();
 
     @ManyToMany
-    private Set<User> favorite_users = new LinkedHashSet<>();
+    private Set<User> favorites = new LinkedHashSet<>();
 
     @ManyToMany
     @JoinTable(name = "movie_genre",
@@ -127,7 +130,6 @@ public class Movie implements Serializable, DTO<MovieDTO> {
 
 
         return movie;
-
     }
 
 }

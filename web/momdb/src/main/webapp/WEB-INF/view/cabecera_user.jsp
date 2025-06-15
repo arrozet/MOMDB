@@ -75,8 +75,8 @@ Author: projectGeorge (Jorge Repullo)
 
             <div class="navbar-item">
                 <figure class="image is-32x32">
-                    <% if(myUser.getProfilePic() != null) { %>
-                    <img class="is-rounded" src="<%= myUser.getProfilePic() %>" alt="Profile picture">
+                    <% if(myUser.getProfilePicLink() != null) { %>
+                    <img class="is-rounded" src="<%= myUser.getProfilePicLink() %>" alt="Profile picture">
                     <% } else { %>
                     <span class="icon">
                             <i class="fas fa-user-circle fa-2x"></i>

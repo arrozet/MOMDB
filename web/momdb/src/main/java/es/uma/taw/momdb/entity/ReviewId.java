@@ -12,7 +12,7 @@ import java.util.Objects;
 @Setter
 @Embeddable
 public class ReviewId implements java.io.Serializable {
-    private static final long serialVersionUID = -6764121603181888352L;
+    private static final long serialVersionUID = 8383713383366359894L;
     @Column(name = "movie_id", nullable = false)
     private Integer movieId;
 

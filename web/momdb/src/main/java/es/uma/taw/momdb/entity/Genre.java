@@ -40,4 +40,5 @@ public class Genre implements EntityWithNameAndId, Serializable, DTO<GenreDTO> {
         genero.setGenero(this.genre);
         return genero;
     }
+
 }
