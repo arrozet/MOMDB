@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `moviedb`.`Movie` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `original_title` VARCHAR(255) NOT NULL,
   `budget` INT NULL DEFAULT NULL,
-  `homepage` VARCHAR(255) NOT NULL,
+  `homepage` VARCHAR(255) NULL DEFAULT NULL,
   `original_language` VARCHAR(255) NOT NULL,
   `overview` VARCHAR(2000) NOT NULL,
   `popularity` DECIMAL(19,4) NULL DEFAULT NULL,
@@ -77,7 +77,6 @@ CREATE TABLE IF NOT EXISTS `moviedb`.`Movie` (
   `vote_average` DECIMAL(3,1) NULL DEFAULT NULL,
   `vote_count` INT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `homepage_UNIQUE` (`homepage` ASC) VISIBLE,
   INDEX `fk_Movie_Status_idx` (`status_id` ASC) VISIBLE,
   INDEX `idx_title` (`title` ASC) VISIBLE,
   CONSTRAINT `fk_Movie_Status`

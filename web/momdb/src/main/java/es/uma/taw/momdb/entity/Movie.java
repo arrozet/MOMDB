@@ -32,7 +32,7 @@ public class Movie implements Serializable, DTO<MovieDTO> {
     @Column(name = "budget")
     private Integer budget;
 
-    @Column(name = "homepage", nullable = false)
+    @Column(name = "homepage")
     private String homepage;
 
     @Column(name = "original_language", nullable = false)

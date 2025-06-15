@@ -9,6 +9,7 @@ editor: visual
 # Cargar librerías necesarias
 library(tidyverse)
 library(jsonlite)
+library(stringi)
 
 # Cargar los datasets (asegúrate que las rutas son correctas respecto a tu directorio de trabajo)
 # Asumiendo que el Rmd se ejecuta con el directorio de trabajo en la raíz del proyecto MOMDB
@@ -114,6 +115,15 @@ movie <- raw_movies |>
     poster_path # Ahora sí existe esta columna
   ) |>
   mutate(
+    # Limpiar campos de texto para eliminar CUALQUIER caracter de control (incluidos newlines)
+    overview = str_replace_all(overview, "[[:cntrl:]]" , " "),
+    tagline = str_replace_all(tagline, "[[:cntrl:]]" , " "),
+    title = str_replace_all(title, "[[:cntrl:]]" , " "),
+    original_title = str_replace_all(original_title, "[[:cntrl:]]" , " "),
+    
+    # Asegurarse de que las homepages vacías son NA para que se exporten como \N
+    homepage = if_else(homepage == "", NA_character_, homepage),
+    
     release_date = as.Date(release_date),
     # Creamos la nueva columna 'image_link' con la URL completa
     image_link = if_else(
@@ -185,21 +195,38 @@ head(genre)
 ## Keywords y Movie_Keywords
 ```{r}
 # Procesar Keywords
-movie_keywords <- raw_movies |>
+movie_keywords_raw <- raw_movies |>
   select(movie_id = id, keywords) |>
   mutate(parsed_data = map(keywords, parse_json_safely)) |>
   filter(map_lgl(parsed_data, ~is.data.frame(.x) && nrow(.x) > 0)) |>
   unnest(parsed_data, names_repair = "unique") |>
   rename(keyword_id = id, keyword_name = name) |>
-  select(movie_id = movie_id, keyword_id, keyword_name) |>
-  arrange(movie_id, keyword_id, keyword_name)
+  select(movie_id, keyword_id, keyword_name) |>
+  filter(!is.na(keyword_name), keyword_name != "") |>
+  # Limpiar los nombres de las keywords para eliminar espacios sobrantes
+  mutate(keyword_name = str_trim(keyword_name)) |>
+  # Filtrar de nuevo por si algún nombre se ha quedado vacío tras el trim
+  filter(keyword_name != "") |>
+  # Normalizar los nombres para eliminar acentos (ej. "río" -> "rio")
+  mutate(keyword_name = stringi::stri_trans_general(str = keyword_name, id = "Latin-ASCII")) |>
+  arrange(movie_id, keyword_id)
 
-keywords <- movie_keywords |>
-  distinct(keyword_id, keyword_name) |>
-  arrange(keyword_id, keyword_name)
+# Crear tabla de keywords con nombres únicos. A veces el mismo nombre tiene varios IDs.
+# Nos quedamos con el primer ID que aparece para cada nombre para asegurar la unicidad.
+keywords <- movie_keywords_raw |>
+  group_by(keyword_name) |>
+  summarise(keyword_id = first(keyword_id)) |>
+  ungroup() |>
+  select(keyword_id, keyword_name) |>
+  arrange(keyword_name)
 
-movie_keywords <- movie_keywords |>
-  select(-keyword_name)
+# Ahora, creamos la tabla de relación (movie_keywords) usando los IDs canónicos.
+movie_keywords <- movie_keywords_raw |>
+  select(movie_id, keyword_name) |>
+  left_join(keywords, by = "keyword_name") |>
+  select(movie_id, keyword_id) |>
+  distinct() |>
+  arrange(movie_id, keyword_id)
 
 cat("\n--- movie_keywords y keywords Creados ---\n")
 head(movie_keywords)
@@ -208,22 +235,43 @@ head(keywords)
 
 ## ProductionCompany y Movie_ProductionCompany
 ```{r}
-# Procesar Production Companies
-movie_company <- raw_movies |>
+# 1. Procesar Production Companies (raw)
+movie_company_raw <- raw_movies |>
   select(movie_id = id, production_companies) |>
   mutate(parsed_data = map(production_companies, parse_json_safely)) |>
   filter(map_lgl(parsed_data, ~is.data.frame(.x) && nrow(.x) > 0)) |>
   unnest(parsed_data, names_repair = "unique") |>
   rename(company_id = id, company_name = name) |>
-  select(movie_id = movie_id, company_id, company_name) |>
+  select(movie_id, company_id, company_name) |>
+  filter(!is.na(company_name), company_name != "") |>
+  # Limpiamos y normalizamos los nombres para la agrupación
+  mutate(
+    company_name_clean = tolower(stringi::stri_trans_general(str = str_trim(company_name), id = "Latin-ASCII"))
+  ) |>
+  filter(company_name_clean != "")
+
+# 2. Crear un mapa de nombres limpios a un ID canónico
+# Esto soluciona problemas como "GreeneStreet Films" vs "Greenestreet Films"
+company_canonical_map <- movie_company_raw |>
+  group_by(company_name_clean) |>
+  summarise(
+    # Nos quedamos con el primer ID y el nombre original asociado a ese ID
+    canonical_id = first(company_id),
+    canonical_name = first(company_name) 
+  ) |>
+  ungroup()
+
+# 3. Crear la tabla final de 'company' para exportar
+company <- company_canonical_map |>
+  select(company_id = canonical_id, company_name = canonical_name) |>
+  arrange(company_name)
+
+# 4. Crear la tabla de relación 'movie_company' usando los IDs canónicos
+movie_company <- movie_company_raw |>
+  left_join(company_canonical_map, by = "company_name_clean") |>
+  select(movie_id, company_id = canonical_id) |>
+  distinct() |>
   arrange(movie_id, company_id)
-
-company <- movie_company |>
-  distinct(company_id, company_name) |>
-  arrange(company_id)
-
-movie_company <- movie_company |>
-  select(-company_name)
 
 cat("\n--- movie_company y company Creados ---\n")
 head(movie_company)
@@ -263,6 +311,12 @@ movie_language <- raw_movies |>
   filter(map_lgl(parsed_data, ~is.data.frame(.x) && nrow(.x) > 0)) |>
   unnest(parsed_data, names_repair = "unique") |>
   rename(lang_iso = iso_639_1, lang_name = name) |>
+  # Rellenar nombres de idioma vacíos para que sean únicos, usando su código ISO.
+  mutate(lang_name = if_else(
+    is.na(lang_name) | str_trim(lang_name) == "",
+    paste0("Unnamed (", lang_iso, ")"), 
+    lang_name
+  )) |>
   select(movie_id, lang_iso, lang_name) |>
   arrange(movie_id, lang_iso)
 
@@ -342,22 +396,54 @@ head(person)
 
 ## CrewRole
 ```{r}
+# 1. Extraer todos los nombres de roles únicos del dataset de crew.
 roles_from_crew_jobs <- credits_crew_raw |>
-  distinct(role_name = job_name)
+  distinct(role_name_raw = job_name) |>
+  filter(!is.na(role_name_raw), role_name_raw != "")
 
-# Add "Actor" role for cast members, as they are part of the crew concept here.
-actor_role_tibble <- tibble(role_name = "Actor")
+# 2. Añadir "Actor" como un rol y combinar todo.
+actor_role_tibble <- tibble(role_name_raw = "Actor")
 
-crew_role <- bind_rows(roles_from_crew_jobs, actor_role_tibble) |>
-  distinct(role_name) |>
-  filter(!is.na(role_name), role_name != "") |>
-  arrange(role_name) |>
-  mutate(id = row_number()) |> # ERD shows CrewRole.id as INT PK
-  select(id, role = role_name) |> # ERD shows CrewRole.role VARCHAR
-  arrange(id)
+all_roles_raw <- bind_rows(roles_from_crew_jobs, actor_role_tibble) |>
+  distinct()
+
+# 3. Limpiar y normalizar los nombres de los roles para la deduplicación.
+#    - tolower: para ignorar mayúsculas/minúsculas (ej. "Sound Mixer" y "sound mixer")
+#    - str_trim: para eliminar espacios al inicio/final
+#    - stri_trans_general: para eliminar acentos
+all_roles_cleaned <- all_roles_raw |>
+  mutate(
+    role_name_clean = tolower(stringi::stri_trans_general(str = str_trim(role_name_raw), id = "Latin-ASCII"))
+  ) |>
+  filter(role_name_clean != "")
+
+# 4. Crear la tabla final de 'crew_role'
+#    Nos quedamos con la primera aparición del nombre original para cada nombre limpio.
+crew_role <- all_roles_cleaned |>
+  group_by(role_name_clean) |>
+  summarise(canonical_name = first(role_name_raw)) |>
+  ungroup() |>
+  arrange(canonical_name) |>
+  mutate(id = row_number()) |>
+  select(id, role = canonical_name)
 
 cat("\n--- CrewRole created ---\n")
 head(crew_role)
+
+# 5. Crear un mapa de nombres originales a IDs canónicos para usarlo más adelante.
+#    Esto es crucial para la creación de la tabla `Crew`.
+#    Primero, creamos un mapa desde el nombre limpio al ID canónico.
+role_clean_to_id_map <- crew_role |>
+  mutate(
+    role_name_clean = tolower(stringi::stri_trans_general(str = str_trim(role), id = "Latin-ASCII"))
+  ) |>
+  select(role_name_clean, id)
+
+#    Luego, usamos ese mapa para vincular cada nombre original (raw) a su ID.
+role_to_id_map <- all_roles_cleaned |>
+  left_join(role_clean_to_id_map, by = "role_name_clean") |>
+  select(role_name_raw, id) |>
+  distinct()
 ```
 
 ## Character
@@ -365,6 +451,10 @@ head(crew_role)
 character <- credits_cast_raw |>
   distinct(character_name = character_name_raw) |>
   filter(!is.na(character_name), character_name != "") |>
+  # Truncar los nombres de personaje a 255 caracteres para que se ajusten al esquema de la BD.
+  mutate(character_name = str_sub(character_name, 1, 255)) |>
+  # Tras truncar, algunos nombres pueden haberse convertido en duplicados, así que volvemos a aplicar distinct().
+  distinct(character_name) |>
   arrange(character_name) |>
   mutate(id = row_number()) |> # ERD shows Character.id as INT PK
   select(id, character = character_name) |> # ERD shows Character.character VARCHAR
@@ -379,9 +469,9 @@ head(character)
 ```{r crew_generation}
 # --- Crew table construction ---
 
-# Get crewRole_id for "Actor"
-actor_role_id_value <- crew_role |> 
-  filter(role == "Actor") |> 
+# Get crewRole_id for "Actor" using the new map
+actor_role_id_value <- role_to_id_map |> 
+  filter(role_name_raw == "Actor") |> 
   pull(id)
 
 # Defensive check if actor role exists
@@ -392,7 +482,7 @@ if(length(actor_role_id_value) == 0){
 
 # 1. Get crew members from the 'crew' data (non-actors)
 crew_from_jobs <- credits_crew_raw |>
-  left_join(crew_role, by = c("job_name" = "role")) |>
+  left_join(role_to_id_map, by = c("job_name" = "role_name_raw")) |>
   # Ensure the role was found in crew_role and person_id is valid
   filter(!is.na(id), !is.na(person_id)) |>
   select(
@@ -489,83 +579,83 @@ if (!dir.exists(output_dir)) {
 # Status
 status_to_save <- status |>
   rename(id = status_id, status = status_name)
-write_csv(status_to_save, file.path(output_dir, "Status.csv"))
+write_csv(status_to_save, file.path(output_dir, "Status.csv"), na = "\\N")
 
 # Movie
 # El dataframe 'movie' ya está limpio, solo renombramos la columna de id.
 movie_to_save <- movie |>
   rename(id = movie_id)
-write_csv(movie_to_save, file.path(output_dir, "Movie.csv"))
+write_csv(movie_to_save, file.path(output_dir, "Movie.csv"), na = "\\N")
 
 # Genre
 genre_to_save <- genre |>
   rename(id = genre_id, genre = genre_name)
-write_csv(genre_to_save, file.path(output_dir, "Genre.csv"))
+write_csv(genre_to_save, file.path(output_dir, "Genre.csv"), na = "\\N")
 
 # Movie_Genre
-write_csv(movie_genre, file.path(output_dir, "Movie_Genre.csv"))
+write_csv(movie_genre, file.path(output_dir, "Movie_Genre.csv"), na = "\\N")
 
 # Keywords
 keywords_to_save <- keywords |>
   rename(id = keyword_id, keyword = keyword_name)
-write_csv(keywords_to_save, file.path(output_dir, "Keywords.csv"))
+write_csv(keywords_to_save, file.path(output_dir, "Keywords.csv"), na = "\\N")
 
 # Movie_Keywords
 movie_keywords_to_save <- movie_keywords |>
   select(movie_id, keywords_id = keyword_id)
-write_csv(movie_keywords_to_save, file.path(output_dir, "Movie_Keywords.csv"))
+write_csv(movie_keywords_to_save, file.path(output_dir, "Movie_Keywords.csv"), na = "\\N")
 
 # ProductionCompany
 company_to_save <- company |>
   rename(id = company_id, company = company_name)
-write_csv(company_to_save, file.path(output_dir, "ProductionCompany.csv"))
+write_csv(company_to_save, file.path(output_dir, "ProductionCompany.csv"), na = "\\N")
 
 # Movie_ProductionCompany
 movie_company_to_save <- movie_company |>
   rename(productionCompany_id = company_id)
-write_csv(movie_company_to_save, file.path(output_dir, "Movie_ProductionCompany.csv"))
+write_csv(movie_company_to_save, file.path(output_dir, "Movie_ProductionCompany.csv"), na = "\\N")
 
 # ProductionCountry
 country_to_save <- country |>
   rename(iso_3166_1 = country_iso, country = country_name)
-write_csv(country_to_save, file.path(output_dir, "ProductionCountry.csv"))
+write_csv(country_to_save, file.path(output_dir, "ProductionCountry.csv"), na = "\\N")
 
 # Movie_ProductionCountry
 movie_country_to_save <- movie_country |>
   rename(productionCountry_id = country_iso)
-write_csv(movie_country_to_save, file.path(output_dir, "Movie_ProductionCountry.csv"))
+write_csv(movie_country_to_save, file.path(output_dir, "Movie_ProductionCountry.csv"), na = "\\N")
 
 # SpokenLanguage
 language_to_save <- language |>
   rename(iso_639_1 = lang_iso, language = lang_name)
-write_csv(language_to_save, file.path(output_dir, "SpokenLanguage.csv"))
+write_csv(language_to_save, file.path(output_dir, "SpokenLanguage.csv"), na = "\\N")
 
 # Movie_SpokenLanguage
 movie_language_to_save <- movie_language |>
   rename(spokenLanguage_id = lang_iso)
-write_csv(movie_language_to_save, file.path(output_dir, "Movie_SpokenLanguage.csv"))
+write_csv(movie_language_to_save, file.path(output_dir, "Movie_SpokenLanguage.csv"), na = "\\N")
 
 # Person
 # La tabla person ya tiene los nombres correctos: id, name
-write_csv(person, file.path(output_dir, "Person.csv"))
+write_csv(person, file.path(output_dir, "Person.csv"), na = "\\N")
 
 # CrewRole
 # La tabla crew_role ya tiene los nombres correctos: id, role
-write_csv(crew_role, file.path(output_dir, "CrewRole.csv"))
+write_csv(crew_role, file.path(output_dir, "CrewRole.csv"), na = "\\N")
 
 # Character
 # La tabla character ya tiene los nombres correctos: id, character
-write_csv(character, file.path(output_dir, "Character.csv"))
+write_csv(character, file.path(output_dir, "Character.csv"), na = "\\N")
 
 # Crew
 crew_to_save <- crew |>
   rename(id = crew_id)
-write_csv(crew_to_save, file.path(output_dir, "Crew.csv"))
+write_csv(crew_to_save, file.path(output_dir, "Crew.csv"), na = "\\N")
 
 # CrewCharacter
 crew_character_to_save <- crew_character |>
   rename(crew_id = crew_id) # Mantenemos crew_id como FK
-write_csv(crew_character_to_save, file.path(output_dir, "CrewCharacter.csv"))
+write_csv(crew_character_to_save, file.path(output_dir, "CrewCharacter.csv"), na = "\\N")
 
 cat("\n--- Todos los CSVs han sido guardados en la carpeta 'cleaned' ---\n")
 ```
