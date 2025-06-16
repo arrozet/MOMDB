@@ -25,25 +25,11 @@ Author: Artur797 (Artur Vargas)
         <span>My Movies</span>
       </a>
 
-      <a class="navbar-item">
+      <a class="navbar-item" href="/editor/actors">
                 <span class="icon">
-                    <i class="fas fa-tv"></i>
+                    <i class="fas fa-users"></i>
                 </span>
-        <span>My Shows</span>
-      </a>
-
-      <a class="navbar-item">
-                <span class="icon">
-                    <i class="fas fa-star"></i>
-                </span>
-        <span>My Reviews</span>
-      </a>
-
-      <a class="navbar-item">
-                <span class="icon">
-                    <i class="fas fa-thumbs-up"></i>
-                </span>
-        <span>My Recommendations</span>
+        <span>Actors</span>
       </a>
     </div>
 

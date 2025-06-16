@@ -1,10 +1,12 @@
 package es.uma.taw.momdb.controller;
 
 
+import es.uma.taw.momdb.dto.CrewDTO;
 import es.uma.taw.momdb.dto.GenreDTO;
 import es.uma.taw.momdb.dto.MovieDTO;
 
 import es.uma.taw.momdb.dto.UserDTO;
+import es.uma.taw.momdb.service.CrewService;
 import es.uma.taw.momdb.service.GeneroService;
 import es.uma.taw.momdb.service.MovieService;
 import es.uma.taw.momdb.ui.Filtro;
@@ -30,6 +32,9 @@ public class EditorController extends BaseController{
 
     @Autowired
     private GeneroService generoService;
+
+    @Autowired
+    private CrewService crewService;
 
     @GetMapping("/")
     public String doInit(HttpSession session, Model model) {
@@ -104,6 +109,29 @@ public class EditorController extends BaseController{
             this.movieService.borrarPelicula(id);
             return "redirect:/editor/";
         }
+    }
+
+    @GetMapping("/actors")
+    public String listActors (HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        } else {
+            return this.listarActoresConFiltro(null, model);
+        }
+    }
+
+    protected String listarActoresConFiltro(Filtro filtro, Model model) {
+        List<CrewDTO> actores;
+
+        if (filtro == null) {
+            filtro = new Filtro();
+            actores = crewService.listarActores();
+        } else {
+            actores = crewService.listarActores(filtro.getTexto());
+        }
+        model.addAttribute("actores", actores);
+        model.addAttribute("filtro", filtro);
+        return "actors";
     }
 
 }

@@ -66,7 +66,7 @@
                 <div class="card movie-card has-background-grey">
                     <div class="card-content">
                         <div class="content has-text-centered">
-                            <a href="/editor/delete?id=<%= movie.getId() %>" class="has-text-danger" style="position: absolute; top: 0.5rem; right: 0.5rem;">
+                            <a href="/editor/delete?id=<%= movie.getId() %>" class="has-text-danger" style="position: absolute; top: 0.1rem; right: 0.1rem; z-index: 10;">
                                 <span class="icon">
                                     <i class="fas fa-trash"></i>
                                 </span>
