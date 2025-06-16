@@ -49,6 +49,7 @@ public class User implements Serializable, DTO<UserDTO> {
         UserDTO user = new UserDTO();
         user.setUserId(this.id);
         user.setRoleId(this.role.getId());
+        user.setRolename(this.role.getName());
         user.setUsername(this.username);
         user.setProfilePic(this.profilePicLink);
 

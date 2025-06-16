@@ -2,8 +2,8 @@ package es.uma.taw.momdb.controller;
 
 import es.uma.taw.momdb.dao.MovieRepository;
 import es.uma.taw.momdb.dto.MovieDTO;
+import es.uma.taw.momdb.dto.UserDTO;
 import es.uma.taw.momdb.entity.Movie;
-import es.uma.taw.momdb.entity.User;
 import es.uma.taw.momdb.service.MovieService;
 import es.uma.taw.momdb.ui.Filtro;
 import jakarta.servlet.http.HttpSession;
@@ -76,7 +76,7 @@ public class UserController extends BaseController{
     }
 
     private boolean checkAuth(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
+        UserDTO user = (UserDTO) session.getAttribute("user");
         if (user == null) {
             model.addAttribute("error", "No estás autorizado para acceder a esta página.");
             return false;

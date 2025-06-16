@@ -47,6 +47,10 @@ body {
     line-height: 1.25;
     text-align: center;
 }
+
+input[type="checkbox"] + label {
+    margin-right: 1.5rem; /* Ajusta el valor según necesites */
+}
 /* Clases de utilidad comunes */
 /* Nota: Bulma ya incluye clases como 'mt-4'. Define esto solo si necesitas un valor diferente o específico */
 /* .mt-4 {

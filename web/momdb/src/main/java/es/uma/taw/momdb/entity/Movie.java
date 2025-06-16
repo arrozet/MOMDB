@@ -125,9 +125,14 @@ public class Movie implements Serializable, DTO<MovieDTO> {
         movie.setImageLink(this.imageLink);
 
         List<GenreDTO> listaGeneros = new ArrayList<>();
+        List<Integer> listaGeneroIds = new ArrayList<>();
 
-        this.genres.forEach((final Genre genero) -> listaGeneros.add(genero.toDTO()));
+        this.genres.forEach((final Genre genero) -> {
+            listaGeneros.add(genero.toDTO());
+            listaGeneroIds.add(genero.getId());
+        });
         movie.setGeneros(listaGeneros);
+        movie.setGeneroIds(listaGeneroIds);
 
 
         return movie;

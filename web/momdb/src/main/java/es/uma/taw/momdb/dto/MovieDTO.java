@@ -16,8 +16,9 @@ public class MovieDTO {
     private String titulo;
     private String idiomaOriginal;
     private LocalDate fechaDeSalida;
-    private Long Ingresos;
+    private Long ingresos;
     private List<GenreDTO> generos;
+    private List<Integer> generoIds;
     private BigDecimal mediaVotos;
     private Integer votos;
     private String descripcion;

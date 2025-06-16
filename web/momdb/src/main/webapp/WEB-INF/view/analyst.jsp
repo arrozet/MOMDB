@@ -8,14 +8,14 @@
 
 <%@ page import="es.uma.taw.momdb.entity.Movie" %>
 <%@ page import="java.util.List" %>
-<%@ page import="es.uma.taw.momdb.entity.User" %>
+<%@ page import="es.uma.taw.momdb.dto.UserDTO" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <title>Analyst | MOMDB</title>
 </head>
 <%
-    User myUser = (User) session.getAttribute("user");
+    UserDTO myUser = (UserDTO) session.getAttribute("user");
     List<Movie> movies = (List<Movie>) request.getAttribute("movies");
 %>
 <body>

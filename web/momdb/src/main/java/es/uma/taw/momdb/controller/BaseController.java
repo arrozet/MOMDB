@@ -1,5 +1,6 @@
 package es.uma.taw.momdb.controller;
 
+import es.uma.taw.momdb.dto.UserDTO;
 import es.uma.taw.momdb.entity.User;
 import jakarta.servlet.http.HttpSession;
 
@@ -14,7 +15,7 @@ public class BaseController {
     }
 
     protected boolean isAdmin(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        return isAuthenticated(session) && user.getRole().getName().equals("admin");
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        return isAuthenticated(session) && user.getRolename().equals("admin");
     }
 }

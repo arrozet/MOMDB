@@ -8,15 +8,15 @@ Created by IntelliJ IDEA.
 
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="es.uma.taw.momdb.entity.User" %>
 <%@ page import="java.util.List" %>
+<%@ page import="es.uma.taw.momdb.dto.UserDTO" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <title>Welcome back, Admin!</title>
 </head>
 <%
-    User myUser = (User) session.getAttribute("user");
+    UserDTO myUser = (UserDTO) session.getAttribute("user");
     List<String> everyEntity = (List<String>) request.getAttribute("everyEntity");
     List<?> entities = (List<?>) request.getAttribute("entities");
 %>

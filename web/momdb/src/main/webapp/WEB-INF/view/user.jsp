@@ -3,9 +3,7 @@ Author: projectGeorge (Jorge Repullo)
 --%>
 
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ page import="es.uma.taw.momdb.entity.Movie" %>
 <%@ page import="java.util.List" %>
-<%@ page import="es.uma.taw.momdb.entity.User" %>
 <%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>

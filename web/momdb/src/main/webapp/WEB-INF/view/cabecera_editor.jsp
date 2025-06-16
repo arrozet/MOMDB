@@ -18,7 +18,7 @@ Author: Artur797 (Artur Vargas)
 
   <div id="navbarMenu" class="navbar-menu">
     <div class="navbar-start">
-      <a class="navbar-item" href="/user/">
+      <a class="navbar-item" href="/editor/">
                 <span class="icon">
                     <i class="fas fa-film"></i>
                 </span>

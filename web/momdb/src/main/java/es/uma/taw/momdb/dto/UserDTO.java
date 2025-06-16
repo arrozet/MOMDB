@@ -2,6 +2,8 @@ package es.uma.taw.momdb.dto;
 
 import lombok.Data;
 
+import javax.management.relation.Role;
+
 /*
  * @author - arrozet (Rubén Oliva)
  * @co-authors - Artur797 (Artur Vargas)
@@ -11,6 +13,7 @@ import lombok.Data;
 public class UserDTO {
     int userId;
     int roleId;
+    String rolename;
     String username;
     String profilePic;
 }

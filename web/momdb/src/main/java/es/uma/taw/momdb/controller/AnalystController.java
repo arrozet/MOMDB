@@ -1,6 +1,7 @@
 package es.uma.taw.momdb.controller;
 
 import es.uma.taw.momdb.dao.MovieRepository;
+import es.uma.taw.momdb.dto.UserDTO;
 import es.uma.taw.momdb.entity.Movie;
 import es.uma.taw.momdb.entity.User;
 import jakarta.servlet.http.HttpSession;
@@ -28,8 +29,8 @@ public class AnalystController extends BaseController {
 
     @GetMapping("/")
     public String doInit(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
-        if (user == null || !user.getRole().getName().equals("analista")) {
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        if (user == null || !user.getRolename().equals("analista")) {
             model.addAttribute("error", "You are not authorized to access this page.");
             return "redirect:/";
         } else {
@@ -42,8 +43,8 @@ public class AnalystController extends BaseController {
     }
     @PostMapping("/filtrar")
     public String doFiltrar(HttpSession session, Model model, @RequestParam("filter") String filter) {
-        User user = (User) session.getAttribute("user");
-        if (user == null || !user.getRole().getName().equals("analista")) {
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        if (user == null || !user.getRolename().equals("analista")) {
             model.addAttribute("error", "You are not authorized to access this page.");
         }
         List<Movie> filteredMovies = this.movieRepository.filterByTitle(filter);

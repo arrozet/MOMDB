@@ -9,6 +9,7 @@ import es.uma.taw.momdb.entity.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 /*
@@ -21,6 +22,9 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
 
     @Autowired
     protected MovieRepository movieRepository;
+
+    @Autowired
+    protected GenreRepository genreRepository;
 
 
 
@@ -48,4 +52,16 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
             return null;
         }
     }
+    public void saveMovie (MovieDTO movie) {
+        Movie movieEntity = this.movieRepository.findById(movie.getId()).orElse(new Movie());
+        movieEntity.setTitle(movie.getTitulo());
+        movieEntity.setOriginalLanguage(movie.getIdiomaOriginal());
+        movieEntity.setReleaseDate(movie.getFechaDeSalida());
+        movieEntity.setRevenue(movie.getIngresos());
+        movieEntity.setGenres(new HashSet<>(this.genreRepository.findAllById(movie.getGeneroIds())));
+        movieEntity.setOverview(movie.getDescripcion());
+        movieEntity.setImageLink(movie.getImageLink());
+        this.movieRepository.save(movieEntity);
+    }
+
 }

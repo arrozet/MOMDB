@@ -21,7 +21,7 @@
 </head>
 
 <body class="has-background-white-ter">
-<jsp:include page="cabecera_user.jsp" />
+<jsp:include page="cabecera_editor.jsp" />
 
 <%
     List<MovieDTO> movies = (List<MovieDTO>) request.getAttribute("movies");

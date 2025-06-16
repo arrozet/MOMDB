@@ -2,8 +2,8 @@
 Author: projectGeorge (Jorge Repullo)
 --%>
 
-<%@ page import="es.uma.taw.momdb.entity.User" %>
 <%@ page import="java.util.Date" %>
+<%@ page import="es.uma.taw.momdb.dto.UserDTO" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -11,7 +11,7 @@ Author: projectGeorge (Jorge Repullo)
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <%
-    User myUser = (User) session.getAttribute("user");
+    UserDTO myUser = (UserDTO) session.getAttribute("user");
 %>
 
 <nav class="navbar is-info" role="navigation" aria-label="main navigation"> <%-- Barra horizontal, color azul claro--%>
@@ -75,8 +75,8 @@ Author: projectGeorge (Jorge Repullo)
 
             <div class="navbar-item">
                 <figure class="image is-32x32">
-                    <% if(myUser.getProfilePicLink() != null) { %>
-                    <img class="is-rounded" src="<%= myUser.getProfilePicLink() %>" alt="Profile picture">
+                    <% if(myUser.getProfilePic() != null) { %>
+                    <img class="is-rounded" src="<%= myUser.getProfilePic() %>" alt="Profile picture">
                     <% } else { %>
                     <span class="icon">
                             <i class="fas fa-user-circle fa-2x"></i>
