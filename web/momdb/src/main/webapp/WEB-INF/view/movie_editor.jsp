@@ -20,55 +20,55 @@
 
 <div class="section">
     <div class="container box">
-        <h1 class="title is-4">Editar película</h1>
+        <h1 class="title is-4">Edit movie</h1>
 
         <form:form method="post" action="/editor/saveMovie" modelAttribute="movie">
             <form:hidden path="id"/>
 
             <div class="field">
-                <label class="label">Título</label>
+                <label class="label">Title</label>
                 <div class="control">
                     <form:input path="titulo" cssClass="input"/>
                 </div>
             </div>
 
             <div class="field">
-                <label class="label">Idioma</label>
+                <label class="label">Language</label>
                 <div class="control">
                     <form:input path="idiomaOriginal" cssClass="input"/>
                 </div>
             </div>
 
             <div class="field">
-                <label class="label">Fecha de salida</label>
+                <label class="label">Release date</label>
                 <div class="control">
-                    <form:input path="fechaDeSalida" cssClass="input"/>
+                    <form:input type="date" path="fechaDeSalida" cssClass="input"/>
                 </div>
             </div>
 
             <div class="field">
-                <label class="label">Ingresos</label>
+                <label class="label">Revenues</label>
                 <div class="control">
                     <form:input path="ingresos" cssClass="input"/>
                 </div>
             </div>
 
             <div class="field">
-                <label class="label">Géneros</label>
+                <label class="label">Genres</label>
                 <div class="control">
                     <form:checkboxes path="generoIds" items="${generos}" itemValue="id" itemLabel="genero" cssClass="mr-3"/>
                 </div>
             </div>
 
             <div class="field">
-                <label class="label">Descripción</label>
+                <label class="label">Description</label>
                 <div class="control">
                     <form:textarea path="descripcion" rows="8" cssClass="textarea"/>
                 </div>
             </div>
 
             <div class="field">
-                <label class="label">Link imagen</label>
+                <label class="label">Image link</label>
                 <div class="control">
                     <form:input path="imageLink" cssClass="input"/>
                 </div>
@@ -76,7 +76,7 @@
 
             <div class="field is-grouped mt-4">
                 <div class="control">
-                    <button class="button is-link">Guardar</button>
+                    <button class="button is-link">Save</button>
                 </div>
             </div>
         </form:form>

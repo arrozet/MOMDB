@@ -80,7 +80,7 @@ public class EditorController extends BaseController{
 
     private boolean checkAuth(HttpSession session, Model model) {
         UserDTO user = (UserDTO) session.getAttribute("user");
-        if (user == null) {
+        if (user == null || !user.getRolename().equals("editor")) {
             model.addAttribute("error", "No estás autorizado para acceder a esta página.");
             return false;
         }
@@ -94,6 +94,16 @@ public class EditorController extends BaseController{
         this.movieService.saveMovie(movie);
 
         return "redirect:/editor/";
+    }
+
+    @GetMapping("/delete")
+    public String doBorrar (@RequestParam("id") Integer id, HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        } else {
+            this.movieService.borrarPelicula(id);
+            return "redirect:/editor/";
+        }
     }
 
 }
