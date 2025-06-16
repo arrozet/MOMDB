@@ -14,7 +14,7 @@ import java.util.List;
 
 /*
  * @author - Artur797 (Artur Vargas)
- * @co-authors -
+ * @co-authors - projectGeorge (Jorge Repullo)
  */
 
 @Service
@@ -46,11 +46,7 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
     public MovieDTO findPeliculaById (int id) {
         Movie movie = this.movieRepository.findById(id).orElse(null);
 
-        if (movie != null){
-            return movie.toDTO();
-        } else {
-            return null;
-        }
+        return movie != null ? movie.toDTO() : null;
     }
     public void saveMovie (MovieDTO movie) {
         Movie movieEntity = this.movieRepository.findById(movie.getId()).orElse(new Movie());

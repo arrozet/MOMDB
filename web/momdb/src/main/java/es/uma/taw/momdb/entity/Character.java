@@ -1,5 +1,6 @@
 package es.uma.taw.momdb.entity;
 
+import es.uma.taw.momdb.dto.CharacterDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,4 +27,10 @@ public class Character {
             inverseJoinColumns = @JoinColumn(name = "crew_id"))
     private Set<Crew> crews = new LinkedHashSet<>();
 
+    public CharacterDTO toDTO() {
+        CharacterDTO c = new CharacterDTO();
+        c.setId(this.id);
+        c.setCharacterName(this.character);
+        return c;
+    }
 }

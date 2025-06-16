@@ -15,7 +15,7 @@ import java.util.Random;
 
 /*
  * @author - arrozet (Rubén Oliva)
- * @co-authors - Artur797 (Artur Vargas), edugbau (Eduardo González)
+ * @co-authors - Artur797 (Artur Vargas), edugbau (Eduardo González), projectGeorge (Jorge Repullo)
  */
 
 @Controller

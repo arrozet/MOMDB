@@ -27,13 +27,6 @@ Author: projectGeorge (Jorge Repullo)
 
             <a class="navbar-item">
                 <span class="icon">
-                    <i class="fas fa-tv"></i>
-                </span>
-                <span>My Shows</span>
-            </a>
-
-            <a class="navbar-item">
-                <span class="icon">
                     <i class="fas fa-star"></i>
                 </span>
                 <span>My Reviews</span>
@@ -43,7 +36,7 @@ Author: projectGeorge (Jorge Repullo)
                 <span class="icon">
                     <i class="fas fa-thumbs-up"></i>
                 </span>
-                <span>My Recommendations</span>
+                <span>My Favorites</span>
             </a>
         </div>
 

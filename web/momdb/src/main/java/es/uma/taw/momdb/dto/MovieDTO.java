@@ -23,4 +23,7 @@ public class MovieDTO {
     private Integer votos;
     private String descripcion;
     private String imageLink;
+    private String tagline;
+    private List<CrewDTO> equipo;
+    private List<Integer> equipoIds;
 }
