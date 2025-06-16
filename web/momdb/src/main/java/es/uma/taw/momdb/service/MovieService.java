@@ -60,4 +60,8 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
         this.movieRepository.save(movieEntity);
     }
 
+    public void borrarPelicula (Integer id) {
+        this.movieRepository.deleteById(id);
+    }
+
 }

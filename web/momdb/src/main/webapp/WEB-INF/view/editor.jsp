@@ -66,11 +66,22 @@
                 <div class="card movie-card has-background-grey">
                     <div class="card-content">
                         <div class="content has-text-centered">
+                            <a href="/editor/delete?id=<%= movie.getId() %>" class="has-text-danger" style="position: absolute; top: 0.5rem; right: 0.5rem;">
+                                <span class="icon">
+                                    <i class="fas fa-trash"></i>
+                                </span>
+                            </a>
                             <a href="/editor/movie?id=<%= movie.getId() %>" class="movie-link">
                                 <div class="movie-poster mb-2">
+                                    <% if (movie.getImageLink() != null && !movie.getImageLink().isEmpty()) { %>
+                                    <figure class="image is-2by3">
+                                        <img src="<%= movie.getImageLink() %>" alt="Póster de <%= movie.getTitulo() %>">
+                                    </figure>
+                                    <% } else { %>
                                     <span class="icon is-large has-text-info">
                                         <i class="fas fa-film fa-3x"></i>
                                     </span>
+                                    <% } %>
                                 </div>
                                 <p class="title is-5"><%= movie.getTitulo() %></p>
                             </a>

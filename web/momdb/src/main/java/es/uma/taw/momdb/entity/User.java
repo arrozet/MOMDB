@@ -36,14 +36,8 @@ public class User implements Serializable, DTO<UserDTO> {
     @JoinColumn(name = "role_id", nullable = false)
     private UserRole role;
 
-    @ManyToMany(mappedBy = "favorites")
-    private Set<Movie> favorite_movies = new LinkedHashSet<>();
-
     @OneToMany(mappedBy = "user")
     private Set<Review> reviews_movies = new LinkedHashSet<>();
-
-    @ManyToMany(mappedBy = "favorites")
-    private Set<Movie> watchlist_movies = new LinkedHashSet<>();
 
     @ManyToMany
     @JoinTable(name = "favorite",

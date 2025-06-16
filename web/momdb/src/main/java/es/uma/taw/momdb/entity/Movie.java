@@ -77,9 +77,6 @@ public class Movie implements Serializable, DTO<MovieDTO> {
     private Set<Crew> crews = new LinkedHashSet<>();
 
     @ManyToMany
-    private Set<User> favorites = new LinkedHashSet<>();
-
-    @ManyToMany
     @JoinTable(name = "movie_genre",
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
@@ -108,9 +105,6 @@ public class Movie implements Serializable, DTO<MovieDTO> {
 
     @OneToMany(mappedBy = "movie")
     private Set<Review> reviews_users = new LinkedHashSet<>();
-
-    @ManyToMany
-    private Set<User> watchlist_users = new LinkedHashSet<>();
 
     @ManyToMany
     @JoinTable(name = "favorite",
