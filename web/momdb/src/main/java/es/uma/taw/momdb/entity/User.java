@@ -45,6 +45,18 @@ public class User implements Serializable, DTO<UserDTO> {
     @ManyToMany(mappedBy = "favorites")
     private Set<Movie> watchlist_movies = new LinkedHashSet<>();
 
+    @ManyToMany
+    @JoinTable(name = "favorite",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "movie_id"))
+    private Set<Movie> user_favorite = new LinkedHashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "watchlist",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "movie_id"))
+    private Set<Movie> user_watchlist = new LinkedHashSet<>();
+
     public UserDTO toDTO () {
         UserDTO user = new UserDTO();
         user.setUserId(this.id);

@@ -112,6 +112,18 @@ public class Movie implements Serializable, DTO<MovieDTO> {
     @ManyToMany
     private Set<User> watchlist_users = new LinkedHashSet<>();
 
+    @ManyToMany
+    @JoinTable(name = "favorite",
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> movie_favorite = new LinkedHashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "watchlist",
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> movie_watchlist = new LinkedHashSet<>();
+
     public MovieDTO toDTO () {
         MovieDTO movie = new MovieDTO();
         movie.setId(this.id);
