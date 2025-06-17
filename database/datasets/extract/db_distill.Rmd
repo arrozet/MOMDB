@@ -1,6 +1,6 @@
 ---
 title: "Destilado de CSVs a tablas"
-author: "arrozet"
+author: "arrozet (Rubén Oliva)"
 editor: visual
 ---
 

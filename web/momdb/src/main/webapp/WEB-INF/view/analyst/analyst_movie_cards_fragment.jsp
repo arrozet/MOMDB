@@ -1,3 +1,6 @@
+<%--
+Author: edugbau (Eduardo González)
+--%>
 <%@ page import="es.uma.taw.momdb.entity.Movie" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
