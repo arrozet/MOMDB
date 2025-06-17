@@ -1,7 +1,9 @@
 package es.uma.taw.momdb.controller;
 
+import es.uma.taw.momdb.dto.GenreDTO;
 import es.uma.taw.momdb.dto.MovieDTO;
 import es.uma.taw.momdb.dto.UserDTO;
+import es.uma.taw.momdb.service.GeneroService;
 import es.uma.taw.momdb.service.MovieService;
 import es.uma.taw.momdb.ui.Filtro;
 import jakarta.servlet.http.HttpSession;
@@ -23,6 +25,9 @@ public class UserController extends BaseController{
 
     @Autowired
     protected MovieService movieService;
+
+    @Autowired
+    protected GeneroService generoService;
 
     @GetMapping("/")
     public String doInit(HttpSession session, Model model) {
@@ -48,9 +53,16 @@ public class UserController extends BaseController{
         if (filtro == null) {
             filtro = new Filtro();
             movies = movieService.listarPeliculas();
-        } else {
+        } else if (!filtro.getGeneroIds().isEmpty()) {
+            movies = movieService.listarPeliculasPorGenero(filtro.getGeneroIds());
+        } else if (!filtro.getTexto().isEmpty()) {
             movies = movieService.listarPeliculas(filtro.getTexto());
+        } else {
+            movies = movieService.listarPeliculas();
         }
+
+        List<GenreDTO> generos = this.generoService.listarGeneros();
+        model.addAttribute("generos", generos);
         model.addAttribute("movies", movies);
         model.addAttribute("filtro", filtro);
         return "user/user";

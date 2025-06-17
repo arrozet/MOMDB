@@ -20,4 +20,6 @@ public interface MovieRepository extends JpaRepository<Movie, Integer> {
 
     Page<Movie> findByTitleContainingIgnoreCase(String title, Pageable pageable);
 
+    @Query("select distinct m from Movie m join m.genres g where g.id in :genreIds")
+    public List<Movie> filterByGenresId(List<Integer> genreIds);
 }

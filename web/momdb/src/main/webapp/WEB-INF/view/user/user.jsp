@@ -5,6 +5,8 @@ Author: projectGeorge (Jorge Repullo)
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page import="java.util.List" %>
 <%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>
+<%@ page import="java.math.BigDecimal" %>
+<%@ page import="es.uma.taw.momdb.dto.GenreDTO" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language=  "java" %>
 <html>
@@ -20,6 +22,7 @@ Author: projectGeorge (Jorge Repullo)
 
 <%
     List<MovieDTO> movies = (List<MovieDTO>) request.getAttribute("movies");
+    List<GenreDTO> generos = (List<GenreDTO>) request.getAttribute("generos");
 %>
 
 <section class="hero is-light is-small user-page-banner"> <%-- Hero es básicamente para los títulos --%>
@@ -49,6 +52,18 @@ Author: projectGeorge (Jorge Repullo)
                             </form:button>
                         </div>
                     </div>
+
+                    <div class="field">
+                        <label class="label">Genres</label>
+                        <form:select path="generoIds" multiple="true" class="user select is-info has-background-grey">
+                            <form:option value="" label="All genres"/>
+
+                            <% for (GenreDTO genero : generos) { %>
+                                <form:option value="<%= genero.getId() %>" label="<%= genero.getGenero() %>"/>
+                            <% } %>
+                        </form:select>
+                    </div>
+
                 </form:form>
             </div>
         </div>

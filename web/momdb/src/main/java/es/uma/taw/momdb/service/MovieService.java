@@ -41,6 +41,11 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
         return this.entity2DTO(movies);
     }
 
+    public List<MovieDTO> listarPeliculasPorGenero (List<Integer> generoIds) {
+        List<Movie> movies = this.movieRepository.filterByGenresId(generoIds);
+        return this.entity2DTO(movies);
+    }
+
     public MovieDTO findPeliculaById (int id) {
         Movie movie = this.movieRepository.findById(id).orElse(null);
         return movie != null ? movie.toDTO() : null;
