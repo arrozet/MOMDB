@@ -1,7 +1,6 @@
 package es.uma.taw.momdb.controller;
 
 import es.uma.taw.momdb.dto.UserDTO;
-import es.uma.taw.momdb.entity.User;
 import jakarta.servlet.http.HttpSession;
 
 /*

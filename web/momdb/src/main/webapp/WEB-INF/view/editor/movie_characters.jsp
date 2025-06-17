@@ -56,7 +56,7 @@
                             <%}%>
                             <td><%= character.getPersona() %></td>
                             <td>
-                                <a href="/editor/movie/character/edit?id=<%=movie.getId()%>&characterId=<%=character.getId()%>" 
+                                <a href="/editor/movie/character/edit?id=<%=character.getId()%>"
                                    class="button is-small is-info">
                                     <span class="icon">
                                         <i class="fas fa-edit"></i>

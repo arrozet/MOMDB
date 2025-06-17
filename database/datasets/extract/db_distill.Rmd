@@ -1,10 +1,11 @@
 ---
 title: "Destilado de CSVs a tablas"
-author: "arrozet"
+author: "arrozet (Rubén Oliva)"
 editor: visual
 ---
 
-# Carga de librerias, datasets y funciones de parseo
+## Carga de librerias, datasets y funciones de parseo
+
 ```{r setup_and_load_data}
 # Cargar librerías necesarias
 library(tidyverse)
@@ -29,8 +30,37 @@ parse_json_safely <- function(json_string) {
     return(tibble()) # O NA
   })
 }
+
+# --- MUESTREO DEL 10% DE LOS DATOS ---
+# Para mantener la coherencia, el muestreo se basa en las películas.
+# 1. Seleccionamos un 10% de las películas de forma aleatoria.
+# 2. Filtramos tanto las películas como los créditos para quedarnos solo con los datos de ese 10%.
+# Usamos una semilla para que el muestreo sea reproducible.
+set.seed(42) # Semilla para reproducibilidad
+
+cat("--- Realizando muestreo del 10% de las películas ---\n")
+cat("Número de películas antes del muestreo:", nrow(raw_movies), "\n")
+cat("Número de créditos antes del muestreo:", nrow(raw_credits), "\n\n")
+
+# Obtenemos los IDs del 10% de las películas
+sampled_movie_ids <- raw_movies |>
+  sample_frac(0.10) |>
+  pull(id)
+
+# Filtramos el dataframe de películas
+raw_movies <- raw_movies |>
+  filter(id %in% sampled_movie_ids)
+
+# Filtramos el dataframe de créditos
+raw_credits <- raw_credits |>
+  filter(movie_id %in% sampled_movie_ids)
+
+cat("--- Muestreo finalizado ---\n")
+cat("Número de películas después del muestreo:", nrow(raw_movies), "\n")
+cat("Número de créditos después del muestreo:", nrow(raw_credits), "\n")
 ```
-## Enriquecer raw_movies con posters
+
+### Enriquecer raw_movies con posters
 
 ```{r fetch_poster_paths, cache=TRUE}
 # Este bloque obtiene los poster_path usando la API de TMDB
@@ -89,8 +119,10 @@ raw_movies <- raw_movies |>
 cat("--- raw_movies ha sido enriquecido con poster_path ---\n")
 ```
 
-# Dataset Movies (películas y todo lo relacionado con ellas)
-## Movie
+## Dataset Movies (películas y todo lo relacionado con ellas)
+
+### Movie
+
 ```{r}
 # 1. Procesar el dataframe de películas (raw_movies)
 
@@ -139,7 +171,8 @@ cat("--- Movies creado ---\n")
 head(movie)
 ```
 
-## Status
+### Status
+
 ```{r}
 # Tabla de Status únicos
 status <- movie |>
@@ -162,7 +195,8 @@ cat("\n--- 'movie' actualizado con ID de status ---\n")
 head(movie)
 ```
 
-## Genres y Movie_Genre
+### Genres y Movie_Genre
+
 ```{r}
 # Procesar Genres
 movie_genre <- raw_movies |>
@@ -192,7 +226,8 @@ cat("\n--- Genre creado ---\n")
 head(genre)
 ```
 
-## Keywords y Movie_Keywords
+### Keywords y Movie_Keywords
+
 ```{r}
 # Procesar Keywords
 movie_keywords_raw <- raw_movies |>
@@ -233,7 +268,8 @@ head(movie_keywords)
 head(keywords)
 ```
 
-## ProductionCompany y Movie_ProductionCompany
+### ProductionCompany y Movie_ProductionCompany
+
 ```{r}
 # 1. Procesar Production Companies (raw)
 movie_company_raw <- raw_movies |>
@@ -278,7 +314,8 @@ head(movie_company)
 head(company)
 ```
 
-## ProductionCountry y Movie_ProductionCountry
+### ProductionCountry y Movie_ProductionCountry
+
 ```{r}
 # Procesar Production Countries
 movie_country <- raw_movies |>
@@ -302,7 +339,8 @@ head(movie_country)
 head(country)
 ```
 
-## SpokenLanguages y Movie_SpokenLanguages
+### SpokenLanguages y Movie_SpokenLanguages
+
 ```{r}
 # Procesar Spoken Languages
 movie_language <- raw_movies |>
@@ -331,11 +369,13 @@ cat("\n--- movie_language y language Creados ---\n")
 head(movie_language)
 head(language)
 ```
+
 Los lenguajes que salen con `lang_name` vacio es literalmente porque no tienen nombre en la base de datos de TMDB. Por ejemplo, `lang_iso = "bo"` está en la película con `original_title = "2012"`, y en `name` tiene la cadena vacía.
 
-# Dataset Credits (toda la parte de Crew, Person...)
+## Dataset Credits (toda la parte de Crew, Person...)
 
-## Preprocesamiento
+### Preprocesamiento
+
 ```{r}
 # Process the 'crew' JSON column
 credits_crew_raw <- raw_credits |>
@@ -372,9 +412,10 @@ cat("Head of credits_crew_raw:\n")
 head(credits_crew_raw)
 cat("\nHead of credits_cast_raw:\n")
 head(credits_cast_raw)
-```	
+```
 
-## Person
+### Person
+
 ```{r}
 person_from_crew <- credits_crew_raw |>
   distinct(person_id, person_name = person_name_crew)
@@ -394,7 +435,8 @@ cat("\n--- Person created ---\n")
 head(person)
 ```
 
-## CrewRole
+### CrewRole
+
 ```{r}
 # 1. Extraer todos los nombres de roles únicos del dataset de crew.
 roles_from_crew_jobs <- credits_crew_raw |>
@@ -446,7 +488,8 @@ role_to_id_map <- all_roles_cleaned |>
   distinct()
 ```
 
-## Character
+### Character
+
 ```{r}
 character <- credits_cast_raw |>
   distinct(character_name = character_name_raw) |>
@@ -464,7 +507,7 @@ cat("\n--- Character created ---\n")
 head(character)
 ```
 
-## Crew
+### Crew
 
 ```{r crew_generation}
 # --- Crew table construction ---
@@ -513,7 +556,8 @@ cat("\n--- Crew created ---\n")
 head(crew)
 ```
 
-## CrewCharacter
+### CrewCharacter
+
 ```{r crew_character_generation}
 # --- CrewCharacter table construction ---
 
@@ -561,7 +605,6 @@ crew_character <- credits_cast_raw |>
 cat("\n--- CrewCharacter created ---\n")
 head(crew_character)
 ```
-
 
 La parte de `User`, `UserRole` etc no está en los csv. Por eso no hay extracción de datos de esos datasets.
 
@@ -659,4 +702,3 @@ write_csv(crew_character_to_save, file.path(output_dir, "CrewCharacter.csv"), na
 
 cat("\n--- Todos los CSVs han sido guardados en la carpeta 'cleaned' ---\n")
 ```
-

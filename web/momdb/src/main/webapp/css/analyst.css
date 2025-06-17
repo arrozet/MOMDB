@@ -1,0 +1,168 @@
+/*
+Author: edugbau (Eduardo González)
+*/
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+    padding: 0 20px;
+}
+
+h1, h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 2.5em;
+    text-align: center;
+    padding-top: 20px;
+}
+
+h2 {
+    font-size: 1.8em;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+/* Formulario de búsqueda */
+form {
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+form input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1em;
+    margin-right: 10px;
+    width: 300px;
+}
+
+form input[type="submit"] {
+    padding: 10px 20px;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+form input[type="submit"]:hover {
+    background-color: #4cae4c;
+}
+
+/* Tabla de películas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+    background-color: #fff;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #337ab7; /* Un azul similar al de un posible banner o cabecera */
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+td {
+    font-size: 0.95em;
+}
+
+/* Ajustes para que la tabla sea el elemento principal */
+.table-container {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Si quieres que la tabla ocupe más espacio o tenga un tratamiento visual destacado */
+.analyst-main-table {
+    border: 2px solid #337ab7; /* Borde más grueso y de color primario */
+    margin-top: 30px; /* Más espacio arriba */
+}
+
+.analyst-main-table th {
+    font-size: 1.1em; /* Encabezados de tabla más grandes */
+}
+
+/* Enlaces dentro de la tabla, si los hubiera */
+table a {
+    color: #337ab7;
+    text-decoration: none;
+}
+
+table a:hover {
+    text-decoration: underline;
+}
+
+/* Estilos para las tarjetas de películas en analyst.jsp */
+.movie-card-analyst {
+    background-color: #fff; /* Fondo blanco para la tarjeta */
+    border-radius: 6px; /* Bordes redondeados */
+    box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1); /* Sombra sutil */
+    transition: transform .2s ease-out, box-shadow .2s ease-out; /* Transición suave para el hover */
+    height: 100%; /* Asegurar que todas las tarjetas en una fila tengan la misma altura */
+    display: flex;
+    flex-direction: column;
+}
+
+.movie-card-analyst:hover {
+    transform: translateY(-5px); /* Elevar ligeramente la tarjeta */
+    box-shadow: 0 8px 15px rgba(10,10,10,.2), 0 0 0 1px rgba(10,10,10,.1); /* Sombra más pronunciada */
+    z-index: 10; /* Asegurar que la tarjeta con hover esté por encima de otras */
+    position: relative; /* Necesario para que z-index funcione correctamente en este contexto */
+}
+
+.movie-card-analyst .card-image {
+    flex-shrink: 0; /* Evitar que la imagen se encoja si el título es largo */
+}
+
+.movie-card-analyst .card-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Distribuir el espacio en el contenido */
+    flex-grow: 1; /* Permitir que el contenido crezca para llenar el espacio */
+    padding: 1rem; /* Ajustar el padding si es necesario */
+}
+
+.movie-card-analyst .title {
+    margin-bottom: 0.75rem; /* Espacio debajo del título */
+}
+
+.movie-card-analyst .content p {
+    margin-bottom: 0.3rem; /* Menor espacio entre párrafos de detalles */
+}

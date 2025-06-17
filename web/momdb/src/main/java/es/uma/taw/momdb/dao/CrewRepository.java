@@ -1,10 +1,14 @@
 package es.uma.taw.momdb.dao;
 
 import es.uma.taw.momdb.entity.Crew;
-import es.uma.taw.momdb.entity.Movie;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+/*
+ * @author - Artur797 (Artur Vargas)
+ * @co-authors -
+ */
 
 import java.util.List;
 

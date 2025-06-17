@@ -46,6 +46,7 @@ public class Crew implements DTO<CrewDTO> {
         CrewDTO c = new CrewDTO();
         c.setId(this.id);
         c.setPersona(this.person.getName());
+        c.setPersonaId(this.person.getId());
         c.setPeliculaId(this.movie.getId());
         c.setRol(this.crewRole.getName());
 

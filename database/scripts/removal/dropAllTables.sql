@@ -1,3 +1,4 @@
+-- Author: arrozet (Rubén Oliva)
 -- Script to drop all tables from the moviedb database
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;

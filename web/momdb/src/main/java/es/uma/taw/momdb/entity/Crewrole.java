@@ -11,7 +11,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "crewrole")
-public class Crewrole implements EntityWithNameAndId{
+public class Crewrole implements EntityWithNameAndId<Integer>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

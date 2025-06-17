@@ -1,3 +1,4 @@
+-- Author: arrozet (Rubén Oliva)
 -- Script to delete all data from moviedb tables
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;

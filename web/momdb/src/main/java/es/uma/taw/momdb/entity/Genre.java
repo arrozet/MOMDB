@@ -14,7 +14,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "genre")
-public class Genre implements EntityWithNameAndId, Serializable, DTO<GenreDTO> {
+public class Genre implements EntityWithNameAndId<Integer>, Serializable, DTO<GenreDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
