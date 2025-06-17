@@ -56,12 +56,24 @@ public class EditorController extends BaseController{
         }
         model.addAttribute("movies", movies);
         model.addAttribute("filtro", filtro);
-        return "editor";
+        return "editor/editor";
     }
 
     @PostMapping("/filtrar")
     public String doFiltrar (@ModelAttribute("filtro") Filtro filtro, Model model) {
         return this.listarPeliculasConFiltro(filtro, model);
+    }
+
+
+    private String handleMovieSection(Integer id, Model model, HttpSession session, String viewName) {
+
+        MovieDTO movie = this.movieService.findPeliculaById(id);
+        if (movie == null) {
+            return "redirect:/editor/";
+        }
+
+        model.addAttribute("movie", movie);
+        return viewName;
     }
 
     @GetMapping("/movie")
@@ -70,17 +82,34 @@ public class EditorController extends BaseController{
             return "redirect:/";
         }
 
-        // Buscar la película por ID
-        MovieDTO movie = this.movieService.findPeliculaById(id);
-        if (movie == null) {
-            return "redirect:/user/";
+        List<GenreDTO> generos = this.generoService.listarGeneros();
+        model.addAttribute("generos", generos);
+        return handleMovieSection(id, model, session, "editor/movie_editor");
+    }
+
+    @GetMapping("/movie/characters")
+    public String movieCharacters(@RequestParam("id") Integer id, Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
         }
 
-        List<GenreDTO> generos = this.generoService.listarGeneros();
+        return handleMovieSection(id, model, session, "editor/movie_characters");
+    }
 
-        model.addAttribute("generos", generos);
-        model.addAttribute("movie", movie);
-        return "movie_editor";
+    @GetMapping("/movie/crew")
+    public String movieCrew(@RequestParam("id") Integer id, Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        return handleMovieSection(id, model, session, "editor/movie_crew");
+    }
+
+    @GetMapping("/movie/reviews")
+    public String movieReviews(@RequestParam("id") Integer id, Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        return handleMovieSection(id, model, session, "editor/movie_reviews");
     }
 
     private boolean checkAuth(HttpSession session, Model model) {
@@ -131,7 +160,7 @@ public class EditorController extends BaseController{
         }
         model.addAttribute("actores", actores);
         model.addAttribute("filtro", filtro);
-        return "actors";
+        return "editor/actors";
     }
 
 }

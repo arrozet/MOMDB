@@ -1,4 +1,7 @@
+<%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>
+<%@ page import="java.util.List" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: Artur797 (Artur Vargas)
@@ -15,12 +18,24 @@
 <head>
     <title>Movie Editor</title>
 </head>
+<%
+    MovieDTO movie =  (MovieDTO) request.getAttribute("movie");
+%>
 <body class="has-background-white-ter">
 <jsp:include page="cabecera_editor.jsp" />
 
 <div class="section">
     <div class="container box">
-        <h1 class="title is-4">Edit movie</h1>
+        <h1 class="title is-4">Edit movie: <%=movie.getTitulo()%></h1>
+
+        <div class="tabs is-centered">
+            <ul>
+                <li class="is-active"><a>General</a></li>
+                <li><a href="/editor/movie/characters?id=<%=movie.getId()%>">Characters</a></li>
+                <li><a href="/editor/movie/crew?id=<%=movie.getId()%>">Crew</a></li>
+                <li><a href="/editor/movie/reviews?id=<%=movie.getId()%>">Reviews</a></li>
+            </ul>
+        </div>
 
         <form:form method="post" action="/editor/saveMovie" modelAttribute="movie">
             <form:hidden path="id"/>
