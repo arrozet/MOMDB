@@ -27,9 +27,6 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
     private CharacterRepository characterRepository;
 
     @Autowired
-    private PersonService personService;
-
-    @Autowired
     private PersonRepository personRepository;
 
     public List<CrewDTO> listarActores () {
