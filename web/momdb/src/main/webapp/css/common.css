@@ -67,6 +67,37 @@ input[type="checkbox"] + label {
     color: white !important; /* Texto blanco para los elementos de la barra de navegación */
 }
 
+/* Estilos base para el menú desplegable */
+.navbar-dropdown {
+    background-color: #f489c0 !important;
+}
+
+.navbar-dropdown .navbar-item {
+    color: white !important;
+}
+
+/* Estilos para modo claro */
+@media (prefers-color-scheme: light) {
+    .navbar-dropdown {
+        background-color: white !important;
+    }
+    
+    .navbar-dropdown .navbar-item {
+        color: #333 !important;
+    }
+}
+
+/* Estilos para modo oscuro */
+@media (prefers-color-scheme: dark) {
+    .navbar-dropdown {
+        background-color: #002b36 !important;
+    }
+    
+    .navbar-dropdown .navbar-item {
+        color: white !important;
+    }
+}
+
 .navbar-item:hover, .navbar-item.is-hoverable:hover .navbar-link,
 .navbar-link:hover,
 .navbar-dropdown .navbar-item:hover, .navbar-dropdown a.navbar-item:hover {
