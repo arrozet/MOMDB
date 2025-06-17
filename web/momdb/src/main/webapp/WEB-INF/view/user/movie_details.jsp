@@ -48,14 +48,14 @@
 
                 <div class="content">
                     <h3 class="title is-4 has-text-white">Overview</h3>
-                    <div class="has-background-dark p-4 rounded-corners" style="color: white;">
+                    <div class="p-4 rounded-corners" style="color: white; background-color: #1c1226">
                         <p><%= movie.getDescripcion() != null ? movie.getDescripcion() : "No hay descripción disponible" %></p>
                     </div>
 
                     <div class="columns is-multiline mt-5">
                         <div class="column is-half">
                             <div class="tags has-addons">
-                                <span class="tag is-dark is-size-5 movie-info-tag">Rating</span>
+                                <span class="tag is-size-5 movie-info-tag">Rating</span>
                                 <span class="tag is-info is-size-5 has-text-white">
                                     <%= movie.getMediaVotos() != null ? movie.getMediaVotos() : "N/A" %>
                                     <span class="icon is-small ml-3">
@@ -66,7 +66,7 @@
                         </div>
                         <div class="column is-half">
                             <div class="tags has-addons">
-                                <span class="tag is-dark is-size-5 movie-info-tag">Votes</span>
+                                <span class="tag is-size-5 movie-info-tag">Votes</span>
                                 <span class="tag is-info is-size-5 has-text-white">
                                     <%= movie.getVotos() != null ? movie.getVotos() : "0" %>
                                     <span class="icon is-small ml-3">
@@ -77,7 +77,7 @@
                         </div>
                         <div class="column is-half">
                             <div class="tags has-addons">
-                                <span class="tag is-dark is-size-5 movie-info-tag">Release date</span>
+                                <span class="tag is-size-5 movie-info-tag">Release date</span>
                                 <span class="tag is-info is-size-5 has-text-white">
                                     <span><%= movie.getFechaDeSalida() != null ? movie.getFechaDeSalida() : "No disponible" %></span>
                                     <span class="icon">
@@ -88,21 +88,34 @@
                         </div>
                         <div class="column is-half">
                             <div class="tags has-addons">
-                                <span class="tag is-dark is-size-5 movie-info-tag">Genres</span>
+                                <span class="tag is-size-5 movie-info-tag">Original idiom</span>
                                 <span class="tag is-info is-size-5 has-text-white">
-                                    <span>
-                                        <%
-                                            for (int i = 0; i < generos.size(); i++) {
-                                        %>
-                                            <%= generos.get(i).getGenero() %><%= (i < generos.size() - 1) ? ", " : "" %>
-                                        <%
-                                            }
-                                        %>
-                                    </span>
+                                    <span><%= movie.getIdiomaOriginal() != null ? movie.getIdiomaOriginal() : "No disponible" %></span>
                                     <span class="icon">
-                                        <i class="fas fa-genre"></i>
+                                        <i class="fas fa-comments"></i>
                                     </span>
                                 </span>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="field is-grouped is-grouped-multiline">
+                                <div class="control">
+                                    <div class="tags has-addons">
+                                        <span class="tag is-size-5 movie-info-tag">Genres</span>
+                                        <span class="icon is-small ml-3">
+                                            <i class="fas fa-tag"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <% for (int i = 0; i < generos.size(); i++) {
+                                %>
+                                <div class="control">
+                                    <span class="tag is-info is-size-5 has-text-white">
+                                        <%= generos.get(i).getGenero() %>
+                                    </span>
+                                </div>
+                                <%
+                                } %>
                             </div>
                         </div>
                     </div>
@@ -148,7 +161,7 @@
                                 hasCrew = true;
                     %>
                         <div class="column is-one-quarter-desktop is-one-third-tablet is-half-mobile">
-                            <p class="has-text-white"><%= crew.getPersona() %> - <%= crew.getRol() %></p>
+                            <p class="has-text-white"><%= crew.getPersona() %> - <strong><%= crew.getRol() %></strong></p>
                         </div>
                     <%
                             }

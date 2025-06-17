@@ -23,14 +23,22 @@ body {
 }
 
 .movie-details-box {
-    background-color: #333; /* Un gris oscuro para los recuadros, más sutil */
+    background-color: #1c1226; /* Un gris oscuro para los recuadros, más sutil */
     padding: 2rem;
     border-radius: 8px;
     margin-bottom: 2rem;
+    margin-top: 2rem;
 }
 
 .movie-info-tag {
     color: lightgray; /* Color para el texto de las etiquetas */
+    background-color: #1c1226 !important;
+}
+
+/* Added for increased specificity */
+span.tag.movie-info-tag {
+    background-color: #1c1226 !important;
+    color: lightgray !important; /* Added !important for color as well, just in case */
 }
 
 .rounded-corners {

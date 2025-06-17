@@ -6,7 +6,7 @@ Author: projectGeorge (Jorge Repullo)
 <%@ page import="java.util.List" %>
 <%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>
 
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language=  "java" %>
 <html>
 <head>
     <title>My movies | MOMDB</title>
