@@ -24,10 +24,16 @@ Author: projectGeorge (Jorge Repullo)
     overflow: hidden;
 }
 
-.movie-link:hover .title {
-    color: #3273dc;
-}
-
 .rounded-corners {
     border-radius: 8px;
+}
+
+/* Estilos para el banner en user.jsp */
+.user-page-banner {
+    background-color: #5B3A7B  !important;
+}
+
+.user-page-banner .title,
+.user-page-banner .subtitle {
+    color: white !important;
 }

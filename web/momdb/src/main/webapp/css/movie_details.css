@@ -1,0 +1,38 @@
+body {
+    background-color: #5B3A7B ;
+    color: white; /* Color de texto predeterminado para el cuerpo */
+}
+
+.movie-details-container {
+    display: flex;
+    margin-top: 2rem;
+}
+
+.movie-poster-column {
+    flex: 0 0 25%; /* Aproximadamente 1/4, puedes ajustar a 30% si quieres menos de 1/3 */
+    position: sticky;
+    top: 2rem; /* Ajusta esto para dejar un margen superior */
+    height: fit-content;
+    padding: 1rem;
+}
+
+.movie-details-content {
+    flex: 1;
+    padding: 1rem;
+    margin-left: 2rem; /* Espacio entre la imagen y el contenido */
+}
+
+.movie-details-box {
+    background-color: #333; /* Un gris oscuro para los recuadros, más sutil */
+    padding: 2rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+.movie-info-tag {
+    color: lightgray; /* Color para el texto de las etiquetas */
+}
+
+.rounded-corners {
+    border-radius: 8px;
+} 

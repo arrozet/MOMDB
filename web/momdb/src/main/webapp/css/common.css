@@ -58,3 +58,39 @@ input[type="checkbox"] + label {
 } */
 
 /* Estilos para otros elementos comunes como header, footer, etc. irían aquí */
+
+.navbar.is-info {
+    background-color: #f489c0;
+}
+
+.navbar-item, .navbar-link {
+    color: white !important; /* Texto blanco para los elementos de la barra de navegación */
+}
+
+.navbar-item:hover, .navbar-item.is-hoverable:hover .navbar-link,
+.navbar-link:hover,
+.navbar-dropdown .navbar-item:hover, .navbar-dropdown a.navbar-item:hover {
+    background-color: #BD6290  !important;
+    color: white !important; /* Asegura que el texto siga siendo blanco */
+}
+
+/* Estilos para la barra de búsqueda en user.jsp */
+.button.is-info {
+    background-color: #f489c0 !important;
+    color: white !important; /* Texto blanco */
+}
+
+.input.is-info::placeholder {
+    color: rgba(255, 255, 255, 0.7) !important; /* Placeholder blanco semi-transparente */
+}
+
+.user.input.is-info:focus,
+.user.input.is-info.is-focused,
+.user.input.is-info:active {
+    border-color: #f489c0 !important;
+    box-shadow: 0 0 0 0.125em rgb(182, 37, 111) !important; /* Sombra sutil al enfocar */
+}
+
+.button.is-info:hover {
+    background-color: #BD6290 !important;
+}

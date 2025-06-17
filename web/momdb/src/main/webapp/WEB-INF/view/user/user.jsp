@@ -15,14 +15,14 @@ Author: projectGeorge (Jorge Repullo)
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
-<body class="has-background-white-ter">
+<body style="background-color: #5B3A7B;">
 <jsp:include page="cabecera_user.jsp" />
 
 <%
     List<MovieDTO> movies = (List<MovieDTO>) request.getAttribute("movies");
 %>
 
-<section class="hero is-light is-small"> <%-- Hero es básicamente para los títulos --%>
+<section class="hero is-light is-small user-page-banner"> <%-- Hero es básicamente para los títulos --%>
     <div class="hero-body">
         <div class="container has-text-centered">
             <h1 class="title">MOMDB</h1>
@@ -38,7 +38,7 @@ Author: projectGeorge (Jorge Repullo)
                 <form:form method="POST" action="/user/filtrar" modelAttribute="filtro">
                     <div class="field has-addons">
                         <div class="control is-expanded">
-                            <form:input path="texto" class="input is-info has-background-grey" placeholder="Search movies..."/>
+                            <form:input path="texto" class="user input is-info has-background-grey" placeholder="Search movies..."/>
                         </div>
                         <div class="control">
                             <form:button class="button is-info">

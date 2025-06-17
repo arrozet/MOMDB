@@ -54,7 +54,7 @@ public class UserController extends BaseController{
         }
         model.addAttribute("movies", movies);
         model.addAttribute("filtro", filtro);
-        return "user";
+        return "user/user";
     }
 
     @GetMapping("/movie")
@@ -71,7 +71,7 @@ public class UserController extends BaseController{
 
         model.addAttribute("generos", movie.getGeneros());
         model.addAttribute("movie", movie);
-        return "movie_details";
+        return "user/movie_details";
     }
 
     private boolean checkAuth(HttpSession session, Model model) {
