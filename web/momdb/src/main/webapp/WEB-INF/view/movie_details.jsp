@@ -13,11 +13,11 @@ Author: projectGeorge (Jorge Repullo)
 <%
     MovieDTO movie = (MovieDTO) request.getAttribute("movie");
     List<GenreDTO> generos = (List<GenreDTO>) request.getAttribute("generos");
-    List<CrewDTO> crewMembers = (List<CrewDTO>) request.getAttribute("crew");
 %>
 <head>
     <title>Movie Details | MOMDB</title>
     <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/movie_details.css">
     <meta name="viewport" content="width=device-width, initial-scale=1"> <%-- Importante para responsive con Bulma --%>
 </head>
 
@@ -106,10 +106,61 @@ Author: projectGeorge (Jorge Repullo)
     </div>
 
     <div class="container">
-        <h2>Main Characters</h2>
+        <div class="box has-background-grey">
+            <div class="columns">
+                <div class="column">
+                    <h2 class="title is-4 mb-4">Main Characters</h2>
+                    <% if (movie.getEquipo() != null && !movie.getEquipo().isEmpty()) {
+                        boolean hasActors = false;
+                        for (CrewDTO crew : movie.getEquipo()) {
+                            if (crew.getRol().equals("Actor")) {
+                                hasActors = true;
+                                for (CharacterDTO character : crew.getPersonajes()) {
+                    %>
+                        <p class="mb-3">
+                            <strong><%= character.getCharacterName() %></strong> - <%= crew.getPersona() %>
+                        </p>
+                    <%
+                                }
+                            }
+                        }
+                        if (!hasActors) {
+                    %>
+                        <p class="has-text-grey">No character information available</p>
+                    <%
+                        }
+                    } else {
+                    %>
+                        <p class="has-text-grey">No character information available</p>
+                    <% } %>
+                </div>
 
-
-        <h2>Crew Members</h2>
+                <div class="column">
+                    <h2 class="title is-4 mb-4">Crew Members</h2>
+                    <% if (movie.getEquipo() != null && !movie.getEquipo().isEmpty()) {
+                        boolean hasCrew = false;
+                        for (CrewDTO crew : movie.getEquipo()) {
+                            if (!crew.getRol().equals("Actor")) {
+                                hasCrew = true;
+                    %>
+                        <p class="mb-3">
+                            <%= crew.getPersona() %> - <%= crew.getRol() %>
+                        </p>
+                    <%
+                            }
+                        }
+                        if (!hasCrew) {
+                    %>
+                        <p class="has-text-grey">No crew information available</p>
+                    <%
+                        }
+                    } else {
+                    %>
+                        <p class="has-text-grey">No crew information available</p>
+                    <% } %>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 

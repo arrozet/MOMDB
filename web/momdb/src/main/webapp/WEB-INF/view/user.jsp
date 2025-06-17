@@ -58,25 +58,20 @@ Author: projectGeorge (Jorge Repullo)
                 for (MovieDTO movie: movies) {
             %>
             <div class="column is-6-mobile is-4-tablet is-3-desktop is-2-widescreen">
-                <div class="card movie-card has-background-grey">
-                    <div class="card-content">
-                        <div class="content has-text-centered">
-                            <a href="/user/movie?id=<%= movie.getId() %>" class="movie-link">
-                                <div class="movie-poster mb-2">
-                                    <% if (movie.getImageLink() != null && !movie.getImageLink().isEmpty()) { %>
-                                    <figure class="image is-2by3">
-                                        <img src="<%= movie.getImageLink() %>" alt="Póster de <%= movie.getTitulo() %>">
-                                    </figure>
-                                    <% } else { %>
-                                    <span class="icon is-large has-text-info">
-                                        <i class="fas fa-film fa-3x"></i>
-                                    </span>
-                                    <% } %>
-                                </div>
-                                <p class="title is-5"><%= movie.getTitulo() %></p>
-                            </a>
+                <div class="movie-card">
+                    <a href="/user/movie?id=<%= movie.getId() %>" class="movie-link">
+                        <div class="movie-poster">
+                            <% if (movie.getImageLink() != null && !movie.getImageLink().isEmpty()) { %>
+                            <figure class="image is-2by3">
+                                <img src="<%= movie.getImageLink() %>" alt="Póster de <%= movie.getTitulo() %>" class="rounded-corners">
+                            </figure>
+                            <% } else { %>
+                            <span class="icon is-large has-text-info">
+                                <i class="fas fa-film fa-3x"></i>
+                            </span>
+                            <% } %>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
             <%

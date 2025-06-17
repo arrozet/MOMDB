@@ -3,6 +3,7 @@ package es.uma.taw.momdb.entity;
 import es.uma.taw.momdb.dto.DTO;
 import es.uma.taw.momdb.dto.GenreDTO;
 import es.uma.taw.momdb.dto.MovieDTO;
+import es.uma.taw.momdb.dto.CrewDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -141,6 +142,16 @@ public class Movie implements Serializable, DTO<MovieDTO> {
         movie.setGeneros(listaGeneros);
         movie.setGeneroIds(listaGeneroIds);
 
+        List<CrewDTO> listaEquipo = new ArrayList<>();
+        List<Integer> listaEquipoIds = new ArrayList<>();
+
+        // Convertir el Set de Crew a List de CrewDTO
+        this.crews.forEach((final Crew crew) -> {
+            listaEquipo.add(crew.toDTO());
+            listaEquipoIds.add(crew.getId());
+        });
+        movie.setEquipo(listaEquipo);
+        movie.setEquipoIds(listaEquipoIds);
 
         return movie;
     }

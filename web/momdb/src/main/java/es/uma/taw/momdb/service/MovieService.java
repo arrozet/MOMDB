@@ -1,5 +1,3 @@
-
-
 package es.uma.taw.momdb.service;
 
 import es.uma.taw.momdb.dao.GenreRepository;
@@ -45,7 +43,6 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
 
     public MovieDTO findPeliculaById (int id) {
         Movie movie = this.movieRepository.findById(id).orElse(null);
-
         return movie != null ? movie.toDTO() : null;
     }
     public void saveMovie (MovieDTO movie) {
