@@ -3,7 +3,6 @@ package es.uma.taw.momdb.controller;
 import es.uma.taw.momdb.dao.MovieRepository;
 import es.uma.taw.momdb.dto.UserDTO;
 import es.uma.taw.momdb.entity.Movie;
-import es.uma.taw.momdb.entity.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,7 +25,6 @@ public class AnalystController extends BaseController {
 
     @Autowired private MovieRepository movieRepository;
 
-
     @GetMapping("/")
     public String doInit(HttpSession session, Model model) {
         UserDTO user = (UserDTO) session.getAttribute("user");
@@ -34,23 +32,33 @@ public class AnalystController extends BaseController {
             model.addAttribute("error", "You are not authorized to access this page.");
             return "redirect:/";
         } else {
-            // Aquí puedes añadir lógica específica para el analista
-            List<Movie> movies = this.movieRepository.findAll();
+            List<Movie> movies = this.movieRepository.findAll(); // Cargar todas
+
             model.addAttribute("movies", movies);
-             model.addAttribute("user", user);
-            return "analyst";
+            model.addAttribute("user", user);
+            return "analyst/analyst";
         }
     }
+
     @PostMapping("/filtrar")
     public String doFiltrar(HttpSession session, Model model, @RequestParam("filter") String filter) {
         UserDTO user = (UserDTO) session.getAttribute("user");
         if (user == null || !user.getRolename().equals("analista")) {
             model.addAttribute("error", "You are not authorized to access this page.");
         }
-        List<Movie> filteredMovies = this.movieRepository.filterByTitle(filter);
-        model.addAttribute("movies", filteredMovies);
+
+        List<Movie> movies;
+        if (filter == null || filter.trim().isEmpty()) {
+            movies = this.movieRepository.findAll(); // Cargar todas
+        } else {
+            movies = this.movieRepository.filterByTitle(filter);
+        }
+
+        model.addAttribute("movies", movies);
         model.addAttribute("user", user);
-        return "analyst";
+        model.addAttribute("currentFilter", filter);
+        return "analyst/analyst";
     }
-    //TODO: Filtrar por nombre todas las películas, entrar a una parte de analisis por película
+
+    //TODO: entrar a una parte de analisis por película
 }
