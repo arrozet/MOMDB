@@ -29,6 +29,34 @@ parse_json_safely <- function(json_string) {
     return(tibble()) # O NA
   })
 }
+
+# --- MUESTREO DEL 10% DE LOS DATOS ---
+# Para mantener la coherencia, el muestreo se basa en las películas.
+# 1. Seleccionamos un 10% de las películas de forma aleatoria.
+# 2. Filtramos tanto las películas como los créditos para quedarnos solo con los datos de ese 10%.
+# Usamos una semilla para que el muestreo sea reproducible.
+set.seed(42) # Semilla para reproducibilidad
+
+cat("--- Realizando muestreo del 10% de las películas ---\n")
+cat("Número de películas antes del muestreo:", nrow(raw_movies), "\n")
+cat("Número de créditos antes del muestreo:", nrow(raw_credits), "\n\n")
+
+# Obtenemos los IDs del 10% de las películas
+sampled_movie_ids <- raw_movies |>
+  sample_frac(0.10) |>
+  pull(id)
+
+# Filtramos el dataframe de películas
+raw_movies <- raw_movies |>
+  filter(id %in% sampled_movie_ids)
+
+# Filtramos el dataframe de créditos
+raw_credits <- raw_credits |>
+  filter(movie_id %in% sampled_movie_ids)
+
+cat("--- Muestreo finalizado ---\n")
+cat("Número de películas después del muestreo:", nrow(raw_movies), "\n")
+cat("Número de créditos después del muestreo:", nrow(raw_credits), "\n")
 ```
 ## Enriquecer raw_movies con posters
 
