@@ -11,7 +11,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "spokenlanguage")
-public class Spokenlanguage implements EntityWithNameAndId{
+public class Spokenlanguage implements EntityWithNameAndId<String>{
     @Id
     @Column(name = "iso_639_1", nullable = false, length = 5)
     private String iso6391;

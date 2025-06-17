@@ -1,7 +1,6 @@
 package es.uma.taw.momdb.entity;
 
 import es.uma.taw.momdb.dto.DTO;
-import es.uma.taw.momdb.dto.UserDTO;
 import es.uma.taw.momdb.dto.UserRoleDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -15,7 +14,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "userrole")
-public class UserRole implements EntityWithNameAndId, Serializable, DTO<UserRoleDTO> {
+public class UserRole implements EntityWithNameAndId<Integer>, Serializable, DTO<UserRoleDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
