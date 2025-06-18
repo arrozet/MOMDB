@@ -24,6 +24,7 @@
 %>
 <body>
 <jsp:include page="../analyst/cabecera_analyst.jsp" />
+<jsp:include page="../banner.jsp" />
 
 <section class="section">
     <div class="container">
