@@ -23,12 +23,30 @@
     List<Movie> movies = (List<Movie>) request.getAttribute("movies");
 %>
 <body>
-<jsp:include page="../user/cabecera_user.jsp" />
+<jsp:include page="../analyst/cabecera_analyst.jsp" />
 
 <section class="section">
     <div class="container">
 
         <h1>Welcome back, <%= myUser.getUsername() %>!<br></h1>
+
+        <div class="dropdown mb-4" id="tools-dropdown">
+            <div class="dropdown-trigger">
+                <button class="button" aria-haspopup="true" aria-controls="dropdown-menu-tools">
+                    <span>Tools</span>
+                    <span class="icon is-small">
+                        <i class="fas fa-angle-down" aria-hidden="true"></i>
+                    </span>
+                </button>
+            </div>
+            <div class="dropdown-menu" id="dropdown-menu-tools" role="menu">
+                <div class="dropdown-content">
+                    <a href="#" class="dropdown-item">Tool 1 (Coming Soon)</a>
+                    <a href="#" class="dropdown-item">Tool 2 (Coming Soon)</a>
+                    <a href="#" class="dropdown-item">Tool 3 (Coming Soon)</a>
+                </div>
+            </div>
+        </div>
 
         <h2>Available movies to analyze</h2>
         <form method="POST" action="/analyst/filtrar">
@@ -87,7 +105,24 @@
     </div>
 </section>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var dropdown = document.querySelector('#tools-dropdown');
+        var dropdownTrigger = dropdown.querySelector('.dropdown-trigger');
 
+        dropdownTrigger.addEventListener('click', function (event) {
+            event.stopPropagation();
+            dropdown.classList.toggle('is-active');
+        });
+
+        document.addEventListener('click', function(event) {
+            // Close dropdown if click is outside
+            if (!dropdown.contains(event.target)) {
+                dropdown.classList.remove('is-active');
+            }
+        });
+    });
+</script>
 
 </body>
 </html>
