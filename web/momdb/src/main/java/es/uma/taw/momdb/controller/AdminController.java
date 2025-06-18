@@ -108,15 +108,8 @@ public class AdminController extends BaseController {
      * @param model   El modelo para la vista.
      * @return {@code true} si el usuario es administrador, {@code false} en caso contrario.
      */
-    private Boolean checkAuth(HttpSession session, Model model) {
-        if(!isAdmin(session)) {
-            /*
-            TODO: este error no se ve en la página de login. Supongo que es porque model se borra al hacer redirect. Preguntar
-            */
-            model.addAttribute("error", "You are not authorized to access this page.");
-            return false;
-        }
-        return true;
+    private boolean checkAuth(HttpSession session, Model model) {
+        return super.checkAuth(session, model, "admin");
     }
 
     /**

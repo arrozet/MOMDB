@@ -2,7 +2,6 @@ package es.uma.taw.momdb.controller;
 
 import es.uma.taw.momdb.dto.GenreDTO;
 import es.uma.taw.momdb.dto.MovieDTO;
-import es.uma.taw.momdb.dto.UserDTO;
 import es.uma.taw.momdb.service.GeneroService;
 import es.uma.taw.momdb.service.MovieService;
 import es.uma.taw.momdb.ui.Filtro;
@@ -16,7 +15,7 @@ import java.util.List;
 
 /*
  * @author - projectGeorge (Jorge Repullo)
- * @co-authors -
+ * @co-authors - arrozet (Rubén Oliva - refactorización para auth)
  */
 
 @Controller
@@ -85,13 +84,16 @@ public class UserController extends BaseController{
         return "user/movie_details";
     }
 
+    /**
+     * Comprueba si el usuario en sesión tiene el rol de usuario.
+     * Utiliza el método centralizado de BaseController para realizar la verificación.
+     * Si la autorización es exitosa, añade automáticamente el usuario al modelo.
+     *
+     * @param session La sesión HTTP actual.
+     * @param model El modelo para la vista.
+     * @return {@code true} si el usuario tiene el rol "usuario", {@code false} en caso contrario.
+     */
     private boolean checkAuth(HttpSession session, Model model) {
-        UserDTO user = (UserDTO) session.getAttribute("user");
-        if (user == null) {
-            model.addAttribute("error", "No estás autorizado para acceder a esta página.");
-            return false;
-        }
-        model.addAttribute("user", user);
-        return true;
+        return super.checkAuth(session, model, "usuario");
     }
 }
