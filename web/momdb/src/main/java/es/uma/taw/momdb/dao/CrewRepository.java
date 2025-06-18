@@ -16,6 +16,10 @@ public interface CrewRepository extends JpaRepository<Crew, Integer> {
     @Query("select c from Crew c where c.person.name like concat('%', :name, '%')")
     public List<Crew> filterByName(@Param("name") String name);
 
-    @Query("select c from Crew c where c.crewRole.id = 13 ")
+    @Query("select c from Crew c where c.crewRole.role='Actor' ")
     public List<Crew> filterActors();
+
+    @Query("SELECT c FROM Crew c WHERE c.person.id = :personaId AND c.movie.id = :movieId AND c.crewRole.role='Actor'")
+    List<Crew> findActorByPersonAndMovie(@Param("personaId") int personaId, @Param("movieId") int movieId);
 }
+

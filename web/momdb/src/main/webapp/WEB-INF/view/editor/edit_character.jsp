@@ -17,6 +17,7 @@
 <%
     MovieDTO movie = (MovieDTO) request.getAttribute("movie");
     CrewDTO crew = (CrewDTO) request.getAttribute("crew");
+    CharacterDTO character = (CharacterDTO) request.getAttribute("character");
 %>
 <body class="has-background-white-ter">
 <jsp:include page="cabecera_editor.jsp" />
@@ -27,22 +28,10 @@
 
         <form:form modelAttribute="crew" action="/editor/movie/character/save" method="post">
             <form:hidden path="id" value="<%=crew.getId()%>"/>
+            <form:hidden path="personajeId" value="<%=character.getId()%>"/>
             <div class="field">
                 <label class="label">Character Name</label>
-                <div class="control">
-                    <%
-                        int index = 0;
-                        for(CharacterDTO character: crew.getPersonajes()){
-                            String pathName = "personajes[" + index + "].characterName";
-                    %>
-                    <form:input path="<%=pathName%>"
-                                class="input"
-                                required="required"/>
-                    <%
-                            index++;
-                        }
-                    %>
-                </div>
+                <%=character.getCharacterName()%>
             </div>
 
             <div class="field">

@@ -32,48 +32,56 @@
         </div>
 
         <h2 class="title is-5">Characters</h2>
-        
+
         <div class="table-container">
             <%
                 if(movie.getEquipo() !=null){
             %>
             <table class="table is-fullwidth is-striped">
                 <thead>
-                    <tr>
-                        <th>Character Name</th>
-                        <th>Actor</th>
-                        <th>Actions</th>
-                    </tr>
+                <tr>
+                    <th>Character Name</th>
+                    <th>Actor</th>
+                    <th>Actions</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <%
-                        for (CrewDTO character : movie.getEquipo()) {
-                    if(!character.getPersonajes().isEmpty()){%>
-                        <tr>
-                            <td><%
-                                for(CharacterDTO personaje: character.getPersonajes()){%>
-                                <%= personaje.getCharacterName() %></td>
-                            <%}%>
-                            <td><%= character.getPersona() %></td>
-                            <td>
-                                <a href="/editor/movie/character/edit?id=<%=character.getId()%>"
-                                   class="button is-small is-info">
-                                    <span class="icon">
-                                        <i class="fas fa-edit"></i>
-                                    </span>
-                                    <span>Edit</span>
-                                </a>
-                            </td>
-                        </tr>
-                    <% }
+                <%
+                    for (CrewDTO character : movie.getEquipo()) {
+                        if(!character.getPersonajes().isEmpty()){%>
+                <% int index=0;
+                    for(CharacterDTO personaje: character.getPersonajes()){%>
+                <tr>
+                    <td><%= personaje.getCharacterName() %></td>
+                    <td><%= character.getPersona() %></td>
+                    <td>
+                        <a href="/editor/movie/character/edit?id=<%=character.getId()%>&characterId=<%=personaje.getId()%>"
+                           class="button is-small is-info">
+                                                <span class="icon">
+                                                    <i class="fas fa-edit"></i>
+                                                </span>
+                            <span>Edit</span>
+                        </a>
+                        <a href="/editor/movie/character/delete?characterId=<%=personaje.getId()%>&movieId=<%=movie.getId()%>"
+                           class="button is-small is-danger">
+                                                <span class="icon">
+                                                    <i class="fas fa-trash"></i>
+                                                </span>
+                            <span>Delete</span>
+                        </a>
+                    </td>
+                </tr>
+                <%
+                                index++;
+                            } //for
+                        }
                     }
-                    }else{
-                    %>
+                } else{
+                %>
                 There are no characters for this movie
                 <%
                     }
                 %>
-
                 </tbody>
             </table>
         </div>

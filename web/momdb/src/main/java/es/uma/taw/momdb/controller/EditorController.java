@@ -3,10 +3,7 @@ package es.uma.taw.momdb.controller;
 
 import es.uma.taw.momdb.dto.*;
 
-import es.uma.taw.momdb.service.CrewService;
-import es.uma.taw.momdb.service.GeneroService;
-import es.uma.taw.momdb.service.MovieService;
-import es.uma.taw.momdb.service.PersonService;
+import es.uma.taw.momdb.service.*;
 import es.uma.taw.momdb.ui.Filtro;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +33,9 @@ public class EditorController extends BaseController{
 
     @Autowired
     private PersonService personService;
+
+    @Autowired
+    private CharacterService characterService;
 
     @GetMapping("/")
     public String doInit(HttpSession session, Model model) {
@@ -165,18 +165,20 @@ public class EditorController extends BaseController{
     }
 
     @GetMapping("/movie/character/edit")
-    public String editCharacter(@RequestParam("id") Integer id, Model model, HttpSession session) {
+    public String editCharacter(@RequestParam("id") Integer id, @RequestParam("characterId") Integer characterId, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
         }
 
         CrewDTO crew = this.crewService.findCrewById(id);
         List<PersonDTO> people = this.personService.findAll();
+        CharacterDTO character = this.characterService.findById(characterId);
 
         model.addAttribute("movie", this.movieService.findPeliculaById(crew.getPeliculaId()));
         model.addAttribute("people", people);
 
         model.addAttribute("crew", crew);
+        model.addAttribute("character", character);
 
         return "/editor/edit_character";
     }
@@ -189,6 +191,17 @@ public class EditorController extends BaseController{
 
         this.crewService.saveCrew(crew);
         return "redirect:/editor/movie/characters?id=" + crew.getPeliculaId();
+    }
+
+    
+    @GetMapping("/movie/character/delete")
+    public String deleteCharacter(@RequestParam("characterId") int characterId, @RequestParam("movieId") int movieId, Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        this.crewService.deleteCharacter(characterId);
+        return "redirect:/editor/movie/characters?id=" + movieId;
     }
 
 }
