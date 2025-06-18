@@ -58,7 +58,7 @@ public class AdminController extends BaseController {
         // Resto de datos necesarios
         handleData(this.adminService.getUsersForm(), genericEntity, model);
 
-        return "admin";
+        return "admin/admin";
     }
 
     /**
