@@ -4,9 +4,12 @@ import es.uma.taw.momdb.dao.GenreRepository;
 import es.uma.taw.momdb.dao.MovieRepository;
 import es.uma.taw.momdb.dto.MovieDTO;
 import es.uma.taw.momdb.entity.Movie;
+import es.uma.taw.momdb.ui.Filtro;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 
@@ -41,8 +44,20 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
         return this.entity2DTO(movies);
     }
 
-    public List<MovieDTO> listarPeliculasPorGenero (List<Integer> generoIds) {
-        List<Movie> movies = this.movieRepository.filterByGenresId(generoIds);
+    public List<MovieDTO> listarPeliculasBySelectFilters(Filtro filtro) {
+        BigDecimal popMin = null, popMax = null;
+        if (filtro.getPopularityRange() != null && !filtro.getPopularityRange().isBlank()) {
+            String[] parts = filtro.getPopularityRange().split("-");
+            popMin = new BigDecimal(parts[0]);
+            popMax = new BigDecimal(parts[1]);
+        }
+        List<Movie> movies = movieRepository.findByFiltros(
+                filtro.getGeneroId(),
+                filtro.getYear(),
+                filtro.getRating(),
+                popMin,
+                popMax
+        );
         return this.entity2DTO(movies);
     }
 

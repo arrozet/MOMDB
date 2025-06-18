@@ -53,12 +53,12 @@ public class UserController extends BaseController{
         if (filtro == null) {
             filtro = new Filtro();
             movies = movieService.listarPeliculas();
-        } else if (!filtro.getGeneroIds().isEmpty()) {
-            movies = movieService.listarPeliculasPorGenero(filtro.getGeneroIds());
-        } else if (!filtro.getTexto().isEmpty()) {
+        } else if (filtro.getTexto() != null && !filtro.getTexto().isBlank()) {
+            // Si hay texto, filtra solo por texto
             movies = movieService.listarPeliculas(filtro.getTexto());
         } else {
-            movies = movieService.listarPeliculas();
+            // Si no hay texto, filtra por los selects
+            movies = movieService.listarPeliculasBySelectFilters(filtro);
         }
 
         List<GenreDTO> generos = this.generoService.listarGeneros();

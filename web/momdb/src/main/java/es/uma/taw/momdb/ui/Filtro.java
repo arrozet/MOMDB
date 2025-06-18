@@ -13,5 +13,8 @@ import java.util.List;
 @Data
 public class Filtro {
     String texto;
-    List<Integer> generoIds;
+    Integer generoId;
+    Integer year;
+    BigDecimal rating;
+    String popularityRange;
 }
