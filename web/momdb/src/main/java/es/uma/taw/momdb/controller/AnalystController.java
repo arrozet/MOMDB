@@ -1,7 +1,6 @@
 package es.uma.taw.momdb.controller;
 
 import es.uma.taw.momdb.dao.MovieRepository;
-import es.uma.taw.momdb.dto.UserDTO;
 import es.uma.taw.momdb.entity.Movie;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ import java.util.List;
 
 /*
  * @author - edugbau (Eduardo González)
- * @co-authors -
+ * @co-authors - arrozet (Rubén Oliva - refactorización para auth)
  */
 
 @Controller
@@ -28,24 +27,19 @@ public class AnalystController extends BaseController {
 
     @GetMapping("/")
     public String doInit(HttpSession session, Model model) {
-        UserDTO user = (UserDTO) session.getAttribute("user");
-        if (user == null || !user.getRolename().equals("analista")) {
-            model.addAttribute("error", "You are not authorized to access this page.");
+        if (!checkAuth(session, model)) {
             return "redirect:/";
-        } else {
-            List<Movie> movies = this.movieRepository.findAll(); // Cargar todas
-
-            model.addAttribute("movies", movies);
-            model.addAttribute("user", user);
-            return "analyst/analyst";
         }
+        List<Movie> movies = this.movieRepository.findAll(); // Cargar todas
+
+        model.addAttribute("movies", movies);
+        return "analyst/analyst";
     }
 
     @PostMapping("/filtrar")
     public String doFiltrar(HttpSession session, Model model, @RequestParam("filter") String filter) {
-        UserDTO user = (UserDTO) session.getAttribute("user");
-        if (user == null || !user.getRolename().equals("analista")) {
-            model.addAttribute("error", "You are not authorized to access this page.");
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
         }
 
         List<Movie> movies;
@@ -56,24 +50,33 @@ public class AnalystController extends BaseController {
         }
 
         model.addAttribute("movies", movies);
-        model.addAttribute("user", user);
         model.addAttribute("currentFilter", filter);
         return "analyst/analyst";
     }
 
     @GetMapping("/movie/{id}")
     public String doShowMovie(@PathVariable("id") Integer id, HttpSession session, Model model) {
-        UserDTO user = (UserDTO) session.getAttribute("user");
-        if (user == null || !user.getRolename().equals("analista")) {
-            model.addAttribute("error", "You are not authorized to access this page.");
+        if (!checkAuth(session, model)) {
             return "redirect:/";
         }
 
         Movie movie = this.movieRepository.findById(id).orElse(null);
 
         model.addAttribute("movie", movie);
-        model.addAttribute("user", user);
         return "analyst/movie_details";
+    }
+
+    /**
+     * Comprueba si el usuario en sesión tiene el rol de analista.
+     * Utiliza el método centralizado de BaseController para realizar la verificación.
+     * Si la autorización es exitosa, añade automáticamente el usuario al modelo.
+     *
+     * @param session La sesión HTTP actual.
+     * @param model El modelo para la vista.
+     * @return {@code true} si el usuario es analista, {@code false} en caso contrario.
+     */
+    private boolean checkAuth(HttpSession session, Model model) {
+        return super.checkAuth(session, model, "analista");
     }
 
     //TODO: entrar a una parte de analisis por película

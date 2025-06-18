@@ -22,6 +22,7 @@ Author: projectGeorge (Jorge Repullo)
 
 .movie-poster {
     overflow: hidden;
+    border-radius: 8px;
 }
 
 .rounded-corners {

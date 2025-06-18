@@ -15,7 +15,7 @@ import java.util.List;
 
 /*
  * @author - Artur797 (Artur Vargas)
- * @co-authors -
+ * @co-authors - arrozet (Rubén Oliva - refactorización para auth)
  */
 
 @Controller
@@ -113,14 +113,17 @@ public class EditorController extends BaseController{
         return handleMovieSection(id, model, session, "editor/movie_reviews");
     }
 
+    /**
+     * Comprueba si el usuario en sesión tiene el rol de editor.
+     * Utiliza el método centralizado de BaseController para realizar la verificación.
+     * Si la autorización es exitosa, añade automáticamente el usuario al modelo.
+     *
+     * @param session La sesión HTTP actual.
+     * @param model El modelo para la vista.
+     * @return {@code true} si el usuario es editor, {@code false} en caso contrario.
+     */
     private boolean checkAuth(HttpSession session, Model model) {
-        UserDTO user = (UserDTO) session.getAttribute("user");
-        if (user == null || !user.getRolename().equals("editor")) {
-            model.addAttribute("error", "No estás autorizado para acceder a esta página.");
-            return false;
-        }
-        model.addAttribute("user", user);
-        return true;
+        return super.checkAuth(session, model, "editor");
     }
 
     @PostMapping("/saveMovie")
