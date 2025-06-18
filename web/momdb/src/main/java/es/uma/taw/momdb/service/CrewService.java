@@ -4,6 +4,7 @@ import es.uma.taw.momdb.dao.CharacterRepository;
 import es.uma.taw.momdb.dao.CrewRepository;
 import es.uma.taw.momdb.dao.MovieRepository;
 import es.uma.taw.momdb.dao.PersonRepository;
+import es.uma.taw.momdb.dao.CrewRoleRepository;
 import es.uma.taw.momdb.dto.CharacterDTO;
 import es.uma.taw.momdb.dto.CrewDTO;
 import es.uma.taw.momdb.entity.Character;
@@ -36,6 +37,9 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
 
     @Autowired
     private CharacterRepository characterRepository;
+
+    @Autowired
+    private CrewRoleRepository crewRoleRepository;
 
     public List<CrewDTO> listarActores () {
         return this.listarActores(null);
@@ -99,7 +103,9 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
                     movie.getCrews().remove(crew);
                     movie.getCrews().add(nuevaCrew);
                     movieRepository.save(movie);
-                    crew.setPerson(nuevaPersona);
+                    personaje.getCrews().add(nuevaCrew);
+                    characterRepository.save(personaje);
+                    //crew.setPerson(nuevaPersona);
                 }else{ //Añado a la otra persona
                     Crew crewNuevoActor = crewsNuevoActor.get(0);
                     Set<Character> characters = crewNuevoActor.getCharacters();
@@ -117,5 +123,41 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
     public void deleteCharacter(int characterId) {
         characterRepository.deleteById(characterId);
     }
+
+    public void addNewCharacter(CrewDTO crewDTO) {
+        Character character = new Character();
+        character.setCharacter(crewDTO.getPersonajeName());
+        characterRepository.save(character);
+
+        Movie movie = movieRepository.findById(crewDTO.getPeliculaId()).orElse(null);
+        Person nuevaPersona = this.personRepository.findById(crewDTO.getPersonaId()).orElse(null);
+        List<Crew> crewsNuevoActor = this.crewRepository.findActorByPersonAndMovie(nuevaPersona.getId(), movie.getId());
+        if(crewsNuevoActor.isEmpty()){ //Creo la crew de la nueva persona
+            Crew nuevaCrew = new Crew();
+            nuevaCrew.setPerson(nuevaPersona);
+            nuevaCrew.setMovie(movie);
+            Set<Character> characters = new LinkedHashSet<>();
+            characters.add(character);
+            nuevaCrew.setCharacters(characters);
+            nuevaCrew.setCrewRole(crewRoleRepository.findAll().stream()
+                    .filter(role -> role.getRole().equals("Actor"))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("No se encontró el rol de Actor")));
+            crewRepository.save(nuevaCrew);
+            movie.getCrews().add(nuevaCrew);
+            movieRepository.save(movie);
+            character.getCrews().add(nuevaCrew); // Actualizamos la relación bidireccional con el personaje
+            characterRepository.save(character);
+        }else{ //Añado a la otra persona
+            Crew crewNuevoActor = crewsNuevoActor.get(0);
+            Set<Character> characters = crewNuevoActor.getCharacters();
+            characters.add(character);
+            crewNuevoActor.setCharacters(characters);
+            character.getCrews().add(crewNuevoActor);
+            characterRepository.save(character);
+            crewRepository.save(crewNuevoActor);
+        }
+    }
+
 
 }

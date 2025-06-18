@@ -204,4 +204,29 @@ public class EditorController extends BaseController{
         return "redirect:/editor/movie/characters?id=" + movieId;
     }
 
+    @GetMapping("/movie/character/new")
+    public String addCharacter(@RequestParam("movieId") int movieId, Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        List<PersonDTO> people = this.personService.findAll();
+
+        model.addAttribute("movie", this.movieService.findPeliculaById(movieId));
+        model.addAttribute("people", people);
+        model.addAttribute("crew", new CrewDTO());
+
+        return "editor/add_character";
+    }
+
+    @PostMapping("/movie/character/add")
+    public String doAddCharacter(@ModelAttribute("crew") CrewDTO crew, Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        this.crewService.addNewCharacter(crew);
+        return "redirect:/editor/movie/characters?id=" + crew.getPeliculaId();
+    }
+
 }

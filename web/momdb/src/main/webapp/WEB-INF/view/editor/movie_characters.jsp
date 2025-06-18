@@ -87,7 +87,7 @@
         </div>
 
         <div class="mt-4">
-            <a href="/editor/movie/character/new?id=<%=movie.getId()%>" class="button is-primary">
+            <a href="/editor/movie/character/new?movieId=<%=movie.getId()%>" class="button is-primary">
                 <span class="icon">
                     <i class="fas fa-plus"></i>
                 </span>
