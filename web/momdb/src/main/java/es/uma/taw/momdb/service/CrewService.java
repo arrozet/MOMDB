@@ -4,7 +4,6 @@ import es.uma.taw.momdb.dao.CharacterRepository;
 import es.uma.taw.momdb.dao.CrewRepository;
 import es.uma.taw.momdb.dao.MovieRepository;
 import es.uma.taw.momdb.dao.PersonRepository;
-import es.uma.taw.momdb.dto.CharacterDTO;
 import es.uma.taw.momdb.dto.CrewDTO;
 import es.uma.taw.momdb.entity.Character;
 import es.uma.taw.momdb.entity.Crew;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /*
  * @author - Artur797 (Artur Vargas)
