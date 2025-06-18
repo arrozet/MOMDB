@@ -63,19 +63,21 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
 
     public void saveCrew(CrewDTO crewDTO) {
         Crew crew = this.crewRepository.findById(crewDTO.getId()).orElse(null);
+
         //Actualizar la crew
         if(crew.getPerson().getId()!=crewDTO.getPersonaId()){
             Person nuevaPersona = this.personRepository.findById(crewDTO.getPersonaId()).orElse(null);
+
             List<Crew> crewsNuevoActor = this.crewRepository.findActorByPersonAndMovie(nuevaPersona.getId(), crew.getMovie().getId());
             Movie movie = movieRepository.findById(crew.getMovie().getId()).orElse(null);
+
             Character personaje = characterRepository.findById(crewDTO.getPersonajeId()).orElse(null);
-            
+
             if(crew.getCharacters().size()==1){
                 if(crewsNuevoActor.isEmpty()){ //Cambio a la persona (es lo comun)
                     crew.setPerson(nuevaPersona);
                     crewRepository.save(crew);
                 }else{ //borro la crew de la persona y añado el personaje a la lista de la nueva persona
-
                     crewRepository.delete(crew);
                     Crew crewNuevoActor = crewsNuevoActor.get(0);
                     Set<Character> characters = crewNuevoActor.getCharacters();
@@ -84,10 +86,9 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
                     personaje.getCrews().add(crewNuevoActor);
                     characterRepository.save(personaje);
                     crewRepository.save(crewNuevoActor);
-
                 }
             }else{
-                crew.getCharacters().remove(personaje); ////borro la crew de la persona
+                crew.getCharacters().remove(personaje); //borro la crew de la persona
                 crewRepository.save(crew);
                 if(crewsNuevoActor.isEmpty()){ //Creo la crew de la nueva persona
                     personaje.getCrews().remove(crew);
@@ -105,7 +106,6 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
                     movieRepository.save(movie);
                     personaje.getCrews().add(nuevaCrew);
                     characterRepository.save(personaje);
-                    //crew.setPerson(nuevaPersona);
                 }else{ //Añado a la otra persona
                     Crew crewNuevoActor = crewsNuevoActor.get(0);
                     Set<Character> characters = crewNuevoActor.getCharacters();

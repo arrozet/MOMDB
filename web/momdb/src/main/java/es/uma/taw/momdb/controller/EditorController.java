@@ -128,8 +128,13 @@ public class EditorController extends BaseController{
 
     @PostMapping("/saveMovie")
     public String doGuardar (@ModelAttribute("movie") MovieDTO movie) {
-
-        this.movieService.saveMovie(movie);
+        if (movie.getId() == -1) {
+            // Es una nueva película
+            this.movieService.crearPelicula(movie);
+        } else {
+            // Es una edición
+            this.movieService.saveMovie(movie);
+        }
 
         return "redirect:/editor/";
     }
@@ -230,6 +235,19 @@ public class EditorController extends BaseController{
 
         this.crewService.addNewCharacter(crew);
         return "redirect:/editor/movie/characters?id=" + crew.getPeliculaId();
+    }
+
+    @GetMapping("/newMovie")
+    public String newMovie(Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        List<GenreDTO> generos = this.generoService.listarGeneros();
+        model.addAttribute("generos", generos);
+        model.addAttribute("movie", new MovieDTO());
+
+        return "editor/movie_editor";
     }
 
 }

@@ -26,9 +26,10 @@
 
 <div class="section">
     <div class="container box">
-        <h1 class="title is-4">Edit movie: <%=movie.getTitulo()%></h1>
 
-        <div class="tabs is-centered">
+        <% if(movie.getId() != -1) { %>
+        <h1 class="title is-4">Edit movie: <%=movie.getTitulo()%></h1>
+            <div class="tabs is-centered">
             <ul>
                 <li class="is-active"><a>General</a></li>
                 <li><a href="/editor/movie/characters?id=<%=movie.getId()%>">Characters</a></li>
@@ -36,6 +37,11 @@
                 <li><a href="/editor/movie/reviews?id=<%=movie.getId()%>">Reviews</a></li>
             </ul>
         </div>
+        <% }else{ %>
+        <h1 class="title is-4">Create movie</h1>
+        <%}%>
+
+        
 
         <form:form method="post" action="/editor/saveMovie" modelAttribute="movie">
             <form:hidden path="id"/>

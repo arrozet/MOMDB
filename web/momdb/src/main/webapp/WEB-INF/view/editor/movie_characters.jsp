@@ -49,8 +49,7 @@
                 <%
                     for (CrewDTO character : movie.getEquipo()) {
                         if(!character.getPersonajes().isEmpty()){%>
-                <% int index=0;
-                    for(CharacterDTO personaje: character.getPersonajes()){%>
+                <%for(CharacterDTO personaje: character.getPersonajes()){%>
                 <tr>
                     <td><%= personaje.getCharacterName() %></td>
                     <td><%= character.getPersona() %></td>
@@ -72,7 +71,6 @@
                     </td>
                 </tr>
                 <%
-                                index++;
                             } //for
                         }
                     }

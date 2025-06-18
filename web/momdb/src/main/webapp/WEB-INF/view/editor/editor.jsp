@@ -38,8 +38,8 @@
 
 <section class="section">
     <div class="container">
-        <div class="columns">
-            <div class="column is-half is-offset-one-quarter">
+        <div class="columns is-multiline">
+            <div class="column is-10">
                 <form:form method="POST" action="/editor/filtrar" modelAttribute="filtro">
                     <div class="field has-addons">
                         <div class="control is-expanded">
@@ -55,6 +55,14 @@
                         </div>
                     </div>
                 </form:form>
+            </div>
+            <div class="column is-2 has-text-right">
+                <a href="/editor/newMovie" class="button is-success">
+                    <span class="icon">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                    <span>New Movie</span>
+                </a>
             </div>
         </div>
 
