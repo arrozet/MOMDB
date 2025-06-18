@@ -74,7 +74,7 @@ public class Movie implements Serializable, DTO<MovieDTO> {
     @Column(name = "vote_count")
     private Integer voteCount;
 
-    @OneToMany(mappedBy = "movie")
+    @OneToMany(mappedBy = "movie", fetch = FetchType.EAGER)
     private Set<Crew> crews = new LinkedHashSet<>();
 
     @ManyToMany
