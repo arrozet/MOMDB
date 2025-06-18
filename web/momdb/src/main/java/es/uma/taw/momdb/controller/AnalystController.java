@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,6 +59,21 @@ public class AnalystController extends BaseController {
         model.addAttribute("user", user);
         model.addAttribute("currentFilter", filter);
         return "analyst/analyst";
+    }
+
+    @GetMapping("/movie/{id}")
+    public String doShowMovie(@PathVariable("id") Integer id, HttpSession session, Model model) {
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        if (user == null || !user.getRolename().equals("analista")) {
+            model.addAttribute("error", "You are not authorized to access this page.");
+            return "redirect:/";
+        }
+
+        Movie movie = this.movieRepository.findById(id).orElse(null);
+
+        model.addAttribute("movie", movie);
+        model.addAttribute("user", user);
+        return "analyst/movie_details";
     }
 
     //TODO: entrar a una parte de analisis por película
