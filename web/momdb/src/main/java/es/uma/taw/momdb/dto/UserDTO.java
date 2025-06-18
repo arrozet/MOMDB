@@ -1,6 +1,7 @@
 package es.uma.taw.momdb.dto;
 
 import lombok.Data;
+import java.util.List;
 
 /*
  * @author - arrozet (Rubén Oliva)
@@ -14,4 +15,5 @@ public class UserDTO {
     String rolename;
     String username;
     String profilePic;
+    List<MovieDTO> favoriteMovies;
 }
