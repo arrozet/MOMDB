@@ -37,6 +37,9 @@ public class EditorController extends BaseController{
     @Autowired
     private CharacterService characterService;
 
+    @Autowired
+    private ReviewService reviewService;
+
     @GetMapping("/")
     public String doInit(HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -110,7 +113,26 @@ public class EditorController extends BaseController{
         if (!checkAuth(session, model)) {
             return "redirect:/";
         }
-        return handleMovieSection(id, model, session, "editor/movie_reviews");
+
+        MovieDTO movie = this.movieService.findPeliculaById(id);
+        
+        List<ReviewDTO> reviews = this.reviewService.getReviewsByMovieId(id);
+        model.addAttribute("movie", movie);
+        model.addAttribute("reviews", reviews);
+        return "editor/movie_reviews";
+    }
+
+    @GetMapping("/movie/review/delete")
+    public String deleteReview(@RequestParam("movieId") Integer movieId, 
+                             @RequestParam("userId") Integer userId,
+                             HttpSession session, 
+                             Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        this.reviewService.deleteReview(movieId, userId);
+        return "redirect:/editor/movie/reviews?id=" + movieId;
     }
 
     /**

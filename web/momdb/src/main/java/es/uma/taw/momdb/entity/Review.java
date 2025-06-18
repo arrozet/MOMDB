@@ -1,5 +1,8 @@
 package es.uma.taw.momdb.entity;
 
+import es.uma.taw.momdb.dto.DTO;
+import es.uma.taw.momdb.dto.ReviewDTO;
+import es.uma.taw.momdb.dto.ReviewIdDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +13,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Setter
 @Entity
 @Table(name = "review")
-public class Review {
+public class Review implements DTO<ReviewDTO> {
     @EmbeddedId
     private ReviewId id;
 
@@ -33,4 +36,14 @@ public class Review {
     @Column(name = "rating", nullable = false)
     private Double rating;
 
+    @Override
+    public ReviewDTO toDTO() {
+        ReviewDTO dto = new ReviewDTO();
+        dto.setMovieId(this.id.getMovieId());
+        dto.setUserId(this.id.getUserId());
+        dto.setUsername(this.user.getUsername());
+        dto.setContent(this.content);
+        dto.setRating(this.rating);
+        return dto;
+    }
 }
