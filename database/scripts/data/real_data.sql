@@ -49,11 +49,11 @@ INSERT INTO `UserRole` (`id`, `name`) VALUES
 -- Populate `User`
 -- -----------------------------------------------------
 INSERT INTO `User` (`id`, `username`, `email`, `password`, `profile_pic_link`, `role_id`) VALUES
-(1, 'ruben_admin', 'ruben@momdb.com', 'ruben', NULL, 1), -- Password should be hashed in a real app
-(2, 'artur_editor', 'artur@momdb.com', 'artur', NULL, 2),
-(3, 'edu_analyst', 'edu@momdb.com', 'edu', NULL, 3),
-(4, 'juanma_rec', 'juanma@momdb.com', 'juanma', NULL, 4),
-(5, 'jorge_user', 'jorge@momdb.com', 'jorge', NULL, 5);
+(1, 'ruben_admin', 'ruben@momdb.com', 'ruben', 'https://www.famousbirthdays.com/faces/sigma-monkey-image.jpg', 1), -- Password should be hashed in a real app
+(2, 'artur_editor', 'artur@momdb.com', 'artur', 'https://i1.sndcdn.com/artworks-0p6EFqCQw8e8Ejwb-VDLuNA-t500x500.jpg', 2),
+(3, 'edu_analyst', 'edu@momdb.com', 'edu', 'https://forums.footballguys.com/data/avatars/l/0/525.jpg', 3),
+(4, 'juanma_rec', 'juanma@momdb.com', 'juanma', 'https://media.tenor.com/j117vqw9JRoAAAAe/fucking-hrt.png', 4),
+(5, 'jorge_user', 'jorge@momdb.com', 'jorge', 'https://i.imgflip.com/5hwfl9.jpg', 5);
 
 -- -----------------------------------------------------
 -- Clear tables before loading new data

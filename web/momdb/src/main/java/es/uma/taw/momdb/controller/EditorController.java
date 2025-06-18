@@ -3,10 +3,7 @@ package es.uma.taw.momdb.controller;
 
 import es.uma.taw.momdb.dto.*;
 
-import es.uma.taw.momdb.service.CrewService;
-import es.uma.taw.momdb.service.GeneroService;
-import es.uma.taw.momdb.service.MovieService;
-import es.uma.taw.momdb.service.PersonService;
+import es.uma.taw.momdb.service.*;
 import es.uma.taw.momdb.ui.Filtro;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +15,7 @@ import java.util.List;
 
 /*
  * @author - Artur797 (Artur Vargas)
- * @co-authors -
+ * @co-authors - arrozet (Rubén Oliva - refactorización para auth)
  */
 
 @Controller
@@ -36,6 +33,9 @@ public class EditorController extends BaseController{
 
     @Autowired
     private PersonService personService;
+
+    @Autowired
+    private CharacterService characterService;
 
     @GetMapping("/")
     public String doInit(HttpSession session, Model model) {
@@ -113,14 +113,17 @@ public class EditorController extends BaseController{
         return handleMovieSection(id, model, session, "editor/movie_reviews");
     }
 
+    /**
+     * Comprueba si el usuario en sesión tiene el rol de editor.
+     * Utiliza el método centralizado de BaseController para realizar la verificación.
+     * Si la autorización es exitosa, añade automáticamente el usuario al modelo.
+     *
+     * @param session La sesión HTTP actual.
+     * @param model El modelo para la vista.
+     * @return {@code true} si el usuario es editor, {@code false} en caso contrario.
+     */
     private boolean checkAuth(HttpSession session, Model model) {
-        UserDTO user = (UserDTO) session.getAttribute("user");
-        if (user == null || !user.getRolename().equals("editor")) {
-            model.addAttribute("error", "No estás autorizado para acceder a esta página.");
-            return false;
-        }
-        model.addAttribute("user", user);
-        return true;
+        return super.checkAuth(session, model, "editor");
     }
 
     @PostMapping("/saveMovie")
@@ -165,18 +168,20 @@ public class EditorController extends BaseController{
     }
 
     @GetMapping("/movie/character/edit")
-    public String editCharacter(@RequestParam("id") Integer id, Model model, HttpSession session) {
+    public String editCharacter(@RequestParam("id") Integer id, @RequestParam("characterId") Integer characterId, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
         }
 
         CrewDTO crew = this.crewService.findCrewById(id);
         List<PersonDTO> people = this.personService.findAll();
+        CharacterDTO character = this.characterService.findById(characterId);
 
         model.addAttribute("movie", this.movieService.findPeliculaById(crew.getPeliculaId()));
         model.addAttribute("people", people);
 
         model.addAttribute("crew", crew);
+        model.addAttribute("character", character);
 
         return "/editor/edit_character";
     }
@@ -188,6 +193,42 @@ public class EditorController extends BaseController{
         }
 
         this.crewService.saveCrew(crew);
+        return "redirect:/editor/movie/characters?id=" + crew.getPeliculaId();
+    }
+
+    
+    @GetMapping("/movie/character/delete")
+    public String deleteCharacter(@RequestParam("characterId") int characterId, @RequestParam("movieId") int movieId, Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        this.crewService.deleteCharacter(characterId);
+        return "redirect:/editor/movie/characters?id=" + movieId;
+    }
+
+    @GetMapping("/movie/character/new")
+    public String addCharacter(@RequestParam("movieId") int movieId, Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        List<PersonDTO> people = this.personService.findAll();
+
+        model.addAttribute("movie", this.movieService.findPeliculaById(movieId));
+        model.addAttribute("people", people);
+        model.addAttribute("crew", new CrewDTO());
+
+        return "editor/add_character";
+    }
+
+    @PostMapping("/movie/character/add")
+    public String doAddCharacter(@ModelAttribute("crew") CrewDTO crew, Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        this.crewService.addNewCharacter(crew);
         return "redirect:/editor/movie/characters?id=" + crew.getPeliculaId();
     }
 

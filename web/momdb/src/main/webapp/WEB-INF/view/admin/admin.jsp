@@ -1,0 +1,99 @@
+<%---
+Created by IntelliJ IDEA.
+  User: arrozet (Rubén Oliva)
+  Date: 15/04/2025
+  Time: 13:27
+  To change this template use File | Settings | File Templates.
+--%>
+
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.util.List" %>
+<%@ page import="es.uma.taw.momdb.dto.UserDTO" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
+<html>
+<head>
+    <title>Welcome back, Admin!</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<%
+    UserDTO myUser = (UserDTO) session.getAttribute("user");
+    List<String> everyEntity = (List<String>) request.getAttribute("everyEntity");
+    List<?> entities = (List<?>) request.getAttribute("entities");
+%>
+<body style="background-color: #5B3A7B;">
+<jsp:include page="cabecera_admin.jsp" />
+
+<section class="section">
+    <div class="container">
+        <div class="columns">
+            <div class="column">
+                <h1 class="title admin-title">Role Management</h1>
+                <div class="box">
+                    <form:form method="post" action="/admin/changeUser" modelAttribute="usersForm">
+                        <table class="table is-striped is-fullwidth">
+                            <thead>
+                                <tr>
+                                    <th class="has-text-grey-darker">User</th>
+                                    <th class="has-text-grey-darker">Role</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="user" items="${usersForm.users}" varStatus="status">
+                                    <tr>
+                                        <td>
+                                            ${user.username}
+                                            <form:hidden path="users[${status.index}].userId" />
+                                        </td>
+                                        <td>
+                                            <div class="select">
+                                                <form:select path="users[${status.index}].roleId" items="${userRoles}" itemValue="id" itemLabel="name"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                        <br>
+                        <form:button class="button is-info">Save changes</form:button>
+                    </form:form>
+                </div>
+            </div>
+
+            <div class="column">
+                <h1 class="title admin-title">Entity Management</h1>
+                 <div class="box">
+                    <form:form method="post" action="/admin/showEntities" modelAttribute="genericEntity">
+                        <div class="field">
+                            <div class="control">
+                                <div class="select">
+                                    <form:select path="selectedEntity" items="${everyEntity}" onchange="this.form.submit()"/>
+                                </div>
+                            </div>
+                        </div>
+                    </form:form>
+                    <table class="table is-striped is-fullwidth">
+                        <thead>
+                            <tr>
+                                <th class="has-text-grey-darker">Id</th>
+                                <th class="has-text-grey-darker">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach var="entity" items="${entities}">
+                                <tr>
+                                    <td>${entity.id}</td>
+                                    <td>${entity.name}</td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
