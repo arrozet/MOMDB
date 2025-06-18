@@ -2,11 +2,11 @@ package es.uma.taw.momdb.ui;
 
 import lombok.Data;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 /*
  * @author - Artur797 (Artur Vargas)
- * @co-authors -
+ * @co-authors - projectGeorge (Jorge Repullo)
  */
 
 @Data
