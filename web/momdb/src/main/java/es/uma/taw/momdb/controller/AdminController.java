@@ -1,18 +1,14 @@
 package es.uma.taw.momdb.controller;
 
-import es.uma.taw.momdb.dao.*;
 import es.uma.taw.momdb.dto.GenericEntityDTO;
-import es.uma.taw.momdb.dto.UserDTO;
 import es.uma.taw.momdb.dto.UsersFormDTO;
-import es.uma.taw.momdb.entity.User;
-import es.uma.taw.momdb.entity.UserRole;
+import es.uma.taw.momdb.service.AdminService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -20,19 +16,24 @@ import java.util.List;
  * @co-authors -
  */
 
+/**
+ * Controlador para la gestión de las funcionalidades del administrador.
+ * Permite la gestión de usuarios y entidades del sistema.
+ */
 @Controller
 @RequestMapping("/admin")
 public class AdminController extends BaseController {
 
-    @Autowired private UserRepository userRepository;
-    @Autowired private UserRoleRepository userRoleRepository;
-    @Autowired private CrewRoleRepository crewRoleRepository;
-    @Autowired private GenreRepository genreRepository;
-    @Autowired private KeywordRepository keywordRepository;
-    @Autowired private ProductionCompanyRepository productionCompanyRepository;
-    @Autowired private ProductionCountryRepository productionCountryRepository;
-    @Autowired private SpokenLanguageRepository spokenLanguageRepository;
+    @Autowired private AdminService adminService;
 
+    /**
+     * Inicializa la página de administración.
+     * Carga los datos de los usuarios y las entidades seleccionadas.
+     *
+     * @param session La sesión HTTP.
+     * @param model   El modelo para la vista.
+     * @return La vista "admin" o una redirección a la página principal si no hay autorización.
+     */
     @GetMapping("/")
     public String doInit(HttpSession session,
                          Model model) {
@@ -40,24 +41,12 @@ public class AdminController extends BaseController {
             return "redirect:/";
         }
 
-
         // Obtener la entidad seleccionada de la sesión si existe. Si no existe, es Genre
         String selectedEntity = (String) session.getAttribute("selectedEntity");
         selectedEntity = selectedEntity != null ? selectedEntity : "Genre";
 
-
         // Cargar las entidades según la selección
-        List<?> entities = null;
-        entities = switch (selectedEntity) {
-            case "Genre" -> genreRepository.findAll();
-            case "Keyword" -> keywordRepository.findAll();
-            case "ProductionCompany" -> productionCompanyRepository.findAll();
-            case "ProductionCountry" -> productionCountryRepository.findAll();
-            case "SpokenLanguage" -> spokenLanguageRepository.findAll();
-            case "CrewRole" -> crewRoleRepository.findAll();
-            case "UserRole" -> userRoleRepository.findAll();
-            default -> entities;
-        };
+        List<?> entities = this.adminService.getEntities(selectedEntity);
 
         // Añado lo necesario al modelo
         GenericEntityDTO genericEntity = new GenericEntityDTO();
@@ -67,32 +56,19 @@ public class AdminController extends BaseController {
         model.addAttribute("entityType", selectedEntity);
 
         // Resto de datos necesarios
-        handleData(prepareUsersFormDTO(), genericEntity, model);
+        handleData(this.adminService.getUsersForm(), genericEntity, model);
 
         return "admin";
     }
 
-    private UsersFormDTO prepareUsersFormDTO() {
-        // Cojo todos los usuarios
-        List<User> users = this.userRepository.findAll();
-
-        // Preparo DTO para formulario
-        UsersFormDTO usersFormDTO = new UsersFormDTO();
-        List<UserDTO> userDTOs = new ArrayList<>();
-
-        // Relleno usuarios
-        for(User u : users) {
-            UserDTO dto = new UserDTO();
-            dto.setUserId(u.getId());
-            dto.setRoleId(u.getRole().getId());
-            dto.setUsername(u.getUsername());
-            userDTOs.add(dto);
-        }
-        usersFormDTO.setUsers(userDTOs);
-
-        return usersFormDTO;
-    }
-
+    /**
+     * Maneja la petición para cambiar los roles de los usuarios.
+     *
+     * @param usersForm DTO con los datos del formulario de usuarios.
+     * @param session   La sesión HTTP.
+     * @param model     El modelo para la vista.
+     * @return Una redirección a la página de administración.
+     */
     @PostMapping("/changeUser")
     public String doChangeUser(@ModelAttribute("usersForm") UsersFormDTO usersForm,
                                HttpSession session, Model model) {
@@ -100,21 +76,19 @@ public class AdminController extends BaseController {
             return "redirect:/";
         }
 
-        // Recorro todos los usuarios
-        for (UserDTO userDTO : usersForm.getUsers()) {
-            // Cojo usuario y rol
-            User user = this.userRepository.findById(userDTO.getUserId()).orElse(null);
-            UserRole role = this.userRoleRepository.findById(userDTO.getRoleId()).orElse(null);
+        this.adminService.updateUserRoles(usersForm);
 
-            // Les pongo sus nuevos roles
-            if (user != null && role != null) {
-                user.setRole(role);
-                this.userRepository.save(user);
-            }
-        }
         return "redirect:/admin/";
     }
 
+    /**
+     * Maneja la petición para mostrar un tipo diferente de entidad.
+     *
+     * @param genericEntity DTO con la entidad seleccionada.
+     * @param session       La sesión HTTP.
+     * @param model         El modelo para la vista.
+     * @return Una redirección a la página de administración.
+     */
     @PostMapping("/showEntities")
     public String doShowEntities(@ModelAttribute("genericEntity") GenericEntityDTO genericEntity,
                                  HttpSession session, Model model) {
@@ -127,6 +101,13 @@ public class AdminController extends BaseController {
         return "redirect:/admin/";
     }
 
+    /**
+     * Comprueba si el usuario tiene permisos de administrador.
+     *
+     * @param session La sesión HTTP.
+     * @param model   El modelo para la vista.
+     * @return {@code true} si el usuario es administrador, {@code false} en caso contrario.
+     */
     private Boolean checkAuth(HttpSession session, Model model) {
         if(!isAdmin(session)) {
             /*
@@ -138,12 +119,19 @@ public class AdminController extends BaseController {
         return true;
     }
 
+    /**
+     * Prepara los datos necesarios para la vista de administración.
+     *
+     * @param usersFormDTO     DTO con los datos del formulario de usuarios.
+     * @param genericEntityDTO DTO con la entidad genérica seleccionada.
+     * @param model            El modelo para la vista.
+     */
     private void handleData(UsersFormDTO usersFormDTO,
                             GenericEntityDTO genericEntityDTO,
                             Model model) {
         // Primera tabla
         model.addAttribute("usersForm", usersFormDTO);
-        model.addAttribute("userRoles", this.userRoleRepository.findAll());
+        model.addAttribute("userRoles", this.adminService.findAllUserRoles());
 
         // Segunda tabla
         model.addAttribute("genericEntity", genericEntityDTO);
