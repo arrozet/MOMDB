@@ -32,7 +32,7 @@ Author: projectGeorge (Jorge Repullo)
                 <span>My Reviews</span>
             </a>
 
-            <a class="navbar-item">
+            <a class="navbar-item" href="/user/favorites">
                 <span class="icon">
                     <i class="fas fa-thumbs-up"></i>
                 </span>

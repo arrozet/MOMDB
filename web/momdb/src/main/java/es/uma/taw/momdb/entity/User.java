@@ -1,13 +1,16 @@
 package es.uma.taw.momdb.entity;
 
 import es.uma.taw.momdb.dto.DTO;
+import es.uma.taw.momdb.dto.MovieDTO;
 import es.uma.taw.momdb.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -58,9 +61,16 @@ public class User implements Serializable, DTO<UserDTO> {
         user.setRolename(this.role.getName());
         user.setUsername(this.username);
         user.setProfilePic(this.profilePicLink);
+        
+        // Convertir las películas favoritas a DTOs
+        List<MovieDTO> listaFavoritas = new ArrayList<>();
+        this.user_favorite.forEach((final Movie movie ) -> {;
+            listaFavoritas.add(movie.toDTO());
+        });
+
+        user.setFavoriteMovies(listaFavoritas);
 
         return user;
-
     }
 
 }

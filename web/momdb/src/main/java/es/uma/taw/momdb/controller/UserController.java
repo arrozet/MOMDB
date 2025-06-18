@@ -2,9 +2,12 @@ package es.uma.taw.momdb.controller;
 
 import es.uma.taw.momdb.dto.GenreDTO;
 import es.uma.taw.momdb.dto.MovieDTO;
+import es.uma.taw.momdb.dto.UserDTO;
+import es.uma.taw.momdb.service.FavoriteService;
 import es.uma.taw.momdb.service.GeneroService;
 import es.uma.taw.momdb.service.MovieService;
 import es.uma.taw.momdb.ui.Filtro;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,13 +30,16 @@ public class UserController extends BaseController{
 
     @Autowired
     protected GeneroService generoService;
+    
+    @Autowired
+    protected FavoriteService favoriteService;
 
     @GetMapping("/")
     public String doInit(HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
         } else {
-            return this.listarPeliculasConFiltro(null, model);
+            return this.listarPeliculasConFiltro(null, model, session);
         }
     }
 
@@ -42,11 +48,11 @@ public class UserController extends BaseController{
         if (!checkAuth(session, model)) {
             return "redirect:/";
         } else {
-            return this.listarPeliculasConFiltro(filter, model);
+            return this.listarPeliculasConFiltro(filter, model, session);
         }
     }
 
-    protected String listarPeliculasConFiltro(Filtro filtro, Model model) {
+    protected String listarPeliculasConFiltro(Filtro filtro, Model model, HttpSession session) {
         List<MovieDTO> movies;
 
         if (filtro == null) {
@@ -58,6 +64,15 @@ public class UserController extends BaseController{
         } else {
             // Si no hay texto, filtra por los selects
             movies = movieService.listarPeliculasBySelectFilters(filtro);
+        }
+
+        // Verificar estado de favoritos para cada película
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        if (user != null) {
+            for (MovieDTO movie : movies) {
+                boolean isFavorite = favoriteService.isFavorite(user.getUserId(), movie.getId());
+                movie.setFavorite(isFavorite);
+            }
         }
 
         List<GenreDTO> generos = this.generoService.listarGeneros();
@@ -82,6 +97,77 @@ public class UserController extends BaseController{
         model.addAttribute("generos", movie.getGeneros());
         model.addAttribute("movie", movie);
         return "user/movie_details";
+    }
+    
+    @GetMapping("/favorites")
+    public String verFavoritos(HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        List<MovieDTO> favoriteMovies = favoriteService.getUserFavorites(user.getUserId());
+        
+        model.addAttribute("movies", favoriteMovies);
+        return "user/favorites";
+    }
+    
+    @PostMapping("/favorites/add")
+    public String addToFavorites(@RequestParam("movieId") Integer movieId, HttpSession session) {
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        if (user == null) {
+            return "error";
+        }
+        
+        favoriteService.addToFavorites(user.getUserId(), movieId);
+        return "redirect:/user/";
+    }
+    
+    @PostMapping("/favorites/remove")
+    public String removeFromFavorites(@RequestParam("movieId") Integer movieId, HttpSession session) {
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        if (user == null) {
+            return "error";
+        }
+        
+        favoriteService.removeFromFavorites(user.getUserId(), movieId);
+        return "redirect:/user/favorites";
+    }
+    
+    @GetMapping("/favorites/check")
+    @ResponseBody
+    public String checkFavorite(@RequestParam("movieId") Integer movieId, HttpSession session) {
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        if (user == null) {
+            return "false";
+        }
+        
+        boolean isFavorite = favoriteService.isFavorite(user.getUserId(), movieId);
+        return isFavorite ? "true" : "false";
+    }
+    
+    @PostMapping("/favorites/toggle")
+    public String toggleFavorite(@RequestParam("movieId") Integer movieId, 
+                                @RequestParam("action") String action,
+                                HttpSession session, Model model, HttpServletRequest request) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        
+        UserDTO user = (UserDTO) session.getAttribute("user");
+
+        if ("add".equals(action)) {
+            favoriteService.addToFavorites(user.getUserId(), movieId);
+        } else if ("remove".equals(action)) {
+            favoriteService.removeFromFavorites(user.getUserId(), movieId);
+        }
+
+        // Redirigir de vuelta a la página anterior
+        String referer = request.getHeader("Referer");
+        if (referer != null && !referer.isEmpty()) {
+            return "redirect:" + referer;
+        }
+        return "redirect:/user/";
     }
 
     /**

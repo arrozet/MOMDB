@@ -23,7 +23,6 @@ Author: projectGeorge (Jorge Repullo)
 
 <%
     List<MovieDTO> movies = (List<MovieDTO>) request.getAttribute("movies");
-    List<GenreDTO> generos = (List<GenreDTO>) request.getAttribute("generos");
 %>
 
 <section class="hero is-light is-small user-page-banner"> <%-- Hero es básicamente para los títulos --%>
@@ -98,7 +97,7 @@ Author: projectGeorge (Jorge Repullo)
                             <form:option value="200-900" label="200 - 900"/>
                         </form:select>
                     </div>
-                    <div class="column is-2">
+                    <div class="column is-4">
                         <form:button class="button is-info is-fullwidth">
                                 <span class="icon">
                                     <i class="fas fa-arrow-down"></i>
@@ -128,6 +127,29 @@ Author: projectGeorge (Jorge Repullo)
                             <% } %>
                         </div>
                     </a>
+                    <div class="movie-actions mt-2">
+                        <% if (movie.isFavorite()) { %>
+                            <form method="POST" action="/user/favorites/toggle" style="margin: 0; text-align: center;">
+                                <input type="hidden" name="movieId" value="<%= movie.getId() %>">
+                                <input type="hidden" name="action" value="remove">
+                                <button type="submit" class="button is-danger is-small favorite-btn">
+                                    <span class="icon">
+                                        <i class="fas fa-heart-broken"></i>
+                                    </span>
+                                </button>
+                            </form>
+                        <% } else { %>
+                            <form method="POST" action="/user/favorites/toggle" style="margin: 0; text-align: center;">
+                                <input type="hidden" name="movieId" value="<%= movie.getId() %>">
+                                <input type="hidden" name="action" value="add">
+                                <button type="submit" class="button is-info is-small favorite-btn">
+                                    <span class="icon">
+                                        <i class="fas fa-heart"></i>
+                                    </span>
+                                </button>
+                            </form>
+                        <% } %>
+                    </div>
                 </div>
             </div>
             <%

@@ -28,4 +28,5 @@ public class MovieDTO {
     private String tagline;
     private List<CrewDTO> equipo;
     private List<Integer> equipoIds;
+    private boolean favorite;
 }

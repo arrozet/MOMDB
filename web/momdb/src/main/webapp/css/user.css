@@ -8,6 +8,8 @@ Author: projectGeorge (Jorge Repullo)
     transition: transform 0.3s ease;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px;
 }
 
 .movie-card:hover {
@@ -27,6 +29,58 @@ Author: projectGeorge (Jorge Repullo)
 
 .rounded-corners {
     border-radius: 8px;
+}
+
+.movie-actions {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.movie-actions form {
+    margin: 0;
+    display: inline-block;
+}
+
+.favorite-btn {
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.favorite-btn:hover {
+    transform: scale(1.1);
+}
+
+.favorite-btn.is-danger {
+    background-color: #ff3860;
+    border-color: #ff3860;
+}
+
+.favorite-btn.is-danger:hover {
+    background-color: #ff1443;
+    border-color: #ff1443;
+}
+
+.remove-favorite-btn {
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove-favorite-btn:hover {
+    transform: scale(1.1);
+    background-color: #ff1443;
+    border-color: #ff1443;
 }
 
 /* Estilos para el banner en user.jsp */
