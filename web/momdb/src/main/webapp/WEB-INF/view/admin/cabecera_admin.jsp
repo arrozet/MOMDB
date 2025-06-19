@@ -16,20 +16,21 @@
     <title>Title</title>
     <link rel="stylesheet" href="/css/common.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
 <nav class="navbar is-info" role="navigation" aria-label="main navigation"> <%-- Barra horizontal, color azul claro--%>
 
     <div id="navbarMenu" class="navbar-menu">
         <div class="navbar-start">
-            <a class="navbar-item" href="#">
+            <a class="navbar-item" href="/admin/roles">
                 <span class="icon">
                     <i class="fas fa-users-cog"></i>
                 </span>
                 <span>Role management</span>
             </a>
 
-            <a class="navbar-item" href="#">
+            <a class="navbar-item" href="/admin/entities">
                 <span class="icon">
                     <i class="fas fa-database"></i>
                 </span>

@@ -27,17 +27,43 @@ public class AdminController extends BaseController {
     @Autowired private AdminService adminService;
 
     /**
-     * Inicializa la página de administración.
-     * Carga los datos de los usuarios y las entidades seleccionadas.
+     * Redirige a la página de gestión de roles de usuario por defecto.
+     *
+     * @return La redirección a la página de gestión de roles.
+     */
+    @GetMapping("/")
+    public String doInit() {
+        return "redirect:/admin/roles";
+    }
+
+    /**
+     * Prepara la página de gestión de roles de usuario.
      *
      * @param session La sesión HTTP.
      * @param model   El modelo para la vista.
-     * @return La vista "admin" o una redirección a la página principal si no hay autorización.
+     * @return La vista "admin/roles" o una redirección si no hay autorización.
      */
-    @GetMapping("/")
-    public String doInit(HttpSession session,
-                         Model model) {
-        if(!checkAuth(session, model)) {
+    @GetMapping("/roles")
+    public String doRoles(HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        handleRolesData(model);
+
+        return "admin/roles";
+    }
+
+    /**
+     * Prepara la página de gestión de entidades.
+     *
+     * @param session La sesión HTTP.
+     * @param model   El modelo para la vista.
+     * @return La vista "admin/entities" o una redirección si no hay autorización.
+     */
+    @GetMapping("/entities")
+    public String doEntities(HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
             return "redirect:/";
         }
 
@@ -45,20 +71,9 @@ public class AdminController extends BaseController {
         String selectedEntity = (String) session.getAttribute("selectedEntity");
         selectedEntity = selectedEntity != null ? selectedEntity : "Genre";
 
-        // Cargar las entidades según la selección
-        List<?> entities = this.adminService.getEntities(selectedEntity);
+        handleEntitiesData(model, selectedEntity);
 
-        // Añado lo necesario al modelo
-        GenericEntityDTO genericEntity = new GenericEntityDTO();
-        genericEntity.setSelectedEntity(selectedEntity);
-
-        model.addAttribute("entities", entities);
-        model.addAttribute("entityType", selectedEntity);
-
-        // Resto de datos necesarios
-        handleData(this.adminService.getUsersForm(), genericEntity, model);
-
-        return "admin/admin";
+        return "admin/entities";
     }
 
     /**
@@ -78,7 +93,7 @@ public class AdminController extends BaseController {
 
         this.adminService.updateUserRoles(usersForm);
 
-        return "redirect:/admin/";
+        return "redirect:/admin/roles";
     }
 
     /**
@@ -98,7 +113,7 @@ public class AdminController extends BaseController {
 
         session.setAttribute("selectedEntity", genericEntity.getSelectedEntity());
 
-        return "redirect:/admin/";
+        return "redirect:/admin/entities";
     }
 
     /**
@@ -113,21 +128,34 @@ public class AdminController extends BaseController {
     }
 
     /**
-     * Prepara los datos necesarios para la vista de administración.
+     * Prepara los datos necesarios para la vista de gestión de roles.
      *
-     * @param usersFormDTO     DTO con los datos del formulario de usuarios.
-     * @param genericEntityDTO DTO con la entidad genérica seleccionada.
-     * @param model            El modelo para la vista.
+     * @param model El modelo para la vista.
      */
-    private void handleData(UsersFormDTO usersFormDTO,
-                            GenericEntityDTO genericEntityDTO,
-                            Model model) {
-        // Primera tabla
-        model.addAttribute("usersForm", usersFormDTO);
+    private void handleRolesData(Model model) {
+        model.addAttribute("usersForm", this.adminService.getUsersForm());
         model.addAttribute("userRoles", this.adminService.findAllUserRoles());
+    }
 
-        // Segunda tabla
-        model.addAttribute("genericEntity", genericEntityDTO);
+    /**
+     * Prepara los datos necesarios para la vista de gestión de entidades.
+     *
+     * @param model          El modelo para la vista.
+     * @param selectedEntity La entidad seleccionada para mostrar.
+     */
+    private void handleEntitiesData(Model model, String selectedEntity) {
+        // Cargar las entidades según la selección
+        List<?> entities = this.adminService.getEntities(selectedEntity);
+
+        // Añado lo necesario al modelo
+        GenericEntityDTO genericEntity = new GenericEntityDTO();
+        genericEntity.setSelectedEntity(selectedEntity);
+
+        model.addAttribute("entities", entities);
+        model.addAttribute("entityType", selectedEntity);
+
+        // Resto de datos necesarios
+        model.addAttribute("genericEntity", genericEntity);
         model.addAttribute("everyEntity", List.of("Genre", "Keyword", "ProductionCompany",
                 "ProductionCountry", "SpokenLanguage", "CrewRole", "UserRole"));
     }
