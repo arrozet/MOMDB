@@ -11,6 +11,7 @@ import es.uma.taw.momdb.entity.Character;
 import es.uma.taw.momdb.entity.Crew;
 import es.uma.taw.momdb.entity.Movie;
 import es.uma.taw.momdb.entity.Person;
+import es.uma.taw.momdb.entity.Crewrole;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -171,6 +172,37 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
         List<Crew> crews = crewRepository.findNonActorCrewByPerson(personaId);
         List<Movie> movies = crews.stream().map(Crew::getMovie).distinct().toList();
         return movieService.entity2DTO(movies);
+    }
+
+    public void deleteCrew(int crewId) {
+        crewRepository.deleteById(crewId);
+    }
+
+    public List<Crewrole> findAllRolesExceptActor() {
+        return crewRoleRepository.findAllExceptActor();
+    }
+
+    public boolean saveCrewEdit(CrewDTO crewDTO) {
+        Crew crew = this.crewRepository.findById(crewDTO.getId()).orElse(null);
+
+        if(crewDTO.getId()==-1){
+            crew = new Crew();
+            Movie movie = movieRepository.findById(crewDTO.getPeliculaId()).orElse(null);
+            crew.setMovie(movie);
+        }
+
+        // Comprobar duplicado
+        Crew existente = crewRepository.findByMovieAndPersonAndRole(crewDTO.getPeliculaId(), crewDTO.getPersonaId(), crewDTO.getRolId());
+        if (existente != null && existente.getId() != crew.getId()) {
+            return false;
+        }
+
+        Person nuevaPersona = this.personRepository.findById(crewDTO.getPersonaId()).orElse(null);
+        Crewrole nuevoRol = crewRoleRepository.findById(crewDTO.getRolId()).orElse(null);
+        crew.setPerson(nuevaPersona);
+        crew.setCrewRole(nuevoRol);
+        crewRepository.save(crew);
+        return true;
     }
 
 }

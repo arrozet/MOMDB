@@ -2,6 +2,7 @@ package es.uma.taw.momdb.controller;
 
 
 import es.uma.taw.momdb.dto.*;
+import es.uma.taw.momdb.entity.Crewrole;
 
 import es.uma.taw.momdb.service.*;
 import es.uma.taw.momdb.ui.Filtro;
@@ -306,6 +307,64 @@ public class EditorController extends BaseController{
         return "redirect:/editor/people";
     }
 
+    @GetMapping("/movie/crew/delete")
+    public String deleteCrew(@RequestParam("crewId") int crewId, @RequestParam("movieId") int movieId, Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        this.crewService.deleteCrew(crewId);
+        return "redirect:/editor/movie/crew?id=" + movieId;
+    }
 
+    @GetMapping("/movie/crew/edit")
+    public String editCrew(@RequestParam("crewId") Integer crewId, Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        CrewDTO crew = this.crewService.findCrewById(crewId);
+        List<PersonDTO> people = this.personService.findAll();
+        List<Crewrole> roles = this.crewService.findAllRolesExceptActor();
+        model.addAttribute("crew", crew);
+        model.addAttribute("people", people);
+        model.addAttribute("roles", roles);
+        model.addAttribute("movie", movieService.findPeliculaById(crew.getPeliculaId()));
+        model.addAttribute("error", null);
+        return "editor/edit_crew";
+    }
+
+    @PostMapping("/movie/crew/save")
+    public String saveCrew(@ModelAttribute("crew") CrewDTO crew, Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        boolean ok = this.crewService.saveCrewEdit(crew);
+        if (!ok) {
+            model.addAttribute("error", "Ya existe un miembro del equipo con la misma persona y rol en esta película.");
+            List<PersonDTO> people = this.personService.findAll();
+            List<Crewrole> roles = this.crewService.findAllRolesExceptActor();
+            model.addAttribute("people", people);
+            model.addAttribute("roles", roles);
+            model.addAttribute("movie", movieService.findPeliculaById(crew.getPeliculaId()));
+            return "editor/edit_crew";
+        }
+        return "redirect:/editor/movie/crew?id=" + crew.getPeliculaId();
+    }
+
+    @GetMapping("/movie/crew/new")
+    public String addCrew(@RequestParam("movieId") int movieId, Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        CrewDTO crew = new CrewDTO();
+        crew.setPeliculaId(movieId);
+        List<PersonDTO> people = this.personService.findAll();
+        List<Crewrole> roles = this.crewService.findAllRolesExceptActor();
+        model.addAttribute("crew", crew);
+        model.addAttribute("people", people);
+        model.addAttribute("roles", roles);
+        model.addAttribute("movie", movieService.findPeliculaById(movieId));
+        model.addAttribute("error", null);
+        return "editor/edit_crew";
+    }
 
 }

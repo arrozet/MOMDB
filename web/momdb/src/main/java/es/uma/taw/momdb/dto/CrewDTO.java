@@ -18,4 +18,5 @@ public class CrewDTO {
     private List<CharacterDTO> personajes;
     private int personajeId; //Del que se actualiza
     private String personajeName; //Del que se añade
+    private int rolId; 
 }

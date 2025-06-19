@@ -31,8 +31,6 @@
             </ul>
         </div>
 
-        <h2 class="title is-5">Characters</h2>
-
         <div class="table-container">
             <%
                 if(movie.getEquipo() !=null){

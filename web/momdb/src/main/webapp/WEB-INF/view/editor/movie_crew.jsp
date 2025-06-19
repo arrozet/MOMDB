@@ -1,4 +1,5 @@
 <%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>
+<%@ page import="es.uma.taw.momdb.dto.CrewDTO" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -28,8 +29,62 @@
             </ul>
         </div>
 
-        <h2 class="title is-5">Crew</h2>
-        <p>Crew management interface coming soon.</p>
+        <div class="table-container">
+            <%
+                if(movie.getEquipo() != null){
+            %>
+            <table class="table is-fullwidth is-striped">
+                <thead>
+                <tr>
+                    <th>Role</th>
+                    <th>Name</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <%
+                    for (CrewDTO crew : movie.getEquipo()) {
+                        if(!"Actor".equals(crew.getRol())){ %>
+                <tr>
+                    <td><%= crew.getRol() %></td>
+                    <td><%= crew.getPersona() %></td>
+                    <td>
+                        <a href="/editor/movie/crew/edit?crewId=<%=crew.getId()%>&movieId=<%=movie.getId()%>"
+                           class="button is-small is-info">
+                            <span class="icon">
+                                <i class="fas fa-edit"></i>
+                            </span>
+                            <span>Edit</span>
+                        </a>
+                        <a href="/editor/movie/crew/delete?crewId=<%=crew.getId()%>&movieId=<%=movie.getId()%>"
+                           class="button is-small is-danger">
+                            <span class="icon">
+                                <i class="fas fa-trash"></i>
+                            </span>
+                            <span>Delete</span>
+                        </a>
+                    </td>
+                </tr>
+                <%  }
+                    }
+                } else{
+                %>
+                No hay miembros del equipo técnico para esta película
+                <%
+                    }
+                %>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-4">
+            <a href="/editor/movie/crew/new?movieId=<%=movie.getId()%>" class="button is-primary">
+                <span class="icon">
+                    <i class="fas fa-plus"></i>
+                </span>
+                <span>Add New Crew Member</span>
+            </a>
+        </div>
     </div>
 </div>
 

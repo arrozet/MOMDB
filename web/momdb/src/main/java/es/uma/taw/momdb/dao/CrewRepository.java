@@ -27,5 +27,8 @@ public interface CrewRepository extends JpaRepository<Crew, Integer> {
 
     @Query("SELECT c FROM Crew c WHERE c.person.id = :personaId AND c.crewRole.role <> 'Actor'")
     List<Crew> findNonActorCrewByPerson(@Param("personaId") int personaId);
+
+    @Query("SELECT c FROM Crew c WHERE c.movie.id = :movieId AND c.person.id = :personId AND c.crewRole.id = :roleId")
+    Crew findByMovieAndPersonAndRole(@Param("movieId") int movieId, @Param("personId") int personId, @Param("roleId") int roleId);
 }
 
