@@ -1,5 +1,8 @@
 <%@ page import="es.uma.taw.momdb.dto.PersonDTO" %>
+<%@ page import="java.util.List" %>
+<%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -36,5 +39,41 @@
         </div>
     </div>
 </div>
+<% if (person.getId() != -1) { %>
+    <div class="section" style="display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap;">
+        <div style="min-width: 220px; text-align: center;">
+            <h2 class="title is-5">Featured in:</h2>
+            <ul style="list-style: none; padding: 0;">
+                <% 
+                    List<MovieDTO> actorMovies = (List<MovieDTO>) request.getAttribute("actorMovies");
+                    if (actorMovies != null) {
+                        for (MovieDTO movie : actorMovies) {
+                %>
+                            <li>
+                                <a href="/editor/movie/characters?id=<%= movie.getId() %>"><%= movie.getTitulo() %></a>
+                            </li>
+                <%      }
+                    }
+                %>
+            </ul>
+        </div>
+        <div style="min-width: 220px; text-align: center;">
+            <h2 class="title is-5">Worked in:</h2>
+            <ul style="list-style: none; padding: 0;">
+                <% 
+                    List<MovieDTO> crewMovies = (List<MovieDTO>) request.getAttribute("crewMovies");
+                    if (crewMovies != null) {
+                        for (MovieDTO movie : crewMovies) {
+                %>
+                            <li>
+                                <a href="/editor/movie/crew?id=<%= movie.getId() %>"><%= movie.getTitulo() %></a>
+                            </li>
+                <%      }
+                    }
+                %>
+            </ul>
+        </div>
+    </div>
+<% } %>
 </body>
 </html> 

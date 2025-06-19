@@ -292,6 +292,8 @@ public class EditorController extends BaseController{
         }
         PersonDTO person = personService.findById(id);
         model.addAttribute("person", person);
+        model.addAttribute("actorMovies", crewService.findMoviesWherePersonIsActor(id));
+        model.addAttribute("crewMovies", crewService.findMoviesWherePersonIsCrewNoActor(id));
         return "editor/edit_person";
     }
 

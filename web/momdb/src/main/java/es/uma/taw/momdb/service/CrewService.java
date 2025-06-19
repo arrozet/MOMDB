@@ -6,6 +6,7 @@ import es.uma.taw.momdb.dao.MovieRepository;
 import es.uma.taw.momdb.dao.PersonRepository;
 import es.uma.taw.momdb.dao.CrewRoleRepository;
 import es.uma.taw.momdb.dto.CrewDTO;
+import es.uma.taw.momdb.dto.MovieDTO;
 import es.uma.taw.momdb.entity.Character;
 import es.uma.taw.momdb.entity.Crew;
 import es.uma.taw.momdb.entity.Movie;
@@ -38,6 +39,9 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
 
     @Autowired
     private CrewRoleRepository crewRoleRepository;
+
+    @Autowired
+    private MovieService movieService;
 
     public List<CrewDTO> listarActores () {
         return this.listarActores(null);
@@ -157,5 +161,16 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
         }
     }
 
+    public List<MovieDTO> findMoviesWherePersonIsActor(int personaId) {
+        List<Crew> crews = crewRepository.findActorByPerson(personaId);
+        List<Movie> movies = crews.stream().map(Crew::getMovie).distinct().toList();
+        return movieService.entity2DTO(movies);
+    }
+
+    public List<MovieDTO> findMoviesWherePersonIsCrewNoActor(int personaId) {
+        List<Crew> crews = crewRepository.findNonActorCrewByPerson(personaId);
+        List<Movie> movies = crews.stream().map(Crew::getMovie).distinct().toList();
+        return movieService.entity2DTO(movies);
+    }
 
 }
