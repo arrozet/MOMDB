@@ -11,6 +11,9 @@ import es.uma.taw.momdb.entity.Status;
 import es.uma.taw.momdb.ui.Filtro;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,7 +23,7 @@ import java.util.Set;
 
 /*
  * @author - Artur797 (Artur Vargas)
- * @co-authors - projectGeorge (Jorge Repullo)
+ * @co-authors - projectGeorge (Jorge Repullo) - edugbau (Eduardo González)
  */
 
 @Service
@@ -125,6 +128,12 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
         // Finalmente eliminamos la película
         this.movieRepository.delete(movie);
 
+    }
+
+    //Traer peliculas en formato página para no cargar todo de golpe
+    public Page<Movie> findPaginated(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        return movieRepository.findAll(pageable);
     }
 
 }

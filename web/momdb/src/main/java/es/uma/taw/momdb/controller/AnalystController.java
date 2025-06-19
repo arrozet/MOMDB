@@ -1,7 +1,9 @@
 package es.uma.taw.momdb.controller;
 
 import es.uma.taw.momdb.dao.MovieRepository;
+import es.uma.taw.momdb.dto.MovieDTO;
 import es.uma.taw.momdb.entity.Movie;
+import es.uma.taw.momdb.service.MovieService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,14 +25,15 @@ import java.util.List;
 @RequestMapping("/analyst")
 public class AnalystController extends BaseController {
 
-    @Autowired private MovieRepository movieRepository;
+    @Autowired
+    private MovieService movieService;
 
     @GetMapping("/")
     public String doInit(HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
         }
-        List<Movie> movies = this.movieRepository.findAll(); // Cargar todas
+        List<MovieDTO> movies = this.movieService.listarPeliculas(); // Cargar todas
 
         model.addAttribute("movies", movies);
         return "analyst/analyst";
@@ -42,11 +45,11 @@ public class AnalystController extends BaseController {
             return "redirect:/";
         }
 
-        List<Movie> movies;
+        List<MovieDTO> movies;
         if (filter == null || filter.trim().isEmpty()) {
-            movies = this.movieRepository.findAll(); // Cargar todas
+            movies = this.movieService.listarPeliculas(); // Cargar todas
         } else {
-            movies = this.movieRepository.filterByTitle(filter);
+            movies = this.movieService.listarPeliculas(filter);
         }
 
         model.addAttribute("movies", movies);
@@ -60,7 +63,7 @@ public class AnalystController extends BaseController {
             return "redirect:/";
         }
 
-        Movie movie = this.movieRepository.findById(id).orElse(null);
+        MovieDTO movie = this.movieService.findPeliculaById(id);
 
         model.addAttribute("movie", movie);
         return "analyst/movie_details";

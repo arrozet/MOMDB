@@ -9,6 +9,7 @@
 <%@ page import="es.uma.taw.momdb.entity.Movie" %>
 <%@ page import="java.util.List" %>
 <%@ page import="es.uma.taw.momdb.dto.UserDTO" %>
+<%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -19,7 +20,7 @@
 </head>
 <%
     UserDTO myUser = (UserDTO) session.getAttribute("user");
-    List<Movie> movies = (List<Movie>) request.getAttribute("movies");
+    List<MovieDTO> movies = (List<MovieDTO>) request.getAttribute("movies");
 %>
 <body class="page-background">
 <jsp:include page="../analyst/cabecera_analyst.jsp" />
@@ -56,9 +57,9 @@
 
         <div class="columns is-multiline mt-4" id="movies-container">
             <%
-                List<Movie> moviesList = (List<Movie>) request.getAttribute("movies");
-                if (moviesList != null && !moviesList.isEmpty()) {
-                    for (Movie movie : moviesList) {
+
+                if (movies != null && !movies.isEmpty()) {
+                    for (MovieDTO movie : movies) {
             %>
             <div class="column is-6-mobile is-4-tablet is-3-desktop is-2-widescreen">
                 <div class="movie-card">
@@ -66,7 +67,7 @@
                         <div class="movie-poster">
                             <% if (movie.getImageLink() != null && !movie.getImageLink().isEmpty()) { %>
                             <figure class="image is-2by3">
-                                <img src="<%= movie.getImageLink() %>" alt="Póster de <%= movie.getTitle() == null ? movie.getOriginalTitle() : movie.getTitle() %>" class="rounded-corners">
+                                <img src="<%= movie.getImageLink() %>" alt="Póster de <%= movie.getTitulo() %>" class="rounded-corners">
                             </figure>
                             <% } else { %>
                             <span class="icon is-large has-text-info movie-poster-placeholder-icon">
@@ -76,12 +77,12 @@
                         </div>
                     </a>
                     <div class="analyst-movie-info">
-                        <p class="title is-6 has-text-centered has-text-white"><%= movie.getOriginalTitle()%></p>
+                        <p class="title is-6 has-text-centered has-text-white"><%= movie.getTitulo()%></p>
                         <div class="content is-size-7 has-text-white">
                             <p><strong>ID:</strong> <%= movie.getId()%></p>
-                            <p><strong>Release Date:</strong> <%= movie.getReleaseDate()%></p>
-                            <p><strong>Vote Average:</strong> <%= movie.getVoteAverage()%></p>
-                            <p><strong>Vote Count:</strong> <%= movie.getVoteCount()%></p>
+                            <p><strong>Release Date:</strong> <%= movie.getFechaDeSalida()%></p>
+                            <p><strong>Vote Average:</strong> <%= movie.getMediaVotos()%></p>
+                            <p><strong>Vote Count:</strong> <%= movie.getVotos()%></p>
                         </div>
                     </div>
                 </div>

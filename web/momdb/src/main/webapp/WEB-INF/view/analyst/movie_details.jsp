@@ -1,18 +1,19 @@
 <%--Autor: Eduardo González--%>
 <%@ page import="es.uma.taw.momdb.dto.UserDTO" %>
 <%@ page import="es.uma.taw.momdb.entity.Movie" %>
+<%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <title>Movie Details | MOMDB</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/user.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/analyst.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/movie_details.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <%
     UserDTO myUser = (UserDTO) session.getAttribute("user");
-    Movie movie = (Movie) request.getAttribute("movie");
+    MovieDTO movie = (MovieDTO) request.getAttribute("movie");
 %>
 <body>
 <jsp:include page="../user/cabecera_user.jsp" />
@@ -24,7 +25,7 @@
             <div class="column is-4">
                 <figure class="image is-2by3">
                     <% if (movie.getImageLink() != null && !movie.getImageLink().isEmpty()) { %>
-                    <img src="<%= movie.getImageLink() %>" alt="Póster de <%= movie.getTitle() == null ? movie.getOriginalTitle() : movie.getTitle() %>">
+                    <img src="<%= movie.getImageLink() %>" alt="Póster de <%= movie.getTitulo()%>">
                     <% } else { %>
                     <span class="icon is-large has-text-info" style="padding: 40px 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; border: 1px solid #ccc;">
                         <i class="fas fa-film fa-6x"></i>
@@ -33,19 +34,16 @@
                 </figure>
             </div>
             <div class="column is-8">
-                <h1 class="title"><%= movie.getOriginalTitle() %></h1>
-                <% if (movie.getTitle() != null && !movie.getTitle().equals(movie.getOriginalTitle())) { %>
-                <h2 class="subtitle"><%= movie.getTitle() %></h2>
+                <h1 class="title"><%= movie.getTitulo() %></h1><br>
+                <% if (movie.getTitulo() != null && !movie.getTitulo().equals(movie.getIdiomaOriginal())) { %>
+                <h2 class="subtitle"><%= movie.getTagline() %></h2>
                 <% } %>
-                <p><strong>Overview:</strong> <%= movie.getOverview() %></p>
+                <p><strong>Overview:</strong> <%= movie.getDescripcion() %></p>
                 <hr>
-                <p><strong>Release Date:</strong> <%= movie.getReleaseDate() %></p>
-                <p><strong>Runtime:</strong> <%= movie.getRuntime() %> minutes</p>
-                <p><strong>Vote Average:</strong> <%= movie.getVoteAverage() %></p>
-                <p><strong>Vote Count:</strong> <%= movie.getVoteCount() %></p>
-                <p><strong>Budget:</strong> $<%= String.format("%,d", movie.getBudget()) %></p>
-                <p><strong>Revenue:</strong> $<%= String.format("%,d", movie.getRevenue()) %></p>
-                <p><strong>Popularity:</strong> <%= movie.getPopularity() %></p>
+                <p><strong>Release Date:</strong> <%= movie.getFechaDeSalida() %></p>
+                <p><strong>Vote Average:</strong> <%= movie.getMediaVotos() %></p>
+                <p><strong>Vote Count:</strong> <%= movie.getVotos() %></p>
+                <p><strong>Revenue:</strong> $<%= String.format("%,d", movie.getIngresos()) %></p>
             </div>
         </div>
         <% } else { %>
