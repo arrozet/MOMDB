@@ -9,6 +9,6 @@ import lombok.Data;
 
 @Data
 public class PersonDTO {
-    private Integer id;
+    private Integer id = -1;
     private String name;
 } 

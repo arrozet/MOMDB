@@ -171,27 +171,22 @@ public class EditorController extends BaseController{
         }
     }
 
-    @GetMapping("/actors")
-    public String listActors (HttpSession session, Model model) {
+    @GetMapping("/people")
+    public String listPeople(@ModelAttribute("filtro") Filtro filtro, HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
         } else {
-            return this.listarActoresConFiltro(null, model);
+            List<PersonDTO> people;
+            String texto = filtro != null ? filtro.getTexto() : null;
+            if (texto != null && !texto.trim().isEmpty()) {
+                people = personService.searchByName(texto);
+            } else {
+                people = personService.findFirst1000();
+            }
+            model.addAttribute("people", people);
+            model.addAttribute("filtro", filtro);
+            return "editor/people";
         }
-    }
-
-    protected String listarActoresConFiltro(Filtro filtro, Model model) {
-        List<CrewDTO> actores;
-
-        if (filtro == null) {
-            filtro = new Filtro();
-            actores = crewService.listarActores();
-        } else {
-            actores = crewService.listarActores(filtro.getTexto());
-        }
-        model.addAttribute("actores", actores);
-        model.addAttribute("filtro", filtro);
-        return "editor/actors";
     }
 
     @GetMapping("/movie/character/edit")
@@ -271,5 +266,44 @@ public class EditorController extends BaseController{
 
         return "editor/movie_editor";
     }
+
+    @GetMapping("/person/delete")
+    public String deletePerson(@RequestParam("id") Integer id, HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        personService.deleteById(id);
+        return "redirect:/editor/people";
+    }
+
+    @GetMapping("/person/add")
+    public String addPersonForm(Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        model.addAttribute("person", new PersonDTO());
+        return "editor/edit_person";
+    }
+
+    @GetMapping("/person/edit")
+    public String editPerson(@RequestParam("id") Integer id, Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        PersonDTO person = personService.findById(id);
+        model.addAttribute("person", person);
+        return "editor/edit_person";
+    }
+
+    @PostMapping("/person/save")
+    public String savePerson(@ModelAttribute("person") PersonDTO person, Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        personService.save(person);
+        return "redirect:/editor/people";
+    }
+
+
 
 }

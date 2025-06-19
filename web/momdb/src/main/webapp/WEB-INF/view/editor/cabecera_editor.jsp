@@ -25,11 +25,11 @@ Author: Artur797 (Artur Vargas)
         <span>My Movies</span>
       </a>
 
-      <a class="navbar-item" href="/editor/actors">
+      <a class="navbar-item" href="/editor/people">
                 <span class="icon">
                     <i class="fas fa-users"></i>
                 </span>
-        <span>Actors</span>
+        <span>People</span>
       </a>
     </div>
 
