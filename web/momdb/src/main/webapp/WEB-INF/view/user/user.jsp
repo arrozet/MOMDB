@@ -18,14 +18,14 @@ Author: projectGeorge (Jorge Repullo)
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
-<body style="background-color: #5B3A7B;">
+<body class="page-background">
 <jsp:include page="cabecera_user.jsp" />
 
 <%
     List<MovieDTO> movies = (List<MovieDTO>) request.getAttribute("movies");
 %>
 
-<section class="hero is-light is-small user-page-banner"> <%-- Hero es básicamente para los títulos --%>
+<section class="hero is-light is-small page-banner"> <%-- Hero es básicamente para los títulos --%>
     <div class="hero-body">
         <div class="container has-text-centered">
             <h1 class="title">MOMDB</h1>
@@ -129,7 +129,7 @@ Author: projectGeorge (Jorge Repullo)
                     </a>
                     <div class="movie-actions mt-2">
                         <% if (movie.isFavorite()) { %>
-                            <form method="POST" action="/user/favorites/toggle" style="margin: 0; text-align: center;">
+                            <form method="POST" action="/user/favorites/toggle">
                                 <input type="hidden" name="movieId" value="<%= movie.getId() %>">
                                 <input type="hidden" name="action" value="remove">
                                 <button type="submit" class="button is-danger is-small favorite-btn">
@@ -139,7 +139,7 @@ Author: projectGeorge (Jorge Repullo)
                                 </button>
                             </form>
                         <% } else { %>
-                            <form method="POST" action="/user/favorites/toggle" style="margin: 0; text-align: center;">
+                            <form method="POST" action="/user/favorites/toggle">
                                 <input type="hidden" name="movieId" value="<%= movie.getId() %>">
                                 <input type="hidden" name="action" value="add">
                                 <button type="submit" class="button is-info is-small favorite-btn">

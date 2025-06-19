@@ -129,40 +129,14 @@ table a:hover {
     text-decoration: underline;
 }
 
-/* Estilos para las tarjetas de películas en analyst.jsp */
-.movie-card-analyst {
-    background-color: #fff; /* Fondo blanco para la tarjeta */
-    border-radius: 6px; /* Bordes redondeados */
-    box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1); /* Sombra sutil */
-    transition: transform .2s ease-out, box-shadow .2s ease-out; /* Transición suave para el hover */
-    height: 100%; /* Asegurar que todas las tarjetas en una fila tengan la misma altura */
-    display: flex;
-    flex-direction: column;
+.analyst-movie-info {
+    padding: 0.5rem;
 }
 
-.movie-card-analyst:hover {
-    transform: translateY(-5px); /* Elevar ligeramente la tarjeta */
-    box-shadow: 0 8px 15px rgba(10,10,10,.2), 0 0 0 1px rgba(10,10,10,.1); /* Sombra más pronunciada */
-    z-index: 10; /* Asegurar que la tarjeta con hover esté por encima de otras */
-    position: relative; /* Necesario para que z-index funcione correctamente en este contexto */
+.analyst-movie-info .content p {
+    margin-bottom: 0.2rem;
 }
 
-.movie-card-analyst .card-image {
-    flex-shrink: 0; /* Evitar que la imagen se encoja si el título es largo */
-}
-
-.movie-card-analyst .card-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* Distribuir el espacio en el contenido */
-    flex-grow: 1; /* Permitir que el contenido crezca para llenar el espacio */
-    padding: 1rem; /* Ajustar el padding si es necesario */
-}
-
-.movie-card-analyst .title {
-    margin-bottom: 0.75rem; /* Espacio debajo del título */
-}
-
-.movie-card-analyst .content p {
-    margin-bottom: 0.3rem; /* Menor espacio entre párrafos de detalles */
+.movie-poster-placeholder-icon {
+    padding: 40px 0;
 }

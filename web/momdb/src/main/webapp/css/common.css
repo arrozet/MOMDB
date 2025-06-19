@@ -125,3 +125,114 @@ input[type="checkbox"] + label {
 .button.is-info:hover {
     background-color: #BD6290 !important;
 }
+
+/* Estilos para el banner de la página */
+.page-banner {
+    background-color: #5B3A7B  !important;
+}
+
+.page-banner .title,
+.page-banner .subtitle {
+    color: white !important;
+}
+
+/* Estilos para las tarjetas de películas */
+.movie-card {
+    position: relative;
+    height: 100%;
+    transition: transform 0.3s ease;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+}
+
+.movie-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.movie-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.movie-poster {
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.rounded-corners {
+    border-radius: 8px;
+}
+
+.movie-actions {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.movie-actions form {
+    margin: 0;
+    display: inline-block;
+}
+
+.favorite-btn {
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.favorite-btn:hover {
+    transform: scale(1.1);
+}
+
+.favorite-btn.is-danger {
+    background-color: #ff3860;
+    border-color: #ff3860;
+}
+
+.favorite-btn.is-danger:hover {
+    background-color: #ff1443;
+    border-color: #ff1443;
+}
+
+.remove-favorite-btn {
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove-favorite-btn:hover {
+    transform: scale(1.1);
+    background-color: #ff1443;
+    border-color: #ff1443;
+}
+
+/* Estilos de página unificados */
+.page-background {
+    background-color: #5B3A7B;
+}
+
+.delete-movie-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 10;
+    background-color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

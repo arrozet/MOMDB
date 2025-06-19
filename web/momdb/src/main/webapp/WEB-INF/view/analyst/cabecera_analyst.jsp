@@ -16,21 +16,21 @@
 
     <div id="navbarMenu" class="navbar-menu">
         <div class="navbar-start">
-            <a class="navbar-item" href="/user/">
+            <a class="navbar-item" href="/analyst/">
                 <span class="icon">
                     <i class="fas fa-film"></i>
                 </span>
                 <span>My Movies</span>
             </a>
 
-            <a class="navbar-item">
+            <a class="navbar-item" href="#">
                 <span class="icon">
                     <i class="fas fa-star"></i>
                 </span>
                 <span>My Reviews</span>
             </a>
 
-            <a class="navbar-item">
+            <a class="navbar-item" href="#">
                 <span class="icon">
                     <i class="fas fa-thumbs-up"></i>
                 </span>

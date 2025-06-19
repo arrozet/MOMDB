@@ -14,7 +14,6 @@
 <head>
     <title>Analyst | MOMDB</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/user.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/analyst.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
@@ -22,7 +21,7 @@
     UserDTO myUser = (UserDTO) session.getAttribute("user");
     List<Movie> movies = (List<Movie>) request.getAttribute("movies");
 %>
-<body>
+<body class="page-background">
 <jsp:include page="../analyst/cabecera_analyst.jsp" />
 <jsp:include page="../banner.jsp" />
 
@@ -62,30 +61,30 @@
                     for (Movie movie : moviesList) {
             %>
             <div class="column is-6-mobile is-4-tablet is-3-desktop is-2-widescreen">
-                <a href="/analyst/movie/<%= movie.getId() %>" style="text-decoration: none; color: inherit;">
-                    <div class="card movie-card-analyst mb-4">
-                        <div class="card-image has-text-centered pt-3">
+                <div class="movie-card">
+                    <a href="/analyst/movie/<%= movie.getId() %>" class="movie-link">
+                        <div class="movie-poster">
                             <% if (movie.getImageLink() != null && !movie.getImageLink().isEmpty()) { %>
-                            <figure class="image is-2by3" style="margin-left: auto; margin-right: auto; width: 150px;">
-                                <img src="<%= movie.getImageLink() %>" alt="Póster de <%= movie.getTitle() == null ? movie.getOriginalTitle() : movie.getTitle() %>">
+                            <figure class="image is-2by3">
+                                <img src="<%= movie.getImageLink() %>" alt="Póster de <%= movie.getTitle() == null ? movie.getOriginalTitle() : movie.getTitle() %>" class="rounded-corners">
                             </figure>
                             <% } else { %>
-                            <span class="icon is-large has-text-info" style="padding: 40px 0;">
-                            <i class="fas fa-film fa-3x"></i>
-                        </span>
+                            <span class="icon is-large has-text-info movie-poster-placeholder-icon">
+                                <i class="fas fa-film fa-3x"></i>
+                            </span>
                             <% } %>
                         </div>
-                        <div class="card-content">
-                            <p class="title is-5 has-text-centered" style="min-height: 3.5em; margin-bottom: 0.5rem;"><%= movie.getOriginalTitle()%></p>
-                            <div class="content is-size-7">
-                                <p style="margin-bottom: 0.25rem;"><strong>ID:</strong> <%= movie.getId()%></p>
-                                <p style="margin-bottom: 0.25rem;"><strong>Release Date:</strong> <%= movie.getReleaseDate()%></p>
-                                <p style="margin-bottom: 0.25rem;"><strong>Vote Average:</strong> <%= movie.getVoteAverage()%></p>
-                                <p style="margin-bottom: 0.25rem;"><strong>Vote Count:</strong> <%= movie.getVoteCount()%></p>
-                            </div>
+                    </a>
+                    <div class="analyst-movie-info">
+                        <p class="title is-6 has-text-centered has-text-white"><%= movie.getOriginalTitle()%></p>
+                        <div class="content is-size-7 has-text-white">
+                            <p><strong>ID:</strong> <%= movie.getId()%></p>
+                            <p><strong>Release Date:</strong> <%= movie.getReleaseDate()%></p>
+                            <p><strong>Vote Average:</strong> <%= movie.getVoteAverage()%></p>
+                            <p><strong>Vote Count:</strong> <%= movie.getVoteCount()%></p>
                         </div>
                     </div>
-                </a>
+                </div>
             </div>
             <%
                     }

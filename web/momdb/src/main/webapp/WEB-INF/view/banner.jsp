@@ -14,15 +14,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-<section class="momdb-banner">
-  <%-- 'container' de Bulma aún puede ser útil para centrar y limitar ancho --%>
-  <div class="container">
-    <p class="momdb-banner-title">
-      MOMDB
-    </p>
-    <p class="momdb-banner-subtitle">
-      Where your fantasies come true
-    </p>
+<section class="hero is-light is-small page-banner"> <%-- Hero es básicamente para los títulos --%>
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <h1 class="title">MOMDB</h1>
+      <h2 class="subtitle">Where your fantasies come true</h2>
+    </div>
   </div>
 </section>
 </body>
