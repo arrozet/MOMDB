@@ -131,9 +131,10 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
     }
 
     //Traer peliculas en formato página para no cargar todo de golpe
-    public Page<Movie> findPaginated(int pageNumber, int pageSize) {
+    public Page<MovieDTO> findPaginated(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        return movieRepository.findAll(pageable);
+        Page<Movie> moviePage = movieRepository.findAll(pageable);
+        return moviePage.map(Movie::toDTO);
     }
 
 }

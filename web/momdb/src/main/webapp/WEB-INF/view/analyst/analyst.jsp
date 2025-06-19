@@ -101,6 +101,42 @@
             %>
         </div>
 
+        <%
+            Integer currentPage = (Integer) request.getAttribute("currentPage");
+            Integer totalPages = (Integer) request.getAttribute("totalPages");
+            String filter = request.getParameter("filter");
+            String baseUrl = "/analyst/filtrar";
+            if (filter == null || filter.isEmpty()) {
+                baseUrl = "/analyst/";
+            }
+        %>
+
+        <% if (totalPages != null && totalPages > 1) { %>
+        <nav class="pagination is-centered mt-5" role="navigation" aria-label="pagination">
+            <%-- Botón Anterior --%>
+            <% if (currentPage > 1) { %>
+            <a href="<%= baseUrl %>?page=<%= currentPage - 1 %><%= (filter != null ? "&filter=" + filter : "") %>" class="pagination-previous">Anterior</a>
+            <% } else { %>
+            <a class="pagination-previous" disabled>Anterior</a>
+            <% } %>
+
+            <%-- Botón Siguiente --%>
+            <% if (currentPage < totalPages) { %>
+            <a href="<%= baseUrl %>?page=<%= currentPage + 1 %><%= (filter != null ? "&filter=" + filter : "") %>" class="pagination-next">Siguiente</a>
+            <% } else { %>
+            <a class="pagination-next" disabled>Siguiente</a>
+            <% } %>
+
+            <ul class="pagination-list">
+                <li>
+                    <span class="pagination-link is-current has-background-info has-text-white" aria-current="page">
+                        Página <%= currentPage %> de <%= totalPages %>
+                    </span>
+                </li>
+            </ul>
+        </nav>
+        <% } %>
+
 
 
     </div>

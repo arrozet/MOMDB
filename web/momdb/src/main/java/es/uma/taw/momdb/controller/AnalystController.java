@@ -2,10 +2,12 @@ package es.uma.taw.momdb.controller;
 
 import es.uma.taw.momdb.dao.MovieRepository;
 import es.uma.taw.momdb.dto.MovieDTO;
+import es.uma.taw.momdb.dto.UserDTO;
 import es.uma.taw.momdb.entity.Movie;
 import es.uma.taw.momdb.service.MovieService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,18 +26,30 @@ import java.util.List;
 @Controller
 @RequestMapping("/analyst")
 public class AnalystController extends BaseController {
+    private final int PAGE_SIZE = 48;
 
     @Autowired
     private MovieService movieService;
 
     @GetMapping("/")
-    public String doInit(HttpSession session, Model model) {
+    public String doInit(@RequestParam(name = "page", defaultValue = "1") int page, Model model, HttpSession session) {
+        UserDTO user = (UserDTO) session.getAttribute("user");
         if (!checkAuth(session, model)) {
             return "redirect:/";
         }
-        List<MovieDTO> movies = this.movieService.listarPeliculas(); // Cargar todas
 
-        model.addAttribute("movies", movies);
+
+
+        // Spring Data JPA numera las páginas desde 0, por eso se resta 1.
+        Page<MovieDTO> moviePage = movieService.findPaginated(page - 1, PAGE_SIZE);
+
+        model.addAttribute("movies", moviePage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", moviePage.getTotalPages());
+        // No es necesario volver a añadir el usuario si ya está en la sesión,
+        // pero es buena práctica pasarlo explícitamente al modelo.
+        model.addAttribute("user", user);
+
         return "analyst/analyst";
     }
 
