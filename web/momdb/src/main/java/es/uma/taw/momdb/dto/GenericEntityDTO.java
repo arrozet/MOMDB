@@ -9,5 +9,6 @@ import lombok.Data;
 
 @Data
 public class GenericEntityDTO {
-    String selectedEntity;
+    private String selectedEntity;
+    private String filterName;
 }

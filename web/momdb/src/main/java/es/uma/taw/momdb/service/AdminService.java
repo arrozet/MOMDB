@@ -48,16 +48,40 @@ public class AdminService {
      * @return Una lista de entidades del tipo solicitado, o una lista vacía si el tipo no es válido.
      */
     public List<?> getEntities(String entityType) {
-        return switch (entityType) {
-            case "Genre" -> genreRepository.findAll();
-            case "Keyword" -> keywordRepository.findAll();
-            case "ProductionCompany" -> productionCompanyRepository.findAll();
-            case "ProductionCountry" -> productionCountryRepository.findAll();
-            case "SpokenLanguage" -> spokenLanguageRepository.findAll();
-            case "CrewRole" -> crewRoleRepository.findAll();
-            case "UserRole" -> userRoleRepository.findAll();
-            default -> new ArrayList<>();
-        };
+        return getEntities(entityType, null);
+    }
+
+    /**
+     * Obtiene una lista de entidades basada en el tipo especificado y filtrada por nombre.
+     *
+     * @param entityType El tipo de entidad a recuperar (por ejemplo, "Genre", "Keyword").
+     * @param filterName El nombre por el que filtrar.
+     * @return Una lista de entidades del tipo solicitado, o una lista vacía si el tipo no es válido.
+     */
+    public List<?> getEntities(String entityType, String filterName) {
+        if (filterName == null || filterName.isBlank()) {
+            return switch (entityType) {
+                case "Genre" -> genreRepository.findAll();
+                case "Keyword" -> keywordRepository.findAll();
+                case "ProductionCompany" -> productionCompanyRepository.findAll();
+                case "ProductionCountry" -> productionCountryRepository.findAll();
+                case "SpokenLanguage" -> spokenLanguageRepository.findAll();
+                case "CrewRole" -> crewRoleRepository.findAll();
+                case "UserRole" -> userRoleRepository.findAll();
+                default -> new ArrayList<>();
+            };
+        } else {
+            return switch (entityType) {
+                case "Genre" -> genreRepository.findByGenreContainingIgnoreCase(filterName);
+                case "Keyword" -> keywordRepository.findByKeywordContainingIgnoreCase(filterName);
+                case "ProductionCompany" -> productionCompanyRepository.findByCompanyContainingIgnoreCase(filterName);
+                case "ProductionCountry" -> productionCountryRepository.findByCountryContainingIgnoreCase(filterName);
+                case "SpokenLanguage" -> spokenLanguageRepository.findByLanguageContainingIgnoreCase(filterName);
+                case "CrewRole" -> crewRoleRepository.findByRoleContainingIgnoreCase(filterName);
+                case "UserRole" -> userRoleRepository.findByNameContainingIgnoreCase(filterName);
+                default -> new ArrayList<>();
+            };
+        }
     }
 
     /**

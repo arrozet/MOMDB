@@ -34,11 +34,20 @@
         <h1 class="title admin-title">Entity Management</h1>
          <div class="box">
             <form:form method="post" action="/admin/showEntities" modelAttribute="genericEntity">
-                <div class="field">
+                <div class="field has-addons">
                     <div class="control">
                         <div class="select">
                             <form:select path="selectedEntity" items="${everyEntity}" onchange="this.form.submit()"/>
                         </div>
+                    </div>
+                    <div class="control has-icons-left is-expanded">
+                        <form:input path="filterName" cssClass="input" placeholder="Filtrar por nombre"/>
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </div>
+                    <div class="control">
+                        <button type="submit" class="button is-primary">Filtrar</button>
                     </div>
                 </div>
             </form:form>
@@ -50,12 +59,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="entity" items="${entities}">
-                        <tr>
-                            <td>${entity.id}</td>
-                            <td>${entity.name}</td>
-                        </tr>
-                    </c:forEach>
+                <%--
+                    NOTA: Uso JSTL <c:forEach> en lugar de un bucle for de Java (<% ... %>) porque
+                    la lista 'entities' es de tipo genérico (List<?>).
+                    - Un scriptlet de Java fallaría en la compilación, ya que el compilador no puede
+                      garantizar que los objetos de tipo '?' tengan los métodos .getId() o .getName().
+                    - JSTL, en cambio, resuelve las propiedades como ${entity.id} en tiempo de ejecución,
+                      llamando dinámicamente a los métodos getId() y getName(), lo que sí funciona.
+                --%>
+                <c:forEach var="entity" items="${entities}">
+                    <tr>
+                        <td>${entity.id}</td>
+                        <td>${entity.name}</td>
+                    </tr>
+                </c:forEach>
                 </tbody>
             </table>
         </div>

@@ -71,7 +71,9 @@ public class AdminController extends BaseController {
         String selectedEntity = (String) session.getAttribute("selectedEntity");
         selectedEntity = selectedEntity != null ? selectedEntity : "Genre";
 
-        handleEntitiesData(model, selectedEntity);
+        String filterName = (String) session.getAttribute("filterName");
+
+        handleEntitiesData(model, selectedEntity, filterName);
 
         return "admin/entities";
     }
@@ -112,6 +114,7 @@ public class AdminController extends BaseController {
         }
 
         session.setAttribute("selectedEntity", genericEntity.getSelectedEntity());
+        session.setAttribute("filterName", genericEntity.getFilterName());
 
         return "redirect:/admin/entities";
     }
@@ -142,14 +145,16 @@ public class AdminController extends BaseController {
      *
      * @param model          El modelo para la vista.
      * @param selectedEntity La entidad seleccionada para mostrar.
+     * @param filterName     El nombre del filtro aplicado.
      */
-    private void handleEntitiesData(Model model, String selectedEntity) {
+    private void handleEntitiesData(Model model, String selectedEntity, String filterName) {
         // Cargar las entidades según la selección
-        List<?> entities = this.adminService.getEntities(selectedEntity);
+        List<?> entities = this.adminService.getEntities(selectedEntity, filterName);
 
         // Añado lo necesario al modelo
         GenericEntityDTO genericEntity = new GenericEntityDTO();
         genericEntity.setSelectedEntity(selectedEntity);
+        genericEntity.setFilterName(filterName);
 
         model.addAttribute("entities", entities);
         model.addAttribute("entityType", selectedEntity);
