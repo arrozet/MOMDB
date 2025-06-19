@@ -14,7 +14,18 @@ body.login-page {
     flex-direction: column; /* Apila los elementos verticalmente */
     align-items: center;
     /*justify-content: center;*/
-    background-color: white;
+    background-color: #e9ecef;
+}
+
+/* En la página de login, el banner no debe tener su propio fondo */
+.login-page .page-banner {
+    background-color: transparent !important;
+}
+
+/* Y el título debe ser negro para que se vea sobre el fondo claro */
+.login-page .page-banner .title,
+.login-page .page-banner .subtitle {
+    color: black !important;
 }
 
 .login-box {
