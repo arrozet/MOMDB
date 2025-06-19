@@ -1,0 +1,47 @@
+.section {
+    margin-top: -4rem;
+}
+.review-section {
+    background: linear-gradient(135deg, rgba(91,58,123,0.8), rgba(91,58,123,0.6));
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    color: #fff;
+}
+
+.review-box {
+    background: rgba(60, 60, 60, 0.6); /* Gris oscuro, 60% opaco */
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    padding: 24px 32px;
+    margin: 24px auto;
+    max-width: 600px;
+    color: #fff;
+    backdrop-filter: blur(2px); /* Opcional: desenfoque del fondo */
+}
+.review-box label,
+.review-box input,
+.review-box textarea {
+    color: #fff;
+}
+.review-box input,
+.review-box textarea {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 8px;
+}
+.review-box button {
+    background: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.review-box button:hover {
+    background: #388e3c;
+}

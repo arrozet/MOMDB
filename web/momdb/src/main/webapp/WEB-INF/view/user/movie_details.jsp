@@ -1,3 +1,4 @@
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%--
   Created by IntelliJ IDEA.
   User: projectGeorge (Jorge Repullo)
@@ -15,6 +16,8 @@
 <%
     MovieDTO movie = (MovieDTO) request.getAttribute("movie");
     List<GenreDTO> generos = (List<GenreDTO>) request.getAttribute("generos");
+    List<ReviewDTO> reviews = (List<ReviewDTO>) request.getAttribute("reviews");
+    UserDTO myUser = (UserDTO) session.getAttribute("user");
 %>
 <head>
     <title>Movie Details | MOMDB</title>
@@ -33,6 +36,11 @@
             <figure class="image is-3by4">
                 <img class="rounded-corners" src="<%= movie.getImageLink() != null ? movie.getImageLink() : "/images/placeholder.png" %>" alt="Movie Poster">
             </figure>
+            <div class="has-text-centered mt-4">
+                <a href="/user/review/write?id=<%= movie.getId() %>" class="button is-info is-fullwidth">
+                    Add review
+                </a>
+            </div>
         </div>
 
         <div class="movie-details-content">
@@ -176,6 +184,47 @@
                 </div>
             </div>
         </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <h2 class="title is-4 has-text-white">Reviews</h2>
+        <%
+            if (reviews != null && !reviews.isEmpty()) {
+                for (ReviewDTO review : reviews) {
+        %>
+            <div class="review-box">
+                <p class="review-author">
+                    Review by <%= review.getUsername() != null ? review.getUsername() : "Unknown" %>
+                </p>
+                <p class="review-rating">
+                    ⭐ <%= review.getRating() != null ? review.getRating() : "-" %>/10
+                </p>
+                <p class="review-content">
+                    <%= review.getContent() != null ? review.getContent() : "" %>
+                </p>
+                <% if (myUser != null && review.getUserId() != null && myUser.getUserId() == review.getUserId()) { %>
+                    <div class="review-actions">
+                        <a href="/user/review/write?id=<%= review.getMovieId() %>" title="Edit" class="button is-small is-info">
+                            <span class="icon"><i class="fas fa-edit"></i></span>
+                        </a>
+                        <form action="/user/movie/review/delete" method="get" style="display:inline;">
+                            <input type="hidden" name="movieId" value="<%= review.getMovieId() %>" />
+                            <input type="hidden" name="userId" value="<%= review.getUserId() %>" />
+                            <button type="submit" class="button is-small is-danger" title="Delete" onclick="return confirm('Are you sure you want to delete this review?');">
+                                <span class="icon"><i class="fas fa-trash"></i></span>
+                            </button>
+                        </form>
+                    </div>
+                <% } %>
+            </div>
+        <%   }
+            } else { %>
+            <div class="review-section is-light has-text-centered">
+                No reviews yet. Be the first to write one!
+            </div>
+        <% } %>
     </div>
 </section>
 

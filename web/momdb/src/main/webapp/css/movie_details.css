@@ -43,4 +43,82 @@ span.tag.movie-info-tag {
 
 .rounded-corners {
     border-radius: 8px;
-} 
+}
+
+.box {
+    background: rgba(60,60,60,0.6);
+    color: #fff; border-radius: 16px;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.review-box {
+    background: rgba(30, 30, 30, 0.92);
+    color: #d3d3d3;
+    border-radius: 20px;
+    margin-bottom: 2rem;
+    padding: 1.5rem 2rem 1.5rem 2rem;
+    position: relative;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.review-author {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #cfcfff;
+    margin-bottom: 0.2em;
+}
+
+.review-rating {
+    font-size: 1.1em;
+    color: #ffd700;
+    margin-bottom: 0.7em;
+}
+
+.review-content {
+    margin-top: 0.5em;
+    white-space: pre-line;
+    font-size: 1.05em;
+    color: #e0e0e0;
+}
+
+.review-actions {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    display: flex;
+    gap: 12px;
+    z-index: 2;
+}
+
+.review-actions .button.is-info, .review-actions .button.is-danger {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    max-width: 36px;
+    max-height: 36px;
+    font-size: 1.1em;
+    border-radius: 10px;
+}
+
+.review-actions .icon {
+    font-size: 0.95em;
+}
+
+.review-actions .button.is-info {
+    background: #ffb6e6;
+    color: #fff;
+    border: none;
+}
+.review-actions .button.is-info:hover {
+    background: #ff8fd8;
+}
+.review-actions .button.is-danger {
+    background: #ff6b81;
+    color: #fff;
+    border: none;
+}
+.review-actions .button.is-danger:hover {
+    background: #ff3b5c;
+}

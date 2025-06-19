@@ -1,13 +1,16 @@
 package es.uma.taw.momdb.controller;
 
+import es.uma.taw.momdb.dao.ReviewRepository;
 import es.uma.taw.momdb.dao.UserRepository;
 import es.uma.taw.momdb.dto.GenreDTO;
 import es.uma.taw.momdb.dto.MovieDTO;
+import es.uma.taw.momdb.dto.ReviewDTO;
 import es.uma.taw.momdb.dto.UserDTO;
 import es.uma.taw.momdb.entity.User;
 import es.uma.taw.momdb.service.FavoriteService;
 import es.uma.taw.momdb.service.GeneroService;
 import es.uma.taw.momdb.service.MovieService;
+import es.uma.taw.momdb.service.ReviewService;
 import es.uma.taw.momdb.ui.Filtro;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -38,6 +41,9 @@ public class UserController extends BaseController{
 
     @Autowired
     protected UserRepository userRepository;
+
+    @Autowired
+    protected ReviewService reviewService;
 
     @GetMapping("/")
     public String doInit(HttpSession session, Model model) {
@@ -98,6 +104,9 @@ public class UserController extends BaseController{
         if (movie == null) {
             return "redirect:/user/";
         }
+
+        List<ReviewDTO> reviews = reviewService.getReviewsByMovieId(id);
+        model.addAttribute("reviews", reviews);
 
         model.addAttribute("generos", movie.getGeneros());
         model.addAttribute("movie", movie);
@@ -208,6 +217,51 @@ public class UserController extends BaseController{
         UserDTO updatedUserDTO = user.toDTO();
         session.setAttribute("user", updatedUserDTO);
         return "redirect:/user/profile";
+    }
+
+    @GetMapping("/review/write")
+    public String writeReview(@RequestParam("id") Integer movieId, HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        ReviewDTO review = reviewService.findReviewByUserAndMovie(user.getUserId(), movieId);
+        if (review == null) {
+            review = new ReviewDTO();
+            review.setMovieId(movieId);
+        }
+        model.addAttribute("reviewDTO", review);
+        model.addAttribute("movieId", movieId);
+
+        return "user/write_review";
+    }
+
+    @PostMapping("/review/save")
+    public String saveReview(@ModelAttribute("reviewDTO") ReviewDTO reviewDTO,
+                            HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        reviewService.saveOrUpdateReview(user.getUserId(), reviewDTO.getMovieId(), reviewDTO);
+        reviewService.updateMovieRating(reviewDTO.getMovieId());
+
+        return "redirect:/user/movie?id=" + reviewDTO.getMovieId();
+    }
+
+    @GetMapping("/movie/review/delete")
+    public String deleteReview(@RequestParam("movieId") Integer movieId,
+                               @RequestParam("userId") Integer userId,
+                               HttpSession session,
+                               Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        this.reviewService.deleteReview(movieId, userId);
+        return "redirect:/user/movie?id=" + movieId;
     }
 
     /**

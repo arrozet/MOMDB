@@ -9,7 +9,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-  <title>My movies | MOMDB</title>
+  <title>Profile | MOMDB</title>
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/user.css">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,10 +17,6 @@
 
 <body class="page-background">
 <jsp:include page="cabecera_user.jsp" />
-
-<%
-  UserDTO myUser = (UserDTO) session.getAttribute("user");
-%>
 
 <section class="hero is-light is-small page-banner">
     <div class="hero-body">
