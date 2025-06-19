@@ -1,8 +1,10 @@
 package es.uma.taw.momdb.controller;
 
+import es.uma.taw.momdb.dao.UserRepository;
 import es.uma.taw.momdb.dto.GenreDTO;
 import es.uma.taw.momdb.dto.MovieDTO;
 import es.uma.taw.momdb.dto.UserDTO;
+import es.uma.taw.momdb.entity.User;
 import es.uma.taw.momdb.service.FavoriteService;
 import es.uma.taw.momdb.service.GeneroService;
 import es.uma.taw.momdb.service.MovieService;
@@ -33,6 +35,9 @@ public class UserController extends BaseController{
     
     @Autowired
     protected FavoriteService favoriteService;
+
+    @Autowired
+    protected UserRepository userRepository;
 
     @GetMapping("/")
     public String doInit(HttpSession session, Model model) {
@@ -162,12 +167,47 @@ public class UserController extends BaseController{
             favoriteService.removeFromFavorites(user.getUserId(), movieId);
         }
 
-        // Redirigir de vuelta a la página anterior
+        // Redirigir de vuelta a la página anterior SOLO si no es /user/filtrar
         String referer = request.getHeader("Referer");
-        if (referer != null && !referer.isEmpty()) {
+        if (referer != null && !referer.isEmpty() && !referer.contains("user/filtrar")) {
             return "redirect:" + referer;
         }
         return "redirect:/user/";
+    }
+
+    @GetMapping("/profile")
+    public String verPerfil(HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/user/";
+        }
+
+        model.addAttribute("userDTO", user);
+        return "user/profile";
+    }
+
+    @PostMapping("/editProfile")
+    public String editarPerfil(@ModelAttribute("userDTO") UserDTO userDTO, HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        User user = this.userRepository.findById(userDTO.getUserId()).orElse(null);
+        if (user == null) {
+            model.addAttribute("error", "Usuario no encontrado");
+            return "user/profile";
+        }
+        // Actualizar los campos editables
+        user.setUsername(userDTO.getUsername());
+        user.setProfilePicLink(userDTO.getProfilePic());
+        this.userRepository.save(user);
+        // Actualizar el usuario en la sesión
+        UserDTO updatedUserDTO = user.toDTO();
+        session.setAttribute("user", updatedUserDTO);
+        return "redirect:/user/profile";
     }
 
     /**

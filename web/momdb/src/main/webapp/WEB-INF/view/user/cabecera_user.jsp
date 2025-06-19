@@ -67,15 +67,17 @@ Author: projectGeorge (Jorge Repullo)
             </div>
 
             <div class="navbar-item">
-                <figure class="image is-32x32">
-                    <% if(myUser.getProfilePic() != null) { %>
-                    <img class="is-rounded" src="<%= myUser.getProfilePic() %>" alt="Profile picture">
-                    <% } else { %>
-                    <span class="icon">
-                            <i class="fas fa-user-circle fa-2x"></i>
-                        </span>
-                    <% } %>
-                </figure>
+                <a href="/user/profile">
+                    <figure class="image is-32x32" style="cursor: pointer;">
+                        <% if(myUser.getProfilePic() != null) { %>
+                        <img class="is-rounded" src="<%= myUser.getProfilePic() %>" alt="Profile picture">
+                        <% } else { %>
+                        <span class="icon">
+                                <i class="fas fa-user-circle fa-2x"></i>
+                            </span>
+                        <% } %>
+                    </figure>
+                </a>
             </div>
         </div>
     </div>

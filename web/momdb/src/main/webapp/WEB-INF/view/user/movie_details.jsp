@@ -6,8 +6,6 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page import="es.uma.taw.momdb.entity.Movie" %>
-<%@ page import="es.uma.taw.momdb.entity.Genre" %>
 <%@ page import="java.util.List" %>
 <%@ page import="es.uma.taw.momdb.dto.*" %>
 
@@ -66,6 +64,17 @@
                         </div>
                         <div class="column is-half">
                             <div class="tags has-addons">
+                                <span class="tag is-size-6 movie-info-tag" style="margin-right: 0.5rem;">Release date</span>
+                                <span class="tag is-info is-size-5 has-text-white">
+                                    <span><%= movie.getFechaDeSalida() != null ? movie.getFechaDeSalida() : "No disponible" %></span>
+                                    <span class="icon is-small ml-3">
+                                        <i class="fas fa-calendar"></i>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="column is-half">
+                            <div class="tags has-addons">
                                 <span class="tag is-size-5 movie-info-tag">Votes</span>
                                 <span class="tag is-info is-size-5 has-text-white">
                                     <%= movie.getVotos() != null ? movie.getVotos() : "0" %>
@@ -77,22 +86,11 @@
                         </div>
                         <div class="column is-half">
                             <div class="tags has-addons">
-                                <span class="tag is-size-5 movie-info-tag">Release date</span>
+                                <span class="tag is-size-5 movie-info-tag">Runtime</span>
                                 <span class="tag is-info is-size-5 has-text-white">
-                                    <span><%= movie.getFechaDeSalida() != null ? movie.getFechaDeSalida() : "No disponible" %></span>
-                                    <span class="icon">
-                                        <i class="fas fa-calendar"></i>
-                                    </span>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="column is-half">
-                            <div class="tags has-addons">
-                                <span class="tag is-size-5 movie-info-tag">Original idiom</span>
-                                <span class="tag is-info is-size-5 has-text-white">
-                                    <span><%= movie.getIdiomaOriginal() != null ? movie.getIdiomaOriginal() : "No disponible" %></span>
-                                    <span class="icon">
-                                        <i class="fas fa-comments"></i>
+                                    <span><%= movie.getDuracion() != null ? movie.getDuracion() + " min" : "No disponible" %></span>
+                                    <span class="icon is-small ml-3">
+                                        <i class="fas fa-clock"></i>
                                     </span>
                                 </span>
                             </div>

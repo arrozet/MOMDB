@@ -3,3 +3,11 @@ Author: projectGeorge (Jorge Repullo)
 */
 
 /* Los estilos de este fichero se han movido a common.css */
+
+.user-page-banner {
+    background-color: #5B3A7B;
+}
+
+.subtitle {
+    color: white !important;
+}

@@ -21,10 +21,10 @@ Author: projectGeorge (Jorge Repullo)
     List<MovieDTO> movies = (List<MovieDTO>) request.getAttribute("movies");
 %>
 
-<section class="hero is-light is-small user-page-banner">
+<section class="hero is-small user-page-banner">
     <div class="hero-body">
         <div class="container has-text-centered">
-            <h1 class="subtitle">Your favorite movies</h1>
+            <h1 class="title">Your favorite movies</h1>
         </div>
     </div>
 </section>

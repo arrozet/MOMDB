@@ -5,10 +5,7 @@ Author: projectGeorge (Jorge Repullo)
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page import="java.util.List" %>
 <%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>
-<%@ page import="java.math.BigDecimal" %>
-<%@ page import="es.uma.taw.momdb.dto.GenreDTO" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <%@ page contentType="text/html;charset=UTF-8" language=  "java" %>
 <html>
 <head>
