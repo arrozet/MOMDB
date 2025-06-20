@@ -7,8 +7,6 @@
 <head>
     <title>Edit crew member</title>
     <link rel="stylesheet" href="/css/common.css">
-    <link rel="stylesheet" href="/css/user.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <%
@@ -16,7 +14,7 @@
     CrewDTO crew = (CrewDTO) request.getAttribute("crew");
     String error = (String) request.getAttribute("error");
 %>
-<body class="has-background-white-ter">
+<body class="page-background">
 <jsp:include page="cabecera_editor.jsp" />
 
 <div class="section">
