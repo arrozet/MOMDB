@@ -34,7 +34,7 @@
                 <span class="icon">
                     <i class="fas fa-database"></i>
                 </span>
-                <span>Entities management</span>
+                <span>Entity management</span>
             </a>
         </div>
 

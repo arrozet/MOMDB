@@ -2,6 +2,7 @@ package es.uma.taw.momdb.controller;
 
 import es.uma.taw.momdb.dto.GenericEntityDTO;
 import es.uma.taw.momdb.dto.UsersFormDTO;
+import es.uma.taw.momdb.entity.EntityWithNameAndId;
 import es.uma.taw.momdb.service.AdminService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,6 +116,71 @@ public class AdminController extends BaseController {
 
         session.setAttribute("selectedEntity", genericEntity.getSelectedEntity());
         session.setAttribute("filterName", genericEntity.getFilterName());
+
+        return "redirect:/admin/entities";
+    }
+
+    /**
+     * Muestra el formulario para editar una entidad.
+     * @param id El ID de la entidad a editar.
+     * @param entityType El tipo de la entidad a editar.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return La vista del formulario de edición o una redirección.
+     */
+    @GetMapping("/editEntity")
+    public String doEditEntity(@RequestParam("id") String id, @RequestParam("entityType") String entityType, HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        EntityWithNameAndId<?> entity = adminService.findEntity(entityType, id);
+        if (entity == null) {
+            return "redirect:/admin/entities";
+        }
+
+        model.addAttribute("entity", entity);
+        model.addAttribute("entityType", entityType);
+
+        return "admin/edit_entity";
+    }
+
+    /**
+     * Procesa la actualización de una entidad.
+     * @param entity El DTO con los datos de la entidad a actualizar.
+     * @param entityType El tipo de la entidad.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return Una redirección a la lista de entidades.
+     */
+    @PostMapping("/updateEntity")
+    public String doUpdateEntity(@ModelAttribute("entity") GenericEntityDTO entity, @RequestParam("entityType") String entityType, HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        adminService.updateEntity(entityType, entity.getId(), entity.getName());
+
+        return "redirect:/admin/entities";
+    }
+
+    /**
+     * Maneja la petición para borrar una entidad.
+     * @param entityType El tipo de entidad a borrar.
+     * @param id El ID de la entidad a borrar.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return Una redirección a la lista de entidades.
+     */
+    @PostMapping("/deleteEntity")
+    public String doDeleteEntity(@RequestParam("entityType") String entityType,
+                                 @RequestParam("id") String id,
+                                 HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        adminService.deleteEntity(entityType, id);
 
         return "redirect:/admin/entities";
     }

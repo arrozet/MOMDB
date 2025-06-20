@@ -17,6 +17,7 @@
     <title>Entity Management</title>
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
@@ -56,6 +57,7 @@
                     <tr>
                         <th class="has-text-grey-darker">Id</th>
                         <th class="has-text-grey-darker">Value</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -71,6 +73,31 @@
                     <tr>
                         <td>${entity.id}</td>
                         <td>${entity.name}</td>
+                        <%-- Botones de editar y eliminar --%>
+                        <td>
+                            <%-- Botón de editar --%>
+                            <div class="field has-addons">
+                                <p class="control">
+                                    <a class="button is-small is-info" href="/admin/editEntity?id=${entity.id}&entityType=${genericEntity.selectedEntity}">
+                                        <span class="icon">
+                                            <i class="fas fa-edit"></i>
+                                        </span>
+                                    </a>
+                                </p>
+                                <%-- Botón de eliminar --%>
+                                <p class="control">
+                                <form action="/admin/deleteEntity" method="post" style="display: inline;">
+                                    <input type="hidden" name="id" value="${entity.id}">
+                                    <input type="hidden" name="entityType" value="${genericEntity.selectedEntity}">
+                                    <button type="submit" class="button is-small is-danger">
+                                        <span class="icon">
+                                            <i class="fas fa-trash"></i>
+                                        </span>
+                                    </button>
+                                </form>
+                                </p>
+                            </div>
+                        </td>
                     </tr>
                 </c:forEach>
                 </tbody>
