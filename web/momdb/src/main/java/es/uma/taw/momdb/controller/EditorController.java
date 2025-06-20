@@ -8,6 +8,7 @@ import es.uma.taw.momdb.service.*;
 import es.uma.taw.momdb.ui.Filtro;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -173,21 +174,22 @@ public class EditorController extends BaseController{
     }
 
     @GetMapping("/people")
-    public String listPeople(@ModelAttribute("filtro") Filtro filtro, HttpSession session, Model model) {
+    public String listPeople(@ModelAttribute("filtro") Filtro filtro, HttpSession session, Model model,
+                            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                            @RequestParam(value = "size", required = false, defaultValue = "1000") int size) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
-        } else {
-            List<PersonDTO> people;
-            String texto = filtro != null ? filtro.getTexto() : null;
-            if (texto != null && !texto.trim().isEmpty()) {
-                people = personService.searchByName(texto);
-            } else {
-                people = personService.findFirst1000();
-            }
-            model.addAttribute("people", people);
-            model.addAttribute("filtro", filtro);
-            return "editor/people";
         }
+
+        String texto = filtro != null ? filtro.getTexto() : null;
+        Page<PersonDTO> peoplePage = personService.findPeoplePaged(texto, page, size);
+        model.addAttribute("people", peoplePage.getContent());
+        model.addAttribute("filtro", filtro);
+        model.addAttribute("page", page);
+        model.addAttribute("hasPrev", peoplePage.hasPrevious());
+        model.addAttribute("hasNext", peoplePage.hasNext());
+        return "editor/people";
+
     }
 
     @GetMapping("/movie/character/edit")

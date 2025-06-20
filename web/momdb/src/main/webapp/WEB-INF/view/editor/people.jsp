@@ -103,6 +103,21 @@
             There are no people
         <%  } %>
     </div>
+    <!-- Botones de paginación -->
+    <div style="display: flex; justify-content: center; margin: 2rem 0;">
+        <c:if test="${hasPrev}">
+            <a href="/editor/people?page=${page - 1}&size=1000" class="button is-info" style="margin-right: 1rem;">
+                <span class="icon"><i class="fas fa-arrow-left"></i></span>
+                <span>Anterior</span>
+            </a>
+        </c:if>
+        <c:if test="${hasNext}">
+            <a href="/editor/people?page=${page + 1}&size=1000" class="button is-info">
+                <span>Siguiente</span>
+                <span class="icon"><i class="fas fa-arrow-right"></i></span>
+            </a>
+        </c:if>
+    </div>
 </div>
 </body>
 </html> 

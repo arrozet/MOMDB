@@ -69,7 +69,7 @@
                     }
                 } else{
                 %>
-                No hay miembros del equipo técnico para esta película
+                There is no crew members for this movie
                 <%
                     }
                 %>

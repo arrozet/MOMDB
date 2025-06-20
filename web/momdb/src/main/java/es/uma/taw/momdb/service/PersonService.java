@@ -4,7 +4,9 @@ import es.uma.taw.momdb.dao.PersonRepository;
 import es.uma.taw.momdb.dto.PersonDTO;
 import es.uma.taw.momdb.entity.Person;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -53,5 +55,18 @@ public class PersonService extends DTOService<PersonDTO, Person> {
     public PersonDTO findById(Integer id) {
         Person person = this.personRepository.findById(id).orElse(null);
         return person != null ? person.toDTO() : null;
+    }
+
+    public Page<PersonDTO> findPeoplePaged(String name, int page, int size) {
+        Page<Person> peoplePage;
+        if (name != null && !name.trim().isEmpty()) {
+            peoplePage = this.personRepository.findByNameContainingIgnoreCase(name, PageRequest.of(page, size));
+        } else {
+            peoplePage = this.personRepository.findAll(PageRequest.of(page, size));
+        }
+        // Convertimos la página de entidades a DTOs
+        List<PersonDTO> dtos = this.entity2DTO(peoplePage.getContent());
+        // Devolvemos una página de DTOs (creamos una nueva PageImpl)
+        return new PageImpl<>(dtos, peoplePage.getPageable(), peoplePage.getTotalElements());
     }
 } 
