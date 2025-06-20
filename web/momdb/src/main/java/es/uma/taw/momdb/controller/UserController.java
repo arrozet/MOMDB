@@ -1,7 +1,6 @@
 package es.uma.taw.momdb.controller;
 
 import es.uma.taw.momdb.dao.ReviewRepository;
-import es.uma.taw.momdb.dao.UserRepository;
 import es.uma.taw.momdb.dto.GenreDTO;
 import es.uma.taw.momdb.dto.MovieDTO;
 import es.uma.taw.momdb.dto.ReviewDTO;
@@ -11,6 +10,7 @@ import es.uma.taw.momdb.service.FavoriteService;
 import es.uma.taw.momdb.service.GeneroService;
 import es.uma.taw.momdb.service.MovieService;
 import es.uma.taw.momdb.service.ReviewService;
+import es.uma.taw.momdb.service.UserService;
 import es.uma.taw.momdb.ui.Filtro;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -40,7 +40,7 @@ public class UserController extends BaseController{
     protected FavoriteService favoriteService;
 
     @Autowired
-    protected UserRepository userRepository;
+    protected UserService userService;
 
     @Autowired
     protected ReviewService reviewService;
@@ -127,7 +127,7 @@ public class UserController extends BaseController{
     }
     
     @PostMapping("/favorites/add")
-    public String addToFavorites(@RequestParam("movieId") Integer movieId, HttpSession session) {
+    public String anyadirAFavoritos(@RequestParam("movieId") Integer movieId, HttpSession session) {
         UserDTO user = (UserDTO) session.getAttribute("user");
         if (user == null) {
             return "error";
@@ -138,7 +138,7 @@ public class UserController extends BaseController{
     }
     
     @PostMapping("/favorites/remove")
-    public String removeFromFavorites(@RequestParam("movieId") Integer movieId, HttpSession session) {
+    public String eliminarDeFavoritos(@RequestParam("movieId") Integer movieId, HttpSession session) {
         UserDTO user = (UserDTO) session.getAttribute("user");
         if (user == null) {
             return "error";
@@ -150,7 +150,7 @@ public class UserController extends BaseController{
     
     @GetMapping("/favorites/check")
     @ResponseBody
-    public String checkFavorite(@RequestParam("movieId") Integer movieId, HttpSession session) {
+    public String checkearFavorito(@RequestParam("movieId") Integer movieId, HttpSession session) {
         UserDTO user = (UserDTO) session.getAttribute("user");
         if (user == null) {
             return "false";
@@ -161,7 +161,7 @@ public class UserController extends BaseController{
     }
     
     @PostMapping("/favorites/toggle")
-    public String toggleFavorite(@RequestParam("movieId") Integer movieId, 
+    public String toggleFavorito(@RequestParam("movieId") Integer movieId,
                                 @RequestParam("action") String action,
                                 HttpSession session, Model model, HttpServletRequest request) {
         if (!checkAuth(session, model)) {
@@ -204,23 +204,20 @@ public class UserController extends BaseController{
         if (!checkAuth(session, model)) {
             return "redirect:/";
         }
-        User user = this.userRepository.findById(userDTO.getUserId()).orElse(null);
-        if (user == null) {
+
+        UserDTO updatedUserDTO = this.userService.updateUserProfile(userDTO);
+        if (updatedUserDTO == null) {
             model.addAttribute("error", "Usuario no encontrado");
             return "user/profile";
         }
-        // Actualizar los campos editables
-        user.setUsername(userDTO.getUsername());
-        user.setProfilePicLink(userDTO.getProfilePic());
-        this.userRepository.save(user);
+        
         // Actualizar el usuario en la sesión
-        UserDTO updatedUserDTO = user.toDTO();
         session.setAttribute("user", updatedUserDTO);
-        return "redirect:/user/profile";
+        return "redirect:/user/";
     }
 
     @GetMapping("/review/write")
-    public String writeReview(@RequestParam("id") Integer movieId, HttpSession session, Model model) {
+    public String escribirReview(@RequestParam("id") Integer movieId, HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
         }
@@ -238,7 +235,7 @@ public class UserController extends BaseController{
     }
 
     @PostMapping("/review/save")
-    public String saveReview(@ModelAttribute("reviewDTO") ReviewDTO reviewDTO,
+    public String guardarReview(@ModelAttribute("reviewDTO") ReviewDTO reviewDTO,
                             HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
@@ -252,7 +249,7 @@ public class UserController extends BaseController{
     }
 
     @GetMapping("/movie/review/delete")
-    public String deleteReview(@RequestParam("movieId") Integer movieId,
+    public String eliminarReview(@RequestParam("movieId") Integer movieId,
                                @RequestParam("userId") Integer userId,
                                HttpSession session,
                                Model model) {
