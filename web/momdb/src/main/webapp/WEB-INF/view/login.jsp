@@ -55,6 +55,7 @@
             <div class="field">
                 <div class="control">
                     <button class="button login" type="submit">Login</button>
+                    <a href="/register" class="btn btn-secondary mt-2">Registrarse</a>
                 </div>
             </div>
         </form>

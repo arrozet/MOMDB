@@ -19,4 +19,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("select u from User u left join fetch u.user_favorite where u.id = :userId")
     public User findUserWithFavorites(@Param("userId") Integer userId);
 
+    User findByUsername(String username);
+    User findByEmail(String email);
 }

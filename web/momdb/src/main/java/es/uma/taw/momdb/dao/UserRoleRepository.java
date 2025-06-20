@@ -7,9 +7,10 @@ import java.util.List;
 
 /*
  * @author - arrozet (Rubén Oliva)
- * @co-authors -
+ * @co-authors - amcgiluma (Juan Manuel Valenzuela)
  */
 
 public interface UserRoleRepository extends JpaRepository<UserRole, Integer> {
     List<UserRole> findByNameContainingIgnoreCase(String name);
+    UserRole findByName(String name);
 }

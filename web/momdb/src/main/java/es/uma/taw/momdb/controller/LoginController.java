@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
  * Controlador para gestionar las operaciones de login, autenticación y logout de usuarios.
  *
  * @author - arrozet (Rubén Oliva)
- * @co-authors - Artur797 (Artur Vargas), edugbau (Eduardo González), projectGeorge (Jorge Repullo)
+ * @co-authors - Artur797 (Artur Vargas), edugbau (Eduardo González), projectGeorge (Jorge Repullo), amcgiluma  (Juan Manuel Valenzuela)
  */
 
 @Controller
@@ -25,7 +25,7 @@ public class LoginController {
      *
      * @return El nombre de la vista de login.
      */
-    @GetMapping("/")
+    @GetMapping(value = {"/", "/login"})
     public String doLogin(){
         return "login";
     }
