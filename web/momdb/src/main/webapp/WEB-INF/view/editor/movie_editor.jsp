@@ -10,23 +10,20 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<link rel="stylesheet" href="/css/common.css">
-<link rel="stylesheet" href="/css/user.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <html>
 <head>
     <title>Movie Editor</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <%
     MovieDTO movie =  (MovieDTO) request.getAttribute("movie");
 %>
-<body class="has-background-white-ter">
+<body class="page-background">
 <jsp:include page="cabecera_editor.jsp" />
 
 <div class="section">
     <div class="container box">
-
         <% if(movie.getId() != -1) { %>
         <h1 class="title is-4">Edit movie: <%=movie.getTitulo()%></h1>
             <div class="tabs is-centered">

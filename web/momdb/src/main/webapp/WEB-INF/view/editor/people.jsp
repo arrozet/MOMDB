@@ -7,7 +7,6 @@
 <head>
     <title>Personas</title>
     <link rel="stylesheet" href="/css/common.css">
-    <link rel="stylesheet" href="/css/user.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         .people-grid {
@@ -46,7 +45,7 @@
 <%
     List<PersonDTO> people = (List<PersonDTO>) request.getAttribute("people");
 %>
-<body class="has-background-white-ter">
+<body class="page-background">
 <jsp:include page="cabecera_editor.jsp" />
 <div class="container">
     <h1 class="title is-3 has-text-centered" style="margin-top:2.5rem;">People</h1>
