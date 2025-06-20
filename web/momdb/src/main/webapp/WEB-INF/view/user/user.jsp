@@ -124,7 +124,8 @@ Author: projectGeorge (Jorge Repullo)
                             <% } %>
                         </div>
                     </a>
-                    <div class="movie-actions mt-2">
+                    <div class="movie-actions mt-2" style="display: flex; justify-content: center; gap: 0.5rem;">
+                        <%-- Botón de favoritos --%>
                         <% if (movie.isFavorite()) { %>
                             <form method="POST" action="/user/favorites/toggle">
                                 <input type="hidden" name="movieId" value="<%= movie.getId() %>">
@@ -142,6 +143,28 @@ Author: projectGeorge (Jorge Repullo)
                                 <button type="submit" class="button is-info is-small favorite-btn">
                                     <span class="icon">
                                         <i class="fas fa-heart"></i>
+                                    </span>
+                                </button>
+                            </form>
+                        <% } %>
+                        <%-- Botón de watchlist --%>
+                        <% if (movie.isInWatchlist()) { %>
+                            <form method="POST" action="/user/watchlist/toggle">
+                                <input type="hidden" name="movieId" value="<%= movie.getId() %>">
+                                <input type="hidden" name="action" value="remove">
+                                <button type="submit" class="button is-warning is-small favorite-btn watchlist-btn">
+                                    <span class="icon">
+                                        <i class="far fa-bookmark"></i>
+                                    </span>
+                                </button>
+                            </form>
+                        <% } else { %>
+                            <form method="POST" action="/user/watchlist/toggle">
+                                <input type="hidden" name="movieId" value="<%= movie.getId() %>">
+                                <input type="hidden" name="action" value="add">
+                                <button type="submit" class="button is-light is-small favorite-btn watchlist-btn">
+                                    <span class="icon">
+                                        <i class="far fa-bookmark"></i>
                                     </span>
                                 </button>
                             </form>
