@@ -1,16 +1,15 @@
 package es.uma.taw.momdb.controller;
 
-import es.uma.taw.momdb.dao.ReviewRepository;
 import es.uma.taw.momdb.dto.GenreDTO;
 import es.uma.taw.momdb.dto.MovieDTO;
 import es.uma.taw.momdb.dto.ReviewDTO;
 import es.uma.taw.momdb.dto.UserDTO;
-import es.uma.taw.momdb.entity.User;
 import es.uma.taw.momdb.service.FavoriteService;
 import es.uma.taw.momdb.service.GeneroService;
 import es.uma.taw.momdb.service.MovieService;
 import es.uma.taw.momdb.service.ReviewService;
 import es.uma.taw.momdb.service.UserService;
+import es.uma.taw.momdb.service.WatchlistService;
 import es.uma.taw.momdb.ui.Filtro;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -45,6 +44,9 @@ public class UserController extends BaseController{
     @Autowired
     protected ReviewService reviewService;
 
+    @Autowired
+    protected WatchlistService watchlistService;
+
     @GetMapping("/")
     public String doInit(HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -77,12 +79,14 @@ public class UserController extends BaseController{
             movies = movieService.listarPeliculasBySelectFilters(filtro);
         }
 
-        // Verificar estado de favoritos para cada película
+        // Verificar estado de favoritos/watchlist para cada película
         UserDTO user = (UserDTO) session.getAttribute("user");
         if (user != null) {
             for (MovieDTO movie : movies) {
                 boolean isFavorite = favoriteService.isFavorite(user.getUserId(), movie.getId());
                 movie.setFavorite(isFavorite);
+                boolean isInWatchlist = watchlistService.isInWatchlist(user.getUserId(), movie.getId());
+                movie.setInWatchlist(isInWatchlist);
             }
         }
 
@@ -282,6 +286,65 @@ public class UserController extends BaseController{
         List<ReviewDTO> reviews = this.reviewService.getReviewsByUserId(user.getUserId());
         model.addAttribute("reviews", reviews);
         return "user/user_reviews";
+    }
+
+    @GetMapping("/watchlist")
+    public String verWatchlist(HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        List<MovieDTO> watchlistMovies = watchlistService.getUserWatchlist(user.getUserId());
+        model.addAttribute("movies", watchlistMovies);
+        
+        return "user/watchlist";
+    }
+
+    @PostMapping("/watchlist/add")
+    public String anyadirAWatchlist(@RequestParam("movieId") Integer movieId, HttpSession session) {
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        if (user == null) {
+            return "error";
+        }
+
+        watchlistService.addToWatchlist(user.getUserId(), movieId);
+        return "redirect:/user/";
+    }
+
+    @PostMapping("/watchlist/remove")
+    public String eliminarDeWatchlist(@RequestParam("movieId") Integer movieId, HttpSession session) {
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        if (user == null) {
+            return "error";
+        }
+        watchlistService.removeFromWatchlist(user.getUserId(), movieId);
+
+        return "redirect:/user/watchlist";
+    }
+
+    @PostMapping("/watchlist/toggle")
+    public String toggleWatchlist(@RequestParam("movieId") Integer movieId,
+                                  @RequestParam("action") String action,
+                                  HttpSession session, Model model, HttpServletRequest request) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        UserDTO user = (UserDTO) session.getAttribute("user");
+
+        if ("add".equals(action)) {
+            watchlistService.addToWatchlist(user.getUserId(), movieId);
+        } else if ("remove".equals(action)) {
+            watchlistService.removeFromWatchlist(user.getUserId(), movieId);
+        }
+
+        String referer = request.getHeader("Referer");
+        if (referer != null && !referer.isEmpty() && !referer.contains("user/filtrar")) {
+            return "redirect:" + referer;
+        }
+
+        return "redirect:/user/";
     }
 
     /**

@@ -9,7 +9,7 @@ import java.util.List;
 
 /*
  * @author - Artur797 (Artur Vargas)
- * @co-authors - edugbau (Eduardo González)
+ * @co-authors - edugbau (Eduardo González), projectGeorge (Jorge Repullo)
  */
 @Data
 public class MovieDTO {
@@ -30,5 +30,6 @@ public class MovieDTO {
     private List<Integer> equipoIds;
     private Integer duracion;
     private boolean favorite;
+    private boolean inWatchlist;
     private BigDecimal popularity;
 }

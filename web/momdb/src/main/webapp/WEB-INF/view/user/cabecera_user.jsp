@@ -38,6 +38,12 @@ Author: projectGeorge (Jorge Repullo)
                 </span>
                 <span>My Favorites</span>
             </a>
+            <a class="navbar-item" href="/user/watchlist">
+                <span class="icon">
+                    <i class="far fa-bookmark"></i>
+                </span>
+                <span>Watch later</span>
+            </a>
         </div>
 
         <div class="navbar-end">
