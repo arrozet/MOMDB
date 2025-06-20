@@ -5,7 +5,6 @@ import es.uma.taw.momdb.dao.GenreRepository;
 import es.uma.taw.momdb.dao.MovieRepository;
 import es.uma.taw.momdb.dao.StatusRepository;
 import es.uma.taw.momdb.dto.MovieDTO;
-import es.uma.taw.momdb.entity.Character;
 import es.uma.taw.momdb.entity.Crew;
 import es.uma.taw.momdb.entity.Movie;
 import es.uma.taw.momdb.entity.Status;
@@ -138,6 +137,45 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
         return moviePage.map(Movie::toDTO);
     }
 
+    public BigDecimal getAveragePopularity() {
+        return movieRepository.getAveragePopularity();
+    }
+
+    public BigDecimal getAveragePopularityByGenre(Integer genreId) {
+        return movieRepository.getAveragePopularityByGenre(genreId);
+    }
+
+    public Double getAverageRevenue() {
+        return movieRepository.getAverageRevenue();
+    }
+
+    public Double getAverageRevenueByGenre(Integer genreId) {
+        return movieRepository.getAverageRevenueByGenre(genreId);
+    }
+
+    public BigDecimal getAverageVoteAverage() {
+        return movieRepository.getAverageVoteAverage();
+    }
+
+    public BigDecimal getAverageVoteAverageByGenre(Integer genreId) {
+        return movieRepository.getAverageVoteAverageByGenre(genreId);
+    }
+
+    public Double getAverageVoteCount() {
+        return movieRepository.getAverageVoteCount();
+    }
+
+    public Double getAverageVoteCountByGenre(Integer genreId) {
+        return movieRepository.getAverageVoteCountByGenre(genreId);
+    }
+
+    public Double getAverageRuntime() {
+        return movieRepository.getAverageRuntime();
+    }
+
+    public Double getAverageRuntimeByGenre(Integer genreId) {
+        return movieRepository.getAverageRuntimeByGenre(genreId);
+    }
     public void addCrew(Movie movie, Crew crew) {
         movie.getCrews().add(crew);
         movieRepository.save(movie);
@@ -148,5 +186,4 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
         movie.getCrews().add(crewNueva);
         movieRepository.save(movie);
     }
-
 }

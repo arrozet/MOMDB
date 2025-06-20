@@ -38,5 +38,34 @@ public interface MovieRepository extends JpaRepository<Movie, Integer> {
             @Param("popMin") BigDecimal popMin,
             @Param("popMax") BigDecimal popMax
     );
+    //Querys analista
+    @Query("SELECT AVG(m.popularity) FROM Movie m")
+    BigDecimal getAveragePopularity();
 
+    @Query("SELECT AVG(m.popularity) FROM Movie m JOIN m.genres g WHERE g.id = :genreId")
+    BigDecimal getAveragePopularityByGenre(@Param("genreId") Integer genreId);
+
+    @Query("SELECT AVG(m.revenue) FROM Movie m")
+    Double getAverageRevenue();
+
+    @Query("SELECT AVG(m.revenue) FROM Movie m JOIN m.genres g WHERE g.id = :genreId")
+    Double getAverageRevenueByGenre(@Param("genreId") Integer genreId);
+
+    @Query("SELECT AVG(m.voteAverage) FROM Movie m")
+    BigDecimal getAverageVoteAverage();
+
+    @Query("SELECT AVG(m.voteAverage) FROM Movie m JOIN m.genres g WHERE g.id = :genreId")
+    BigDecimal getAverageVoteAverageByGenre(@Param("genreId") Integer genreId);
+
+    @Query("SELECT AVG(m.voteCount) FROM Movie m")
+    Double getAverageVoteCount();
+
+    @Query("SELECT AVG(m.voteCount) FROM Movie m JOIN m.genres g WHERE g.id = :genreId")
+    Double getAverageVoteCountByGenre(@Param("genreId") Integer genreId);
+
+    @Query("SELECT AVG(m.runtime) FROM Movie m")
+    Double getAverageRuntime();
+
+    @Query("SELECT AVG(m.runtime) FROM Movie m JOIN m.genres g WHERE g.id = :genreId")
+    Double getAverageRuntimeByGenre(@Param("genreId") Integer genreId);
 }
