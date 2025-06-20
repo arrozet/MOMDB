@@ -1,5 +1,6 @@
 <%--
 Author: projectGeorge (Jorge Repullo)
+co-author: amcgiluma (Juan Manuel Valenzuela)
 --%>
 
 <%@ page import="java.util.Date" %>
@@ -44,6 +45,14 @@ Author: projectGeorge (Jorge Repullo)
                 </span>
                 <span>Watch later</span>
             </a>
+            <% if ("usuario".equals(myUser.getRolename())) { %>
+            <a class="navbar-item" href="/user/upgrade">
+                <span class="icon has-text-warning">
+                    <i class="fas fa-crown"></i>
+                </span>
+                <span>Upgrade Pro</span>
+            </a>
+            <% } %>
         </div>
 
         <div class="navbar-end">

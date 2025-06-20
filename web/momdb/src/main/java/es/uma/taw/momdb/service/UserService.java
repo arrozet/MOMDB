@@ -51,4 +51,19 @@ public class UserService {
         return savedUser.toDTO();
     }
 
+    public UserDTO upgradeUserToRecommender(Integer userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            return null;
+        }
+        // El rol 4 es "recommender"
+        UserRole recommenderRole = userRoleRepository.findById(4).orElse(null);
+        if (recommenderRole == null) {
+            return null;
+        }
+        user.setRole(recommenderRole);
+        userRepository.save(user);
+        return user.toDTO();
+    }
+
 }

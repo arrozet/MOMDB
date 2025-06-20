@@ -34,7 +34,7 @@ public class UserController extends BaseController{
 
     @Autowired
     protected GeneroService generoService;
-    
+
     @Autowired
     protected FavoriteService favoriteService;
 
@@ -116,42 +116,42 @@ public class UserController extends BaseController{
         model.addAttribute("movie", movie);
         return "user/movie_details";
     }
-    
+
     @GetMapping("/favorites")
     public String verFavoritos(HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
         }
-        
+
         UserDTO user = (UserDTO) session.getAttribute("user");
         List<MovieDTO> favoriteMovies = favoriteService.getUserFavorites(user.getUserId());
-        
+
         model.addAttribute("movies", favoriteMovies);
         return "user/favorites";
     }
-    
+
     @PostMapping("/favorites/add")
     public String anyadirAFavoritos(@RequestParam("movieId") Integer movieId, HttpSession session) {
         UserDTO user = (UserDTO) session.getAttribute("user");
         if (user == null) {
             return "error";
         }
-        
+
         favoriteService.addToFavorites(user.getUserId(), movieId);
         return "redirect:/user/";
     }
-    
+
     @PostMapping("/favorites/remove")
     public String eliminarDeFavoritos(@RequestParam("movieId") Integer movieId, HttpSession session) {
         UserDTO user = (UserDTO) session.getAttribute("user");
         if (user == null) {
             return "error";
         }
-        
+
         favoriteService.removeFromFavorites(user.getUserId(), movieId);
         return "redirect:/user/favorites";
     }
-    
+
     @GetMapping("/favorites/check")
     @ResponseBody
     public String checkearFavorito(@RequestParam("movieId") Integer movieId, HttpSession session) {
@@ -159,19 +159,19 @@ public class UserController extends BaseController{
         if (user == null) {
             return "false";
         }
-        
+
         boolean isFavorite = favoriteService.isFavorite(user.getUserId(), movieId);
         return isFavorite ? "true" : "false";
     }
-    
+
     @PostMapping("/favorites/toggle")
     public String toggleFavorito(@RequestParam("movieId") Integer movieId,
-                                @RequestParam("action") String action,
-                                HttpSession session, Model model, HttpServletRequest request) {
+                                 @RequestParam("action") String action,
+                                 HttpSession session, Model model, HttpServletRequest request) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
         }
-        
+
         UserDTO user = (UserDTO) session.getAttribute("user");
 
         if ("add".equals(action)) {
@@ -214,7 +214,7 @@ public class UserController extends BaseController{
             model.addAttribute("error", "Usuario no encontrado");
             return "user/profile";
         }
-        
+
         // Actualizar el usuario en la sesión
         session.setAttribute("user", updatedUserDTO);
         return "redirect:/user/";
@@ -240,8 +240,8 @@ public class UserController extends BaseController{
 
     @PostMapping("/review/save")
     public String guardarReview(@ModelAttribute("reviewDTO") ReviewDTO reviewDTO,
-                               @RequestParam(value = "from", required = false) String from,
-                               HttpSession session, Model model) {
+                                @RequestParam(value = "from", required = false) String from,
+                                HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
         }
@@ -297,7 +297,7 @@ public class UserController extends BaseController{
         UserDTO user = (UserDTO) session.getAttribute("user");
         List<MovieDTO> watchlistMovies = watchlistService.getUserWatchlist(user.getUserId());
         model.addAttribute("movies", watchlistMovies);
-        
+
         return "user/watchlist";
     }
 
@@ -347,6 +347,28 @@ public class UserController extends BaseController{
         return "redirect:/user/";
     }
 
+    @GetMapping("/upgrade")
+    public String upgradePage(HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        if (!"usuario".equals(user.getRolename())) {
+            return "redirect:/user/";
+        }
+        return "user/upgrade_pro";
+    }
+
+    @PostMapping("/perform-upgrade")
+    public String performUpgrade(HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        UserDTO updatedUser = userService.upgradeUserToRecommender(user.getUserId());
+        session.setAttribute("user", updatedUser);
+        return "redirect:/recommender/";
+    }
     /**
      * Comprueba si el usuario en sesión tiene el rol de usuario.
      * Utiliza el método centralizado de BaseController para realizar la verificación.
