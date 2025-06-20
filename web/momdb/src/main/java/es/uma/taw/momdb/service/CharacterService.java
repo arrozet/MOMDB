@@ -16,4 +16,8 @@ public class CharacterService extends DTOService<CharacterDTO, Character>{
         Character character = this.characterRepository.findById(id).orElse(null);
         return character != null ? character.toDTO() : null;
     }
+
+    public void deleteCharacter(int characterId) {
+        characterRepository.deleteById(characterId);
+    }
 }

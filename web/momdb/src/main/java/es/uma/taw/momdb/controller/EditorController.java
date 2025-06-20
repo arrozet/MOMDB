@@ -223,13 +223,14 @@ public class EditorController extends BaseController{
 
     
     @GetMapping("/movie/character/delete")
-    public String deleteCharacter(@RequestParam("characterId") int characterId, @RequestParam("movieId") int movieId, Model model, HttpSession session) {
+    public String deleteCharacter(@RequestParam("characterId") int characterId, @RequestParam("crewId") int crewId, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
         }
+        CrewDTO crew = crewService.findCrewById(crewId);
 
-        this.crewService.deleteCharacter(characterId);
-        return "redirect:/editor/movie/characters?id=" + movieId;
+        this.crewService.deleteCrewCharacter(crew, characterId);
+        return "redirect:/editor/movie/characters?id=" + crew.getPeliculaId();
     }
 
     @GetMapping("/movie/character/new")

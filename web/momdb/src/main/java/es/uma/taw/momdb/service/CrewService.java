@@ -43,6 +43,8 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
 
     @Autowired
     private MovieService movieService;
+    @Autowired
+    private CharacterService characterService;
 
     public List<CrewDTO> listarActores () {
         return this.listarActores(null);
@@ -123,8 +125,17 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
         }
     }
 
-    public void deleteCharacter(int characterId) {
-        characterRepository.deleteById(characterId);
+    public void deleteCrewCharacter(CrewDTO crew,int characterId) {
+        Crew crewEntity = crewRepository.findById(crew.getId()).get();
+        Character character = characterRepository.findById(characterId).get();
+        crewEntity.getCharacters().remove(character);
+        if(character.getCrews().isEmpty()){
+            characterService.deleteCharacter(characterId);
+        }else{
+            character.getCrews().remove(crewEntity);
+            characterRepository.save(character);
+        }
+        crewRepository.save(crewEntity);
     }
 
     public void addNewCharacter(CrewDTO crewDTO) {

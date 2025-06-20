@@ -59,7 +59,7 @@
                                                 </span>
                             <span>Edit</span>
                         </a>
-                        <a href="/editor/movie/character/delete?characterId=<%=personaje.getId()%>&movieId=<%=movie.getId()%>"
+                        <a href="/editor/movie/character/delete?characterId=<%=personaje.getId()%>&crewId=<%=character.getId()%>"
                            class="button is-small is-danger">
                                                 <span class="icon">
                                                     <i class="fas fa-trash"></i>
