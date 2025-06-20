@@ -32,7 +32,7 @@ public class UserService {
     }
 
 
-    public void registerUser(UserRegistrationDTO userDTO) {
+    public UserDTO registerUser(UserRegistrationDTO userDTO) {
         if (userRepository.findByUsername(userDTO.getUsername()) != null) {
             throw new IllegalArgumentException("El nombre de usuario ya está en uso.");
         }
@@ -47,7 +47,8 @@ public class UserService {
 
         user.setRole(userRoleRepository.findByName("usuario"));
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        return savedUser.toDTO();
     }
 
-} 
+}
