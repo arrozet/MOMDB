@@ -12,10 +12,7 @@ import org.hibernate.annotations.ColumnDefault;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -147,10 +144,12 @@ public class Movie implements Serializable, DTO<MovieDTO> {
         List<Integer> listaEquipoIds = new ArrayList<>();
 
         // Convertir el Set de Crew a List de CrewDTO
-        this.crews.forEach((final Crew crew) -> {
-            listaEquipo.add(crew.toDTO());
-            listaEquipoIds.add(crew.getId());
-        });
+        this.crews.stream()
+                .sorted(Comparator.comparing(Crew::getId)) // Ordena por ID
+                .forEach(crew -> {
+                    listaEquipo.add(crew.toDTO());
+                    listaEquipoIds.add(crew.getId());
+                });
         movie.setEquipo(listaEquipo);
         movie.setEquipoIds(listaEquipoIds);
 

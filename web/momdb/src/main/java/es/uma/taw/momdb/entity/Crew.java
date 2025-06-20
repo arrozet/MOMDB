@@ -10,10 +10,8 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -52,10 +50,10 @@ public class Crew implements DTO<CrewDTO> {
         c.setRolId(this.crewRole.getId());
 
         // Convert characters to DTOs
-        List<CharacterDTO> personajes = new ArrayList<>();
-        this.characters.forEach((final Character character) -> {
-            personajes.add(character.toDTO());
-        });
+        List<CharacterDTO> personajes = this.characters.stream()
+                .sorted(Comparator.comparing(Character::getId)) // o Character::getId
+                .map(Character::toDTO)
+                .collect(Collectors.toList());
 
         c.setPersonajes(personajes);
 
