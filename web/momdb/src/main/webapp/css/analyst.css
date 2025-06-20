@@ -140,3 +140,16 @@ table a:hover {
 .movie-poster-placeholder-icon {
     padding: 40px 0;
 }
+
+ /* Estilos para el contenedor de la cuadrícula en la página de comparación */
+.movie-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}

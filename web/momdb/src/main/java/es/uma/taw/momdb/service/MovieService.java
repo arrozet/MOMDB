@@ -137,4 +137,43 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
         return moviePage.map(Movie::toDTO);
     }
 
+    public BigDecimal getAveragePopularity() {
+        return movieRepository.getAveragePopularity();
+    }
+
+    public BigDecimal getAveragePopularityByGenre(Integer genreId) {
+        return movieRepository.getAveragePopularityByGenre(genreId);
+    }
+
+    public Double getAverageRevenue() {
+        return movieRepository.getAverageRevenue();
+    }
+
+    public Double getAverageRevenueByGenre(Integer genreId) {
+        return movieRepository.getAverageRevenueByGenre(genreId);
+    }
+
+    public BigDecimal getAverageVoteAverage() {
+        return movieRepository.getAverageVoteAverage();
+    }
+
+    public BigDecimal getAverageVoteAverageByGenre(Integer genreId) {
+        return movieRepository.getAverageVoteAverageByGenre(genreId);
+    }
+
+    public Double getAverageVoteCount() {
+        return movieRepository.getAverageVoteCount();
+    }
+
+    public Double getAverageVoteCountByGenre(Integer genreId) {
+        return movieRepository.getAverageVoteCountByGenre(genreId);
+    }
+
+    public Double getAverageRuntime() {
+        return movieRepository.getAverageRuntime();
+    }
+
+    public Double getAverageRuntimeByGenre(Integer genreId) {
+        return movieRepository.getAverageRuntimeByGenre(genreId);
+    }
 }
