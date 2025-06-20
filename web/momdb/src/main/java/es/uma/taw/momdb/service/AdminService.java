@@ -42,6 +42,14 @@ public class AdminService {
     @Autowired
     protected SpokenLanguageRepository spokenLanguageRepository;
 
+    @Autowired private GeneroService generoService;
+    @Autowired private KeywordService keywordService;
+    @Autowired private ProductionCompanyService productionCompanyService;
+    @Autowired private ProductionCountryService productionCountryService;
+    @Autowired private SpokenLanguageService spokenLanguageService;
+    @Autowired private CrewRoleService crewRoleService;
+    @Autowired private UserRoleService userRoleService;
+
     /**
      * Obtiene una lista de entidades basada en el tipo especificado.
      *
@@ -92,13 +100,13 @@ public class AdminService {
      */
     public void deleteEntity(String entityType, String id) {
         switch (entityType) {
-            case "Genre" -> genreRepository.deleteById(Integer.parseInt(id));
-            case "Keyword" -> keywordRepository.deleteById(Integer.parseInt(id));
-            case "ProductionCompany" -> productionCompanyRepository.deleteById(Integer.parseInt(id));
-            case "ProductionCountry" -> productionCountryRepository.deleteById(id);
-            case "SpokenLanguage" -> spokenLanguageRepository.deleteById(id);
-            case "CrewRole" -> crewRoleRepository.deleteById(Integer.parseInt(id));
-            case "UserRole" -> userRoleRepository.deleteById(Integer.parseInt(id));
+            case "Genre" -> generoService.deleteGenre(Integer.parseInt(id));
+            case "Keyword" -> keywordService.deleteKeyword(Integer.parseInt(id));
+            case "ProductionCompany" -> productionCompanyService.deleteProductionCompany(Integer.parseInt(id));
+            case "ProductionCountry" -> productionCountryService.deleteProductionCountry(id);
+            case "SpokenLanguage" -> spokenLanguageService.deleteSpokenLanguage(id);
+            case "CrewRole" -> crewRoleService.deleteCrewRole(Integer.parseInt(id));
+            case "UserRole" -> userRoleService.deleteUserRole(Integer.parseInt(id));
         }
     }
 
@@ -138,6 +146,8 @@ public class AdminService {
                 user.setRole(role);
                 this.userRepository.save(user);
             }
+
+            // TODO: echar al usuario si se cambia su propio rol (ya no es admin)
         }
     }
 
@@ -147,7 +157,7 @@ public class AdminService {
      * @return Una lista de entidades {@link UserRole}.
      */
     public List<UserRole> findAllUserRoles() {
-        return this.userRoleRepository.findAll();
+        return this.userRoleService.findAllUserRoles();
     }
 
     /**
@@ -158,13 +168,13 @@ public class AdminService {
      */
     public EntityWithNameAndId<?> findEntity(String entityType, String id) {
         return switch (entityType) {
-            case "Genre" -> genreRepository.findById(Integer.parseInt(id)).orElse(null);
-            case "Keyword" -> keywordRepository.findById(Integer.parseInt(id)).orElse(null);
-            case "ProductionCompany" -> productionCompanyRepository.findById(Integer.parseInt(id)).orElse(null);
-            case "ProductionCountry" -> productionCountryRepository.findById(id).orElse(null);
-            case "SpokenLanguage" -> spokenLanguageRepository.findById(id).orElse(null);
-            case "CrewRole" -> crewRoleRepository.findById(Integer.parseInt(id)).orElse(null);
-            case "UserRole" -> userRoleRepository.findById(Integer.parseInt(id)).orElse(null);
+            case "Genre" -> generoService.findGenre(Integer.parseInt(id));
+            case "Keyword" -> keywordService.findKeyword(Integer.parseInt(id));
+            case "ProductionCompany" -> productionCompanyService.findProductionCompany(Integer.parseInt(id));
+            case "ProductionCountry" -> productionCountryService.findProductionCountry(id);
+            case "SpokenLanguage" -> spokenLanguageService.findSpokenLanguage(id);
+            case "CrewRole" -> crewRoleService.findCrewRole(Integer.parseInt(id));
+            case "UserRole" -> userRoleService.findUserRole(Integer.parseInt(id));
             default -> null;
         };
     }
@@ -177,48 +187,13 @@ public class AdminService {
      */
     public void updateEntity(String entityType, String id, String name) {
         switch (entityType) {
-            case "Genre" -> {
-                genreRepository.findById(Integer.parseInt(id)).ifPresent(e -> {
-                    e.setGenre(name);
-                    genreRepository.save(e);
-                });
-            }
-            case "Keyword" -> {
-                keywordRepository.findById(Integer.parseInt(id)).ifPresent(e -> {
-                    e.setKeyword(name);
-                    keywordRepository.save(e);
-                });
-            }
-            case "ProductionCompany" -> {
-                productionCompanyRepository.findById(Integer.parseInt(id)).ifPresent(e -> {
-                    e.setCompany(name);
-                    productionCompanyRepository.save(e);
-                });
-            }
-            case "ProductionCountry" -> {
-                productionCountryRepository.findById(id).ifPresent(e -> {
-                    e.setCountry(name);
-                    productionCountryRepository.save(e);
-                });
-            }
-            case "SpokenLanguage" -> {
-                spokenLanguageRepository.findById(id).ifPresent(e -> {
-                    e.setLanguage(name);
-                    spokenLanguageRepository.save(e);
-                });
-            }
-            case "CrewRole" -> {
-                crewRoleRepository.findById(Integer.parseInt(id)).ifPresent(e -> {
-                    e.setRole(name);
-                    crewRoleRepository.save(e);
-                });
-            }
-            case "UserRole" -> {
-                userRoleRepository.findById(Integer.parseInt(id)).ifPresent(e -> {
-                    e.setName(name);
-                    userRoleRepository.save(e);
-                });
-            }
+            case "Genre" -> generoService.updateGenre(Integer.parseInt(id), name);
+            case "Keyword" -> keywordService.updateKeyword(Integer.parseInt(id), name);
+            case "ProductionCompany" -> productionCompanyService.updateProductionCompany(Integer.parseInt(id), name);
+            case "ProductionCountry" -> productionCountryService.updateProductionCountry(id, name);
+            case "SpokenLanguage" -> spokenLanguageService.updateSpokenLanguage(id, name);
+            case "CrewRole" -> crewRoleService.updateCrewRole(Integer.parseInt(id), name);
+            case "UserRole" -> userRoleService.updateUserRole(Integer.parseInt(id), name);
         }
     }
 } 
