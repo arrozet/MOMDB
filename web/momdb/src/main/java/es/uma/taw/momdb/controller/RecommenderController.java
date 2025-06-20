@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /*
- * @author - amcgil (Juan Manuel Valenzuela)
+ * @author - amcgiluma (Juan Manuel Valenzuela)
  */
 @Controller
 @RequestMapping("/recommender")
@@ -87,7 +87,7 @@ public class RecommenderController extends BaseController{
         model.addAttribute("generos", generos);
         model.addAttribute("movies", movies);
         model.addAttribute("filtro", filtro);
-        return "user/user";
+        return "recommender/recommender";
     }
 
     @GetMapping("/movie")
@@ -173,7 +173,6 @@ public class RecommenderController extends BaseController{
             favoriteService.removeFromFavorites(user.getUserId(), movieId);
         }
 
-        // Redirigir de vuelta a la página anterior SOLO si no es /user/filtrar
         String referer = request.getHeader("Referer");
         if (referer != null && !referer.isEmpty() && !referer.contains("recommender/filtrar")) {
             return "redirect:" + referer;
