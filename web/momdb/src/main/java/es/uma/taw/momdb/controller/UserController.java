@@ -1,11 +1,9 @@
 package es.uma.taw.momdb.controller;
 
-import es.uma.taw.momdb.dao.ReviewRepository;
 import es.uma.taw.momdb.dto.GenreDTO;
 import es.uma.taw.momdb.dto.MovieDTO;
 import es.uma.taw.momdb.dto.ReviewDTO;
 import es.uma.taw.momdb.dto.UserDTO;
-import es.uma.taw.momdb.entity.User;
 import es.uma.taw.momdb.service.FavoriteService;
 import es.uma.taw.momdb.service.GeneroService;
 import es.uma.taw.momdb.service.MovieService;

@@ -1,10 +1,8 @@
 package es.uma.taw.momdb.controller;
 
-import es.uma.taw.momdb.dao.MovieRepository;
 import es.uma.taw.momdb.dto.MovieDTO;
 import es.uma.taw.momdb.dto.MovieComparisonDTO;
 import es.uma.taw.momdb.dto.UserDTO;
-import es.uma.taw.momdb.entity.Movie;
 import es.uma.taw.momdb.service.MovieService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;

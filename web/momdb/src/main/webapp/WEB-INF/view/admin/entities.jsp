@@ -17,6 +17,7 @@
     <title>Entity Management</title>
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/user.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
@@ -37,18 +38,19 @@
             <form:form method="post" action="/admin/showEntities" modelAttribute="genericEntity">
                 <div class="field has-addons">
                     <div class="control">
-                        <div class="select">
-                            <form:select path="selectedEntity" items="${everyEntity}" onchange="this.form.submit()"/>
+                        <div class="select is-info">
+                            <form:select path="selectedEntity" items="${everyEntity}" onchange="this.form.submit()" cssClass="user has-background-grey"/>
                         </div>
                     </div>
-                    <div class="control has-icons-left is-expanded">
-                        <form:input path="filterName" cssClass="input" placeholder="Filtrar por nombre"/>
-                        <span class="icon is-small is-left">
-                            <i class="fas fa-search"></i>
-                        </span>
+                    <div class="control is-expanded">
+                        <form:input path="filterName" cssClass="user input is-info has-background-grey" placeholder="Filter by name"/>
                     </div>
                     <div class="control">
-                        <button type="submit" class="button is-primary">Filtrar</button>
+                        <button type="submit" class="button is-info">
+                            <span class="icon">
+                                <i class="fas fa-search"></i>
+                            </span>
+                        </button>
                     </div>
                 </div>
             </form:form>
