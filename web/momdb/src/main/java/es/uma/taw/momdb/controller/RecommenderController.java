@@ -96,7 +96,6 @@ public class RecommenderController extends BaseController{
             return "redirect:/";
         }
 
-        // Buscar la película por ID
         MovieDTO movie = this.movieService.findPeliculaById(id);
         if (movie == null) {
             return "redirect:/recommender/";
@@ -104,6 +103,9 @@ public class RecommenderController extends BaseController{
 
         List<ReviewDTO> reviews = reviewService.getReviewsByMovieId(id);
         model.addAttribute("reviews", reviews);
+
+        List<MovieDTO> recommendedMovies = this.movieService.findRecommendedMovies(movie.getId(), 4);
+        model.addAttribute("recommendedMovies", recommendedMovies);
 
         model.addAttribute("generos", movie.getGeneros());
         model.addAttribute("movie", movie);
@@ -258,6 +260,75 @@ public class RecommenderController extends BaseController{
 
         this.reviewService.deleteReview(movieId, userId);
         return "redirect:/recommender/movie?id=" + movieId;
+    }
+    @GetMapping("/recommend/add")
+    public String addRecommendation(@RequestParam("id") Integer originalMovieId, Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        MovieDTO originalMovie = this.movieService.findPeliculaById(originalMovieId);
+        if (originalMovie == null) {
+            return "redirect:/recommender/";
+        }
+
+        // Preparamos la vista con todas las películas para que el usuario elija
+        List<MovieDTO> allMovies = movieService.listarPeliculas();
+        List<GenreDTO> generos = this.generoService.listarGeneros();
+
+        model.addAttribute("originalMovie", originalMovie);
+        model.addAttribute("movies", allMovies);
+        model.addAttribute("generos", generos);
+        model.addAttribute("filtro", new Filtro()); // Para los controles de filtro
+
+        return "recommender/add_recommendation";
+    }
+
+    @PostMapping("/recommend/add/filtrar")
+    public String doFiltrarForRecommendation(@RequestParam("originalMovieId") Integer originalMovieId,
+                                             @ModelAttribute("filtro") Filtro filter,
+                                             Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        MovieDTO originalMovie = this.movieService.findPeliculaById(originalMovieId);
+        if (originalMovie == null) {
+            return "redirect:/recommender/";
+        }
+
+        // Usamos la misma lógica de filtrado que en la página principal
+        List<MovieDTO> filteredMovies;
+        if (filter.getTexto() != null && !filter.getTexto().isBlank()) {
+            filteredMovies = movieService.listarPeliculas(filter.getTexto());
+        } else {
+            filteredMovies = movieService.listarPeliculasBySelectFilters(filter);
+        }
+
+        List<GenreDTO> generos = this.generoService.listarGeneros();
+
+        model.addAttribute("originalMovie", originalMovie);
+        model.addAttribute("movies", filteredMovies);
+        model.addAttribute("generos", generos);
+        model.addAttribute("filtro", filter);
+
+        return "recommender/add_recommendation";
+    }
+
+    @PostMapping("/recommend/save")
+    public String saveRecommendation(@RequestParam("originalMovieId") Integer originalMovieId,
+                                     @RequestParam("recommendedMovieId") Integer recommendedMovieId,
+                                     HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        // TODO: Implementar la lógica para guardar la recomendación manual.
+        // Esto probablemente requerirá un nuevo Service y una nueva Entidad/Repositorio
+        // para almacenar la relación entre la película original y la recomendada.
+
+        // Por ahora, simplemente redirigimos a la página de detalles de la película original.
+        return "redirect:/recommender/movie?id=" + originalMovieId;
     }
 
     /**

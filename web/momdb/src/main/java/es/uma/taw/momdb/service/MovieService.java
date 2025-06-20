@@ -6,6 +6,7 @@ import es.uma.taw.momdb.dao.MovieRepository;
 import es.uma.taw.momdb.dao.StatusRepository;
 import es.uma.taw.momdb.dto.MovieDTO;
 import es.uma.taw.momdb.entity.Crew;
+import es.uma.taw.momdb.entity.Genre;
 import es.uma.taw.momdb.entity.Movie;
 import es.uma.taw.momdb.entity.Status;
 import es.uma.taw.momdb.ui.Filtro;
@@ -17,9 +18,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /*
  * @author - Artur797 (Artur Vargas)
@@ -185,5 +188,22 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
         movie.getCrews().remove(crewAnt);
         movie.getCrews().add(crewNueva);
         movieRepository.save(movie);
+    }
+    public List<MovieDTO> findRecommendedMovies(Integer movieId, int limit) {
+        Movie movie = movieRepository.findById(movieId).orElse(null);
+        if (movie == null || movie.getGenres().isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        List<Integer> genreIds = movie.getGenres().stream()
+                .map(Genre::getId)
+                .collect(Collectors.toList());
+        long genreCount = genreIds.size();
+
+        Pageable pageable = PageRequest.of(0, limit);
+
+        List<Movie> recommendedMovies = movieRepository.findByExactGenresOrderByRating(movieId, genreIds, genreCount, pageable);
+
+        return this.entity2DTO(recommendedMovies);
     }
 }

@@ -68,4 +68,7 @@ public interface MovieRepository extends JpaRepository<Movie, Integer> {
 
     @Query("SELECT AVG(m.runtime) FROM Movie m JOIN m.genres g WHERE g.id = :genreId")
     Double getAverageRuntimeByGenre(@Param("genreId") Integer genreId);
+
+    @Query("SELECT m FROM Movie m JOIN m.genres g WHERE m.id <> :movieId AND g.id IN :genreIds GROUP BY m HAVING COUNT(g.id) = :genreCount ORDER BY m.voteAverage DESC")
+    List<Movie> findByExactGenresOrderByRating(@Param("movieId") Integer movieId, @Param("genreIds") List<Integer> genreIds, @Param("genreCount") long genreCount, Pageable pageable);
 }

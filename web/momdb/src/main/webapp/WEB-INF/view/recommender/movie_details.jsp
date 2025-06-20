@@ -18,6 +18,7 @@
     List<GenreDTO> generos = (List<GenreDTO>) request.getAttribute("generos");
     List<ReviewDTO> reviews = (List<ReviewDTO>) request.getAttribute("reviews");
     UserDTO myUser = (UserDTO) session.getAttribute("user");
+    List<MovieDTO> recommendedMovies = (List<MovieDTO>) request.getAttribute("recommendedMovies");
 %>
 <head>
     <title>Movie Details | MOMDB</title>
@@ -39,6 +40,31 @@
             <div class="has-text-centered mt-4">
                 <a href="/recommender/review/write?id=<%= movie.getId() %>" class="button is-warning is-fullwidth">
                     Add review
+                </a>
+            </div>
+
+            <%-- SECCIÓN DE RECOMENDACIONES --%>
+            <% if (recommendedMovies != null && !recommendedMovies.isEmpty()) { %>
+            <div class="mt-5">
+                <h3 class="title is-5 has-text-white has-text-centered">You would also like...</h3>
+                <div class="columns is-multiline is-mobile is-variable is-2">
+                    <% for (MovieDTO recommended : recommendedMovies) { %>
+                    <div class="column is-6">
+                        <a href="/recommender/movie?id=<%= recommended.getId() %>">
+                            <figure class="image is-2by3">
+                                <img class="rounded-corners" src="<%= recommended.getImageLink() != null ? recommended.getImageLink() : "/images/placeholder.png" %>" alt="Poster of <%= recommended.getTitulo() %>">
+                            </figure>
+                        </a>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+            <% } %>
+
+            <%-- BOTÓN "SEE MORE" --%>
+            <div class="has-text-centered mt-4">
+                <a href="/recommender/recommend/add?id=<%= movie.getId() %>" class="button is-light is-fullwidth">
+                    See more...
                 </a>
             </div>
         </div>
@@ -63,7 +89,7 @@
                             <div class="tags has-addons">
                                 <span class="tag is-size-5 movie-info-tag">Rating</span>
                                 <span class="tag is-warning is-size-5 has-text-dark">
-                                    <%= movie.getMediaVotos() != null ? movie.getMediaVotos() : "N/A" %>
+                                    <%= movie.getMediaVotos() != null ? String.format("%.1f", movie.getMediaVotos()) : "N/A" %>
                                     <span class="icon is-small ml-3">
                                         <i class="fas fa-star"></i>
                                     </span>
@@ -108,20 +134,15 @@
                                 <div class="control">
                                     <div class="tags has-addons">
                                         <span class="tag is-size-5 movie-info-tag">Genres</span>
-                                        <span class="icon is-small ml-3">
-                                            <i class="fas fa-tag"></i>
-                                        </span>
                                     </div>
                                 </div>
-                                <% for (int i = 0; i < generos.size(); i++) {
-                                %>
+                                <% for (GenreDTO genero : generos) { %>
                                 <div class="control">
                                     <span class="tag is-warning is-size-5 has-text-dark">
-                                        <%= generos.get(i).getGenero() %>
+                                        <%= genero.getGenero() %>
                                     </span>
                                 </div>
-                                <%
-                                    } %>
+                                <% } %>
                             </div>
                         </div>
                     </div>
@@ -221,7 +242,7 @@
         </div>
         <%   }
         } else { %>
-        <div class="review-section is-light has-text-centered">
+        <div class="notification is-warning is-light has-text-centered">
             No reviews yet. Be the first to write one!
         </div>
         <% } %>
