@@ -27,6 +27,7 @@
         <form:form modelAttribute="crew" action="/editor/movie/character/save" method="post">
             <form:hidden path="id" value="<%=crew.getId()%>"/>
             <form:hidden path="personajeId" value="<%=character.getId()%>"/>
+            <form:hidden path="peliculaId" value="<%=crew.getPeliculaId()%>"/>
             <div class="field">
                 <label class="label">Character Name</label>
                 <div class="control">
