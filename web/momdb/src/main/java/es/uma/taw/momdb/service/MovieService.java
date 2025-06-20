@@ -176,4 +176,14 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
     public Double getAverageRuntimeByGenre(Integer genreId) {
         return movieRepository.getAverageRuntimeByGenre(genreId);
     }
+    public void addCrew(Movie movie, Crew crew) {
+        movie.getCrews().add(crew);
+        movieRepository.save(movie);
+    }
+
+    public void removeAndAddCrew(Movie movie, Crew crewAnt, Crew crewNueva) {
+        movie.getCrews().remove(crewAnt);
+        movie.getCrews().add(crewNueva);
+        movieRepository.save(movie);
+    }
 }

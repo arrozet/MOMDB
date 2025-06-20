@@ -88,16 +88,14 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
                     Set<Character> characters = crewNuevoActor.getCharacters();
                     characters.add(personaje);
                     crewNuevoActor.setCharacters(characters);
-                    personaje.getCrews().add(crewNuevoActor);
-                    characterRepository.save(personaje);
+                    characterService.addCrew(personaje,crewNuevoActor);
                     crewRepository.save(crewNuevoActor);
                 }
             }else{
                 crew.getCharacters().remove(personaje); //borro la crew de la persona
                 crewRepository.save(crew);
                 if(crewsNuevoActor.isEmpty()){ //Creo la crew de la nueva persona
-                    personaje.getCrews().remove(crew);
-                    characterRepository.save(personaje);
+                    characterService.removeCrew(personaje,crew);
                     Crew nuevaCrew = new Crew();
                     nuevaCrew.setPerson(nuevaPersona);
                     nuevaCrew.setMovie(movie);
@@ -106,19 +104,14 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
                     nuevaCrew.setCharacters(characters);
                     nuevaCrew.setCrewRole(crew.getCrewRole());
                     crewRepository.save(nuevaCrew);
-                    movie.getCrews().remove(crew);
-                    movie.getCrews().add(nuevaCrew);
-                    movieRepository.save(movie);
-                    personaje.getCrews().add(nuevaCrew);
-                    characterRepository.save(personaje);
+                    movieService.removeAndAddCrew(movie,crew,nuevaCrew);
+                    characterService.addCrew(personaje, nuevaCrew);
                 }else{ //Añado a la otra persona
                     Crew crewNuevoActor = crewsNuevoActor.get(0);
                     Set<Character> characters = crewNuevoActor.getCharacters();
                     characters.add(personaje);
                     crewNuevoActor.setCharacters(characters);
-                    personaje.getCrews().remove(crew);
-                    personaje.getCrews().add(crewNuevoActor);
-                    characterRepository.save(personaje);
+                    characterService.removeAndAddCrew(personaje, crew, crewNuevoActor);
                     crewRepository.save(crewNuevoActor);
                 }
             }
@@ -132,45 +125,36 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
         if(character.getCrews().isEmpty()){
             characterService.deleteCharacter(characterId);
         }else{
-            character.getCrews().remove(crewEntity);
-            characterRepository.save(character);
+            characterService.removeCrew(character, crewEntity);
         }
         crewRepository.save(crewEntity);
     }
 
     public void addNewCharacter(CrewDTO crewDTO) {
-        Character character = new Character();
-        character.setCharacter(crewDTO.getPersonajeName());
-        characterRepository.save(character);
+        Character character = characterService.createCharacter(crewDTO.getPersonajeName());
 
         Movie movie = movieRepository.findById(crewDTO.getPeliculaId()).orElse(null);
         Person nuevaPersona = this.personRepository.findById(crewDTO.getPersonaId()).orElse(null);
         List<Crew> crewsNuevoActor = this.crewRepository.findActorByPersonAndMovie(nuevaPersona.getId(), movie.getId());
+        Crew nuevaCrew;
         if(crewsNuevoActor.isEmpty()){ //Creo la crew de la nueva persona
-            Crew nuevaCrew = new Crew();
+            nuevaCrew = new Crew();
             nuevaCrew.setPerson(nuevaPersona);
             nuevaCrew.setMovie(movie);
             Set<Character> characters = new LinkedHashSet<>();
             characters.add(character);
             nuevaCrew.setCharacters(characters);
-            nuevaCrew.setCrewRole(crewRoleRepository.findAll().stream()
-                    .filter(role -> role.getRole().equals("Actor"))
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("No se encontró el rol de Actor")));
-            crewRepository.save(nuevaCrew);
-            movie.getCrews().add(nuevaCrew);
-            movieRepository.save(movie);
-            character.getCrews().add(nuevaCrew); // Actualizamos la relación bidireccional con el personaje
-            characterRepository.save(character);
+            nuevaCrew.setCrewRole(crewRoleRepository.findActor());
+            movieService.addCrew(movie,nuevaCrew);
         }else{ //Añado a la otra persona
-            Crew crewNuevoActor = crewsNuevoActor.get(0);
-            Set<Character> characters = crewNuevoActor.getCharacters();
+            nuevaCrew  = crewsNuevoActor.get(0);
+            Set<Character> characters = nuevaCrew.getCharacters();
             characters.add(character);
-            crewNuevoActor.setCharacters(characters);
-            character.getCrews().add(crewNuevoActor);
-            characterRepository.save(character);
-            crewRepository.save(crewNuevoActor);
+            nuevaCrew.setCharacters(characters);
         }
+        crewRepository.save(nuevaCrew);
+        characterService.addCrew(character, nuevaCrew);
+
     }
 
     public List<MovieDTO> findMoviesWherePersonIsActor(int personaId) {
