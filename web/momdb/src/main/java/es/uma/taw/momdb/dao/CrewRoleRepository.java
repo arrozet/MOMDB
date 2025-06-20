@@ -16,4 +16,8 @@ public interface CrewRoleRepository extends JpaRepository<Crewrole, Integer> {
 
     @Query("SELECT c FROM Crewrole c WHERE c.role <> 'Actor'")
     List<Crewrole> findAllExceptActor();
+
+
+    @Query("SELECT c FROM Crewrole c WHERE c.role = 'Actor'")
+    Crewrole findActor();
 }

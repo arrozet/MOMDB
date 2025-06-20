@@ -5,6 +5,7 @@ import es.uma.taw.momdb.dao.GenreRepository;
 import es.uma.taw.momdb.dao.MovieRepository;
 import es.uma.taw.momdb.dao.StatusRepository;
 import es.uma.taw.momdb.dto.MovieDTO;
+import es.uma.taw.momdb.entity.Character;
 import es.uma.taw.momdb.entity.Crew;
 import es.uma.taw.momdb.entity.Movie;
 import es.uma.taw.momdb.entity.Status;
@@ -135,6 +136,17 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<Movie> moviePage = movieRepository.findAll(pageable);
         return moviePage.map(Movie::toDTO);
+    }
+
+    public void addCrew(Movie movie, Crew crew) {
+        movie.getCrews().add(crew);
+        movieRepository.save(movie);
+    }
+
+    public void removeAndAddCrew(Movie movie, Crew crewAnt, Crew crewNueva) {
+        movie.getCrews().remove(crewAnt);
+        movie.getCrews().add(crewNueva);
+        movieRepository.save(movie);
     }
 
 }
