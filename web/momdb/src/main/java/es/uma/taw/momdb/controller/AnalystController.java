@@ -2,6 +2,7 @@ package es.uma.taw.momdb.controller;
 
 import es.uma.taw.momdb.dao.MovieRepository;
 import es.uma.taw.momdb.dto.MovieDTO;
+import es.uma.taw.momdb.dto.MovieComparisonDTO;
 import es.uma.taw.momdb.dto.UserDTO;
 import es.uma.taw.momdb.entity.Movie;
 import es.uma.taw.momdb.service.MovieService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -81,6 +83,72 @@ public class AnalystController extends BaseController {
 
         model.addAttribute("movie", movie);
         return "analyst/movie_details";
+    }
+
+    @GetMapping("/movie/{id}/comparison")
+    public String doShowMovieComparison(@PathVariable("id") Integer id, HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        MovieDTO movie = this.movieService.findPeliculaById(id);
+        model.addAttribute("movie", movie);
+
+        List<MovieComparisonDTO> comparisons = new ArrayList<>();
+
+        // Popularity
+        MovieComparisonDTO popularityComparison = new MovieComparisonDTO();
+        popularityComparison.setMetricName("Popularity");
+        popularityComparison.setMovieValue(movie.getPopularity());
+        popularityComparison.setOverallAverage(movieService.getAveragePopularity());
+        if (movie.getGeneros() != null && !movie.getGeneros().isEmpty()) {
+            popularityComparison.setGenreAverage(movieService.getAveragePopularityByGenre(movie.getGeneros().get(0).getId()));
+        }
+        comparisons.add(popularityComparison);
+
+        // Revenue
+        MovieComparisonDTO revenueComparison = new MovieComparisonDTO();
+        revenueComparison.setMetricName("Revenue");
+        revenueComparison.setMovieValue(movie.getIngresos());
+        revenueComparison.setOverallAverage(movieService.getAverageRevenue());
+        if (movie.getGeneros() != null && !movie.getGeneros().isEmpty()) {
+            revenueComparison.setGenreAverage(movieService.getAverageRevenueByGenre(movie.getGeneros().get(0).getId()));
+        }
+        comparisons.add(revenueComparison);
+
+        // Vote Average
+        MovieComparisonDTO voteAverageComparison = new MovieComparisonDTO();
+        voteAverageComparison.setMetricName("Vote Average");
+        voteAverageComparison.setMovieValue(movie.getMediaVotos());
+        voteAverageComparison.setOverallAverage(movieService.getAverageVoteAverage());
+        if (movie.getGeneros() != null && !movie.getGeneros().isEmpty()) {
+            voteAverageComparison.setGenreAverage(movieService.getAverageVoteAverageByGenre(movie.getGeneros().get(0).getId()));
+        }
+        comparisons.add(voteAverageComparison);
+
+        // Vote Count
+        MovieComparisonDTO voteCountComparison = new MovieComparisonDTO();
+        voteCountComparison.setMetricName("Vote Count");
+        voteCountComparison.setMovieValue(movie.getVotos());
+        voteCountComparison.setOverallAverage(movieService.getAverageVoteCount());
+        if (movie.getGeneros() != null && !movie.getGeneros().isEmpty()) {
+            voteCountComparison.setGenreAverage(movieService.getAverageVoteCountByGenre(movie.getGeneros().get(0).getId()));
+        }
+        comparisons.add(voteCountComparison);
+
+        // Runtime
+        MovieComparisonDTO runtimeComparison = new MovieComparisonDTO();
+        runtimeComparison.setMetricName("Runtime");
+        runtimeComparison.setMovieValue(movie.getDuracion());
+        runtimeComparison.setOverallAverage(movieService.getAverageRuntime());
+        if (movie.getGeneros() != null && !movie.getGeneros().isEmpty()) {
+            runtimeComparison.setGenreAverage(movieService.getAverageRuntimeByGenre(movie.getGeneros().get(0).getId()));
+        }
+        comparisons.add(runtimeComparison);
+
+        model.addAttribute("comparisons", comparisons);
+
+        return "analyst/movie_comparison";
     }
 
     /**

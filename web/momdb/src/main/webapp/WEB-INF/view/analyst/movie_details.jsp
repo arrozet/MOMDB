@@ -1,4 +1,4 @@
-<%--Autor: Eduardo González--%>
+<%--Autor: edugbau (Eduardo González)--%>
 <%@ page import="es.uma.taw.momdb.dto.UserDTO" %>
 <%@ page import="es.uma.taw.momdb.entity.Movie" %>
 <%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>
@@ -44,6 +44,8 @@
                 <p><strong>Vote Average:</strong> <%= movie.getMediaVotos() %></p>
                 <p><strong>Vote Count:</strong> <%= movie.getVotos() %></p>
                 <p><strong>Revenue:</strong> $<%= String.format("%,d", movie.getIngresos()) %></p>
+                <hr>
+                <a href="/analyst/movie/<%= movie.getId() %>/comparison" class="button is-primary">Ver Comparativas</a>
             </div>
         </div>
         <% } else { %>
