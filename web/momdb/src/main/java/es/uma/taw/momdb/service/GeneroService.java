@@ -25,14 +25,28 @@ public class GeneroService extends DTOService<GenreDTO, Genre>{
         return this.entity2DTO(entities);
     }
 
+    /**
+     * Busca un género por su ID.
+     * @param id El ID del género a buscar.
+     * @return El {@link Genre} encontrado, o null si no existe.
+     */
     public Genre findGenre(int id) {
         return genreRepository.findById(id).orElse(null);
     }
 
+    /**
+     * Elimina un género por su ID.
+     * @param id El ID del género a eliminar.
+     */
     public void deleteGenre(int id) {
         genreRepository.deleteById(id);
     }
 
+    /**
+     * Actualiza el nombre de un género.
+     * @param id El ID del género a actualizar.
+     * @param name El nuevo nombre para el género.
+     */
     public void updateGenre(int id, String name) {
         Genre genre = genreRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Genre not found with id: " + id));
