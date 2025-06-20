@@ -92,28 +92,24 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
                     crewRepository.save(crewNuevoActor);
                 }
             }else{
-                crew.getCharacters().remove(personaje); //borro la crew de la persona
-                crewRepository.save(crew);
+                Crew nuevaCrew;
                 if(crewsNuevoActor.isEmpty()){ //Creo la crew de la nueva persona
-                    characterService.removeCrew(personaje,crew);
-                    Crew nuevaCrew = new Crew();
+                    nuevaCrew = new Crew();
                     nuevaCrew.setPerson(nuevaPersona);
                     nuevaCrew.setMovie(movie);
                     Set<Character> characters = new LinkedHashSet<>();
                     characters.add(personaje);
                     nuevaCrew.setCharacters(characters);
                     nuevaCrew.setCrewRole(crew.getCrewRole());
-                    crewRepository.save(nuevaCrew);
                     movieService.removeAndAddCrew(movie,crew,nuevaCrew);
-                    characterService.addCrew(personaje, nuevaCrew);
                 }else{ //Añado a la otra persona
-                    Crew crewNuevoActor = crewsNuevoActor.get(0);
-                    Set<Character> characters = crewNuevoActor.getCharacters();
+                    nuevaCrew = crewsNuevoActor.get(0);
+                    Set<Character> characters = nuevaCrew.getCharacters();
                     characters.add(personaje);
-                    crewNuevoActor.setCharacters(characters);
-                    characterService.removeAndAddCrew(personaje, crew, crewNuevoActor);
-                    crewRepository.save(crewNuevoActor);
+                    nuevaCrew.setCharacters(characters);
                 }
+                crewRepository.save(nuevaCrew);
+                characterService.removeAndAddCrew(personaje, crew, nuevaCrew);
             }
         }
     }
