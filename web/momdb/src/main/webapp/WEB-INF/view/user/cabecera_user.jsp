@@ -25,7 +25,7 @@ Author: projectGeorge (Jorge Repullo)
                 <span>My Movies</span>
             </a>
 
-            <a class="navbar-item">
+            <a class="navbar-item" href="/user/userReviews">
                 <span class="icon">
                     <i class="fas fa-star"></i>
                 </span>

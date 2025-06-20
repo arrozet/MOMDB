@@ -236,7 +236,8 @@ public class UserController extends BaseController{
 
     @PostMapping("/review/save")
     public String guardarReview(@ModelAttribute("reviewDTO") ReviewDTO reviewDTO,
-                            HttpSession session, Model model) {
+                               @RequestParam(value = "from", required = false) String from,
+                               HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
         }
@@ -245,20 +246,42 @@ public class UserController extends BaseController{
         reviewService.saveOrUpdateReview(user.getUserId(), reviewDTO.getMovieId(), reviewDTO);
         reviewService.updateMovieRating(reviewDTO.getMovieId());
 
-        return "redirect:/user/movie?id=" + reviewDTO.getMovieId();
+        if ("myreviews".equals(from)) {
+            return "redirect:/user/userReviews";
+        } else {
+            return "redirect:/user/movie?id=" + reviewDTO.getMovieId();
+        }
     }
 
     @GetMapping("/movie/review/delete")
     public String eliminarReview(@RequestParam("movieId") Integer movieId,
-                               @RequestParam("userId") Integer userId,
-                               HttpSession session,
-                               Model model) {
+                                 @RequestParam("userId") Integer userId,
+                                 @RequestParam(value = "from", required = false) String from,
+                                 HttpSession session,
+                                 Model model) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
         }
 
         this.reviewService.deleteReview(movieId, userId);
-        return "redirect:/user/movie?id=" + movieId;
+        if ("myreviews".equals(from)) {
+            return "redirect:/user/userReviews";
+        } else {
+            return "redirect:/user/movie?id=" + movieId;
+        }
+    }
+
+    @GetMapping("/userReviews")
+    public String verMisReviews(HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        UserDTO user = (UserDTO) session.getAttribute("user");
+
+        List<ReviewDTO> reviews = this.reviewService.getReviewsByUserId(user.getUserId());
+        model.addAttribute("reviews", reviews);
+        return "user/user_reviews";
     }
 
     /**

@@ -1,4 +1,5 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: jorge
@@ -31,6 +32,7 @@
     <div class="review-box">
         <form:form  method="POST" action="/user/review/save" modelAttribute="reviewDTO">
             <form:hidden path="movieId"/>
+            <input type="hidden" name="from" value="${param.from}" />
             <div class="field">
                 <label class="label">Rating</label>
                 <div class="control">
