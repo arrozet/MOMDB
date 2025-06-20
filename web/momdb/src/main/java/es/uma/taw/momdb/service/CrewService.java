@@ -78,6 +78,8 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
 
             Character personaje = characterRepository.findById(crewDTO.getPersonajeId()).orElse(null);
 
+            characterService.updateName(personaje, crewDTO.getPersonajeName());
+
             if(crew.getCharacters().size()==1){
                 if(crewsNuevoActor.isEmpty()){ //Cambio a la persona (es lo comun)
                     crew.setPerson(nuevaPersona);

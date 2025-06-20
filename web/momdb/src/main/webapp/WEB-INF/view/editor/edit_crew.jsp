@@ -49,10 +49,10 @@
             </div>
             <div class="field is-grouped">
                 <div class="control">
-                    <button type="submit" class="button is-primary">Guardar</button>
+                    <button type="submit" class="button is-primary">Save</button>
                 </div>
                 <div class="control">
-                    <a href="/editor/movie/crew?id=${crew.peliculaId}" class="button is-light">Cancelar</a>
+                    <a href="/editor/movie/crew?id=<%=crew.getPeliculaId()%>" class="button is-light">Cancel</a>
                 </div>
             </div>
         </form:form>

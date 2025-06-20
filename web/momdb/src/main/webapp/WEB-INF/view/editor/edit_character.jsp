@@ -29,7 +29,9 @@
             <form:hidden path="personajeId" value="<%=character.getId()%>"/>
             <div class="field">
                 <label class="label">Character Name</label>
-                <%=character.getCharacterName()%>
+                <div class="control">
+                    <form:input path="personajeName" class="input" />
+                </div>
             </div>
 
             <div class="field">
@@ -44,6 +46,9 @@
             <div class="field is-grouped">
                 <div class="control">
                     <button type="submit" class="button is-primary">Save Changes</button>
+                </div>
+                <div class="control">
+                    <a href="/editor/movie/characters?id=<%=crew.getPeliculaId()%>" class="button is-light">Cancel</a>
                 </div>
             </div>
         </form:form>

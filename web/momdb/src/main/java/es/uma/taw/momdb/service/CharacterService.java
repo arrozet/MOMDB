@@ -44,4 +44,9 @@ public class CharacterService extends DTOService<CharacterDTO, Character>{
         characterRepository.save(character);
         return character;
     }
+
+    public void updateName(Character character, String name) {
+        character.setCharacter(name);
+        characterRepository.save(character);
+    }
 }

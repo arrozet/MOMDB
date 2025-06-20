@@ -201,6 +201,7 @@ public class EditorController extends BaseController{
         CrewDTO crew = this.crewService.findCrewById(id);
         List<PersonDTO> people = this.personService.findAll();
         CharacterDTO character = this.characterService.findById(characterId);
+        crew.setPersonajeName(character.getCharacterName());
 
         model.addAttribute("movie", this.movieService.findPeliculaById(crew.getPeliculaId()));
         model.addAttribute("people", people);
