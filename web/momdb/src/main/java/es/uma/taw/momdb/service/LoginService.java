@@ -54,6 +54,8 @@ public class LoginService {
                 return "redirect:/user/";
             case "editor":
                 return "redirect:/editor/";
+            case "recomendador":
+                return "redirect:/recommender/";
             default:
                 return null;
         }
