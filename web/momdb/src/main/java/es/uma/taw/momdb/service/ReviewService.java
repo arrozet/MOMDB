@@ -3,6 +3,7 @@ package es.uma.taw.momdb.service;
 import es.uma.taw.momdb.dao.MovieRepository;
 import es.uma.taw.momdb.dao.ReviewRepository;
 import es.uma.taw.momdb.dao.UserRepository;
+import es.uma.taw.momdb.dto.MovieDTO;
 import es.uma.taw.momdb.dto.ReviewDTO;
 import es.uma.taw.momdb.entity.Movie;
 import es.uma.taw.momdb.entity.Review;
@@ -26,9 +27,22 @@ public class ReviewService extends DTOService<ReviewDTO, Review> {
     @Autowired
     private MovieRepository movieRepository;
 
+    @Autowired
+    private MovieService movieService;
+
     public List<ReviewDTO> getReviewsByMovieId(Integer movieId) {
         List<Review> reviews = reviewRepository.findByMovieId(movieId);
         return this.entity2DTO(reviews);
+    }
+
+    public List<ReviewDTO> getReviewsByUserId(Integer userId) {
+        List<Review> reviews = reviewRepository.findByUserId(userId);
+        List<ReviewDTO> dtos = this.entity2DTO(reviews);
+        for (ReviewDTO dto : dtos) {
+            MovieDTO movie = movieService.findPeliculaById(dto.getMovieId());
+            dto.setMovieTitle(movie != null ? movie.getTitulo() : "Unknown");
+        }
+        return dtos;
     }
 
     public ReviewDTO findReviewByUserAndMovie(Integer userId, Integer movieId) {

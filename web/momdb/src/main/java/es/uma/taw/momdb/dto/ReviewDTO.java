@@ -9,4 +9,5 @@ public class ReviewDTO {
     private String username;
     private String content;
     private Double rating;
+    private String movieTitle;
 } 
