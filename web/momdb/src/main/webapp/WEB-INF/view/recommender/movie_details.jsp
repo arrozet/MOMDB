@@ -63,7 +63,7 @@
 
             <%-- BOTÓN "SEE MORE" --%>
             <div class="has-text-centered mt-4">
-                <a href="/recommender/recommend/add?id=<%= movie.getId() %>" class="button is-light is-fullwidth">
+                <a href="/recommender/recommend/view?id=<%= movie.getId() %>" class="button is-light is-fullwidth">
                     See more...
                 </a>
             </div>

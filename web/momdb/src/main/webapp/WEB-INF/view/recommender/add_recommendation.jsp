@@ -1,9 +1,7 @@
 <%--
-  Created by IntelliJ IDEA.
-  User: amcgiluma (Juan Manuel Valenzuela)
   File: add_recommendation.jsp
+  User: amcgiluma (Juan Manuel Valenzuela)
 --%>
-
 <%@ page import="java.util.List" %>
 <%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -16,25 +14,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body class="page-background">
-<jsp:include page="cabecera_recommender.jsp" />
 
 <%
     MovieDTO originalMovie = (MovieDTO) request.getAttribute("originalMovie");
     List<MovieDTO> movies = (List<MovieDTO>) request.getAttribute("movies");
 %>
 
-<section class="hero is-light is-small page-banner">
+<section class="hero is-dark is-small page-banner">
     <div class="hero-body">
-        <div class="container has-text-centered">
-            <h1 class="title">Add Recommendation for: <%= originalMovie.getTitulo() %></h1>
-            <h2 class="subtitle">Select a movie below to recommend it.</h2>
+        <div class="container">
+            <div class="columns is-vcentered">
+                <div class="column">
+                    <h1 class="title">Add Recommendation for: <%= originalMovie.getTitulo() %></h1>
+                    <h2 class="subtitle">Select a movie below to recommend it.</h2>
+                </div>
+                <div class="column is-narrow">
+                    <a href="/recommender/recommend/view?id=<%= originalMovie.getId() %>" class="button is-warning">Back to Recommendations</a>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
 <section class="section">
     <div class="container">
-        <%-- Sección de filtros adaptada para esta página --%>
+        <%-- Sección de filtros --%>
         <div class="columns">
             <div class="column is-half is-offset-one-quarter">
                 <form:form method="POST" action="/recommender/recommend/add/filtrar" modelAttribute="filtro">
@@ -53,45 +57,7 @@
             </div>
         </div>
 
-        <div class="is-mobile is-multiline is-vcentered" style="margin-bottom: 1.5rem;">
-            <form:form method="POST" action="/recommender/recommend/add/filtrar" modelAttribute="filtro" class="column is-12">
-                <input type="hidden" name="originalMovieId" value="<%= originalMovie.getId() %>">
-                <div class="columns is-mobile is-vcentered is-flex is-align-items-flex-end">
-                    <div class="column is-2">
-                        <label class="label has-text-white">Genre</label>
-                        <form:select path="generoId" class="user select is-warning has-background-grey is-fullwidth">
-                            <form:option value="" label="All genres"/>
-                            <form:options items="${generos}" itemValue="id" itemLabel="genero"/>
-                        </form:select>
-                    </div>
-                    <div class="column is-2">
-                        <label class="label has-text-white">Year</label>
-                        <form:select path="year" class="user select is-warning has-background-grey is-fullwidth">
-                            <form:option value="">All years</form:option>
-                            <form:option value="1960" label="After 1960"/>
-                            <form:option value="1990" label="After 1990"/>
-                            <form:option value="2000" label="After 2000"/>
-                            <form:option value="2010" label="After 2010"/>
-                        </form:select>
-                    </div>
-                    <div class="column is-2">
-                        <label class="label has-text-white">Rating</label>
-                        <form:select path="rating" class="user select is-warning has-background-grey is-fullwidth">
-                            <form:option value="">All ratings</form:option>
-                            <form:option value="5.0" label="> 5"/>
-                            <form:option value="7.5" label="> 7.5"/>
-                        </form:select>
-                    </div>
-                    <div class="column is-4">
-                        <form:button class="button is-warning is-fullwidth">
-                            <span class="icon"><i class="fas fa-filter"></i></span>
-                            <span>Filter</span>
-                        </form:button>
-                    </div>
-                </div>
-            </form:form>
-        </div>
-
+        <%-- Películas --%>
         <div class="columns is-multiline is-mobile mt-4">
             <% if(movies != null && !movies.isEmpty()) {
                 for (MovieDTO movie: movies) {

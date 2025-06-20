@@ -272,14 +272,13 @@ public class RecommenderController extends BaseController{
             return "redirect:/recommender/";
         }
 
-        // Preparamos la vista con todas las películas para que el usuario elija
         List<MovieDTO> allMovies = movieService.listarPeliculas();
         List<GenreDTO> generos = this.generoService.listarGeneros();
 
         model.addAttribute("originalMovie", originalMovie);
         model.addAttribute("movies", allMovies);
         model.addAttribute("generos", generos);
-        model.addAttribute("filtro", new Filtro()); // Para los controles de filtro
+        model.addAttribute("filtro", new Filtro());
 
         return "recommender/add_recommendation";
     }
@@ -297,7 +296,6 @@ public class RecommenderController extends BaseController{
             return "redirect:/recommender/";
         }
 
-        // Usamos la misma lógica de filtrado que en la página principal
         List<MovieDTO> filteredMovies;
         if (filter.getTexto() != null && !filter.getTexto().isBlank()) {
             filteredMovies = movieService.listarPeliculas(filter.getTexto());
@@ -323,13 +321,32 @@ public class RecommenderController extends BaseController{
             return "redirect:/";
         }
 
-        // TODO: Implementar la lógica para guardar la recomendación manual.
-        // Esto probablemente requerirá un nuevo Service y una nueva Entidad/Repositorio
-        // para almacenar la relación entre la película original y la recomendada.
-
-        // Por ahora, simplemente redirigimos a la página de detalles de la película original.
+        // Lógica de guardado no implementada, solo redirige.
         return "redirect:/recommender/movie?id=" + originalMovieId;
     }
+
+    @GetMapping("/recommend/view")
+    public String viewRecommendations(@RequestParam("id") Integer originalMovieId, Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        MovieDTO originalMovie = this.movieService.findPeliculaById(originalMovieId);
+        if (originalMovie == null) {
+            return "redirect:/recommender/";
+        }
+
+        // Obtenemos las películas recomendadas por género.
+        // El método findRecommendedMovies ya excluye la película original.
+        // Usamos un límite alto para que aparezcan "todas".
+        List<MovieDTO> recommendedMovies = this.movieService.findRecommendedMovies(originalMovieId, 100);
+
+        model.addAttribute("originalMovie", originalMovie);
+        model.addAttribute("recommendedMovies", recommendedMovies);
+
+        return "recommender/view_recommendations";
+    }
+
 
     /**
      * Comprueba si el usuario en sesión tiene el rol de usuario.
