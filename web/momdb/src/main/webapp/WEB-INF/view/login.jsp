@@ -1,6 +1,7 @@
 <%--
   Created by IntelliJ IDEA.
   User: arrozet (Rubén Oliva)
+  CO-author: amcgiluma (Juan Manuel Valenzuela)
   Date: 15/04/2025
   Time: 13:12
   To change this template use File | Settings | File Templates.
@@ -53,10 +54,10 @@
             <% } %>
 
             <div class="field">
-                <div class="control">
-                    <button class="button login" type="submit">Login</button>
-                    <a href="/register" class="btn btn-secondary mt-2">Registrarse</a>
-                </div>
+                <button class="button login is-fullwidth" type="submit">Login</button>
+            </div>
+            <div class="has-text-right">
+                <small>¿Aún no tienes una cuenta? <a href="/register">Regístrate</a></small>
             </div>
         </form>
     </div>

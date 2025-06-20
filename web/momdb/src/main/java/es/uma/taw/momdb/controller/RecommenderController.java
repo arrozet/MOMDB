@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import es.uma.taw.momdb.service.WatchlistService;
 
 import java.util.List;
 
@@ -41,6 +42,9 @@ public class RecommenderController extends BaseController{
 
     @Autowired
     protected ReviewService reviewService;
+
+    @Autowired
+    protected WatchlistService watchlistService;
 
     @GetMapping("/")
     public String doInit(HttpSession session, Model model) {
@@ -80,6 +84,10 @@ public class RecommenderController extends BaseController{
             for (MovieDTO movie : movies) {
                 boolean isFavorite = favoriteService.isFavorite(user.getUserId(), movie.getId());
                 movie.setFavorite(isFavorite);
+
+                boolean isInWatchlist = watchlistService.isInWatchlist(user.getUserId(), movie.getId());
+                movie.setInWatchlist(isInWatchlist);
+
             }
         }
 
@@ -261,6 +269,78 @@ public class RecommenderController extends BaseController{
         this.reviewService.deleteReview(movieId, userId);
         return "redirect:/recommender/movie?id=" + movieId;
     }
+    @GetMapping("/userReviews")
+    public String verMisReviews(HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        UserDTO user = (UserDTO) session.getAttribute("user");
+
+        List<ReviewDTO> reviews = this.reviewService.getReviewsByUserId(user.getUserId());
+        model.addAttribute("reviews", reviews);
+        return "user/user_reviews";
+    }
+
+    @GetMapping("/watchlist")
+    public String verWatchlist(HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        List<MovieDTO> watchlistMovies = watchlistService.getUserWatchlist(user.getUserId());
+        model.addAttribute("movies", watchlistMovies);
+
+        return "user/watchlist";
+    }
+
+    @PostMapping("/watchlist/add")
+    public String anyadirAWatchlist(@RequestParam("movieId") Integer movieId, HttpSession session) {
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        if (user == null) {
+            return "error";
+        }
+
+        watchlistService.addToWatchlist(user.getUserId(), movieId);
+        return "redirect:/user/";
+    }
+
+    @PostMapping("/watchlist/remove")
+    public String eliminarDeWatchlist(@RequestParam("movieId") Integer movieId, HttpSession session) {
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        if (user == null) {
+            return "error";
+        }
+        watchlistService.removeFromWatchlist(user.getUserId(), movieId);
+
+        return "redirect:/user/watchlist";
+    }
+
+    @PostMapping("/watchlist/toggle")
+    public String toggleWatchlist(@RequestParam("movieId") Integer movieId,
+                                  @RequestParam("action") String action,
+                                  HttpSession session, Model model, HttpServletRequest request) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        UserDTO user = (UserDTO) session.getAttribute("user");
+
+        if ("add".equals(action)) {
+            watchlistService.addToWatchlist(user.getUserId(), movieId);
+        } else if ("remove".equals(action)) {
+            watchlistService.removeFromWatchlist(user.getUserId(), movieId);
+        }
+
+        String referer = request.getHeader("Referer");
+        if (referer != null && !referer.isEmpty() && !referer.contains("user/filtrar")) {
+            return "redirect:" + referer;
+        }
+
+        return "redirect:/user/";
+    }
+
     @GetMapping("/recommend/add")
     public String addRecommendation(@RequestParam("id") Integer originalMovieId, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {

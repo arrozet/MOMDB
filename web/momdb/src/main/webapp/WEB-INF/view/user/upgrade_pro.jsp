@@ -1,14 +1,19 @@
+<%--
+Author: amcgiluma (Juan Manuel Valenzuela)
+--%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <title>Upgrade to Pro | MOMDB</title>
     <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/upgrade_pro.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body class="page-background">
 <jsp:include page="cabecera_user.jsp" />
 
-<section class="hero is-info">
+<section class="hero upgrade-hero">
     <div class="hero-body">
         <div class="container has-text-centered">
             <p class="title">
@@ -22,7 +27,7 @@
     <div class="container">
         <div class="columns is-centered">
             <div class="column is-half">
-                <div class="box has-background-light">
+                <div class="box advantages-box">
                     <h2 class="title is-4 has-text-centered">Advantages of being a Recommender</h2>
                     <div class="content">
                         <ul>

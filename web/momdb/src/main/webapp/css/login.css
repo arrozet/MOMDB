@@ -1,5 +1,6 @@
 /*
 Author: arrozet (Rubén Oliva)
+Co-author: amcgiluma (Juan Manuel Valenzuela)
 */
 
 /* Estilos específicos para la página de login */
@@ -47,4 +48,14 @@ body.login-page {
 .login-box .button.login{
     background-color: #00ac1c;
     color: white;
+}
+.login-box .button.register {
+    background-color: transparent;
+    border-color: #3e8ed0; /* Color 'info' de Bulma para coincidir con los inputs */
+    color: #3e8ed0;
+}
+
+.login-box .button.register:hover {
+    background-color: #3e8ed0;
+    color: #fff;
 }

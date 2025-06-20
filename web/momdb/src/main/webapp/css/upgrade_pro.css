@@ -1,0 +1,17 @@
+/* Estilos para la página de upgrade_pro.jsp */
+.upgrade-hero {
+    background-color: #363636; /* Gris oscuro */
+}
+
+.upgrade-hero .title {
+    color: #ffffff;
+}
+
+.advantages-box {
+    background-color: #363636; /* Gris oscuro */
+    color: #ffffff;
+}
+
+.advantages-box .title {
+    color: #ffffff;
+}
