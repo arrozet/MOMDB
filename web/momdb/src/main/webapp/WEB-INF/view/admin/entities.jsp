@@ -34,6 +34,23 @@
 <section class="section">
     <div class="container">
         <h1 class="title admin-title">Entity Management</h1>
+        
+        <%-- Mostrar mensaje de error si existe --%>
+        <% if (session.getAttribute("errorMessage") != null) { %>
+            <div class="notification is-danger">
+                <button class="delete" onclick="this.parentElement.remove();"></button>
+                <strong>Error:</strong> <%= session.getAttribute("errorMessage") %>
+                <% if (session.getAttribute("errorEntityType") != null && session.getAttribute("errorEntityName") != null) { %>
+                    <br>
+                    <small>Could not create <%= session.getAttribute("errorEntityType") %> with value "<%= session.getAttribute("errorEntityName") %>" because one with the same ID already exists.</small>
+                <% } %>
+            </div>
+            <%-- Limpiar los atributos de error de la sesión --%>
+            <% session.removeAttribute("errorMessage"); %>
+            <% session.removeAttribute("errorEntityType"); %>
+            <% session.removeAttribute("errorEntityName"); %>
+        <% } %>
+        
          <div class="box">
             <form:form method="post" action="/admin/showEntities" modelAttribute="genericEntity">
                 <div class="field has-addons">

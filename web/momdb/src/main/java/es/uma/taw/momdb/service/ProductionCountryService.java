@@ -53,10 +53,14 @@ public class ProductionCountryService {
      * Crea un nuevo país de producción.
      * El nombre se utiliza como ID (código ISO 3166-1) y como nombre del país.
      * @param name El nombre y código del nuevo país.
+     * @throws IllegalArgumentException si ya existe un país de producción con el mismo código ISO 3166-1.
      */
     public void createProductionCountry(String name) {
         Productioncountry productionCountry = new Productioncountry();
-        productionCountry.setIso31661(name);
+        productionCountry.setIso31661(name.substring(0, 2).toUpperCase());
+        if(this.findProductionCountry(productionCountry.getIso31661()) != null) {
+            throw new IllegalArgumentException("A production country with ISO code " + productionCountry.getIso31661() + " already exists");
+        }
         productionCountry.setCountry(name);
         productionCountryRepository.save(productionCountry);
     }

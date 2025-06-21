@@ -222,9 +222,16 @@ public class AdminController extends BaseController {
             return "redirect:/";
         }
 
-        adminService.createEntity(entityType, entity.getName());
-
-        return "redirect:/admin/entities";
+        try {
+            adminService.createEntity(entityType, entity.getName());
+            return "redirect:/admin/entities";
+        } catch (IllegalArgumentException e) {
+            // Guardar el mensaje de error en la sesión para mostrarlo en la vista
+            session.setAttribute("errorMessage", e.getMessage());
+            session.setAttribute("errorEntityType", entityType);
+            session.setAttribute("errorEntityName", entity.getName());
+            return "redirect:/admin/entities";
+        }
     }
 
     /**
