@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /*
@@ -113,6 +114,9 @@ public class UserController extends BaseController{
         }
 
         List<ReviewDTO> reviews = this.reviewService.getReviewsByMovieId(id);
+        BigDecimal averageReviewRating = this.reviewService.getAverageReviewRating(id);
+
+        model.addAttribute("averageReviewRating", averageReviewRating);
         model.addAttribute("reviews", reviews);
         model.addAttribute("generos", movie.getGeneros());
         model.addAttribute("movie", movie);
@@ -250,7 +254,6 @@ public class UserController extends BaseController{
 
         UserDTO user = (UserDTO) session.getAttribute("user");
         this.reviewService.saveOrUpdateReview(user.getUserId(), reviewDTO.getMovieId(), reviewDTO);
-        this.reviewService.updateMovieRating(reviewDTO.getMovieId());
 
         if ("myreviews".equals(from)) {
             return "redirect:/user/userReviews";

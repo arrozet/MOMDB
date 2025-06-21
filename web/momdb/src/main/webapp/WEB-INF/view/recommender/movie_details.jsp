@@ -210,7 +210,26 @@
 
 <section class="section">
     <div class="container">
-        <h2 class="title is-4 has-text-white">Reviews</h2>
+        <div class="level is-mobile">
+            <div class="level-left">
+                <h2 class="title is-4 has-text-white">Reviews</h2>
+            </div>
+            <div class="level-right">
+                <%
+                    java.math.BigDecimal averageReviewRating = (java.math.BigDecimal) request.getAttribute("averageReviewRating");
+                %>
+                <div class="tags has-addons">
+                    <span class="tag is-dark is-size-6">Avg. user score</span>
+                    <span class="tag is-warning is-size-6 has-text-dark">
+                        <% if (averageReviewRating != null) { %>
+                        <%= averageReviewRating %>/10
+                        <% } else { %>
+                        - / 10
+                        <% } %>
+                    </span>
+                </div>
+            </div>
+        </div>
         <%
             if (reviews != null && !reviews.isEmpty()) {
                 for (ReviewDTO review : reviews) {

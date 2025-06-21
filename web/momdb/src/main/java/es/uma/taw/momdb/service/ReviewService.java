@@ -97,11 +97,16 @@ public class ReviewService extends DTOService<ReviewDTO, Review> {
     }
 
     /**
-     * Actualiza la puntuación media de una película basándose en sus reseñas.
+     * Calcula la puntuación media de las reseñas de una película.
      * @param movieId ID de la película.
+     * @return La puntuación media, o null si no hay reseñas con puntuación.
      */
-    public void updateMovieRating(Integer movieId) {
+    public BigDecimal getAverageReviewRating(Integer movieId) {
         List<Review> reviews = reviewRepository.findByMovieId(movieId);
+
+        if (reviews == null || reviews.isEmpty()) {
+            return null;
+        }
 
         double sum = 0.0;
         int count = 0;
@@ -113,11 +118,11 @@ public class ReviewService extends DTOService<ReviewDTO, Review> {
             }
         }
 
-        Movie movie = movieRepository.findById(movieId).orElse(null);
-        if (movie != null) {
-            movie.setVoteAverage(BigDecimal.valueOf(sum / count));
-            movieRepository.save(movie);
+        if (count == 0) {
+            return null;
         }
+
+        return BigDecimal.valueOf(sum / count).setScale(1, java.math.RoundingMode.HALF_UP);
     }
 
     /**
