@@ -9,7 +9,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <title>Registro de Usuario</title>
+    <title>Registration</title>
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/login.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,7 +18,7 @@
 <jsp:include page="banner.jsp"/>
 
 <div class="login-box">
-    <h1 class="title has-text-centered">Registro de Nuevo Usuario</h1>
+    <h1 class="title has-text-centered">Registration</h1>
 
     <c:if test="${not empty error}">
         <div class="notification is-danger is-light">
@@ -28,7 +28,7 @@
 
     <form method="post" action="/register">
         <div class="field">
-            <label for="username" class="label">Nombre de usuario:</label>
+            <label for="username" class="label">Username</label>
             <div class="control has-icons-left">
                 <input type="text" class="input is-info" id="username" name="username" required>
                 <span class="icon is-small is-left">
@@ -37,7 +37,7 @@
             </div>
         </div>
         <div class="field">
-            <label for="email" class="label">Correo electrónico:</label>
+            <label for="email" class="label">Email</label>
             <div class="control has-icons-left">
                 <input type="email" class="input is-info" id="email" name="email" required>
                 <span class="icon is-small is-left">
@@ -46,7 +46,7 @@
             </div>
         </div>
         <div class="field">
-            <label for="password" class="label">Contraseña:</label>
+            <label for="password" class="label">Password</label>
             <div class="control has-icons-left">
                 <input type="password" class="input is-info" id="password" name="password" required>
                 <span class="icon is-small is-left">
@@ -56,8 +56,8 @@
         </div>
         <div class="field">
             <div class="buttons">
-                <button type="submit" class="button login">Registrar</button>
-                <a href="/login" class="button register">Volver al Login</a>
+                <button type="submit" class="button login">Register</button>
+                <a href="/login" class="button register">Back to Login</a>
             </div>
         </div>
     </form>

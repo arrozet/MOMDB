@@ -57,7 +57,7 @@
                 <button class="button login is-fullwidth" type="submit">Login</button>
             </div>
             <div class="has-text-right">
-                <small>¿Aún no tienes una cuenta? <a href="/register">Regístrate</a></small>
+                <small>No account yet? <a href="/register">Register now</a></small>
             </div>
         </form>
     </div>
