@@ -1,8 +1,16 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ page import="es.uma.taw.momdb.dto.GenericEntityDTO" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<%
+    GenericEntityDTO entity = (GenericEntityDTO) request.getAttribute("entity");
+    String entityType = (String) request.getAttribute("entityType");
+    boolean isNew = entity.getId() == null || entity.getId().isEmpty();
+%>
+
 <html>
 <head>
-    <title>Edit Entity</title>
+    <title><%= isNew ? "Add" : "Edit" %> Entity</title>
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/admin.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,16 +21,18 @@
 
 <section class="section">
     <div class="container">
-        <h1 class="title admin-title">Edit ${entityType}</h1>
+        <h1 class="title admin-title"><%= isNew ? "Add" : "Edit" %> <%= entityType %></h1>
         <div class="box">
-            <form:form method="post" action="/admin/updateEntity" modelAttribute="entity">
-                <form:hidden path="id" />
-                <input type="hidden" name="entityType" value="${entityType}">
+            <form:form method="post" action='<%= isNew ? "/admin/createEntity" : "/admin/updateEntity" %>' modelAttribute="entity">
+                <% if (!isNew) { %>
+                    <form:hidden path="id" />
+                <% } %>
+                <input type="hidden" name="entityType" value="<%= entityType %>">
 
                 <div class="field">
-                    <label class="label" for="name">Name</label>
+                    <label class="label" for="name">Value</label>
                     <div class="control">
-                        <form:input path="name" cssClass="input" id="name"/>
+                        <form:input path="name" cssClass="input" id="name" placeholder="Entity value..." />
                     </div>
                 </div>
 

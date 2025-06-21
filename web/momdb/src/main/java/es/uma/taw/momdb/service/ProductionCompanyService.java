@@ -49,4 +49,14 @@ public class ProductionCompanyService {
         productionCompany.setCompany(name);
         productionCompanyRepository.save(productionCompany);
     }
+
+    /**
+     * Crea una nueva compañía productora.
+     * @param name El nombre de la nueva compañía.
+     */
+    public void createProductionCompany(String name) {
+        Productioncompany productionCompany = new Productioncompany();
+        productionCompany.setCompany(name);
+        productionCompanyRepository.save(productionCompany);
+    }
 } 

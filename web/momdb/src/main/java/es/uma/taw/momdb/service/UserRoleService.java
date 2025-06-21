@@ -59,4 +59,14 @@ public class UserRoleService {
         userRole.setName(name);
         userRoleRepository.save(userRole);
     }
+
+    /**
+     * Crea un nuevo rol de usuario.
+     * @param name El nombre del nuevo rol.
+     */
+    public void createUserRole(String name) {
+        UserRole userRole = new UserRole();
+        userRole.setName(name);
+        userRoleRepository.save(userRole);
+    }
 } 

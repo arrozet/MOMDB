@@ -49,4 +49,16 @@ public class ProductionCountryService {
         productionCountry.setCountry(name);
         productionCountryRepository.save(productionCountry);
     }
+
+    /**
+     * Crea un nuevo país de producción.
+     * El nombre se utiliza como ID (código ISO 3166-1) y como nombre del país.
+     * @param name El nombre y código del nuevo país.
+     */
+    public void createProductionCountry(String name) {
+        Productioncountry productionCountry = new Productioncountry();
+        productionCountry.setIso31661(name);
+        productionCountry.setCountry(name);
+        productionCountryRepository.save(productionCountry);
+    }
 } 

@@ -49,4 +49,14 @@ public class KeywordService {
         keyword.setKeyword(name);
         keywordRepository.save(keyword);
     }
+
+    /**
+     * Crea una nueva palabra clave.
+     * @param name El nombre de la nueva palabra clave.
+     */
+    public void createKeyword(String name) {
+        Keyword keyword = new Keyword();
+        keyword.setKeyword(name);
+        keywordRepository.save(keyword);
+    }
 } 

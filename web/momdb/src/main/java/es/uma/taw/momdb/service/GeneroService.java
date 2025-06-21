@@ -53,4 +53,14 @@ public class GeneroService extends DTOService<GenreDTO, Genre>{
         genre.setGenre(name);
         genreRepository.save(genre);
     }
+
+    /**
+     * Crea un nuevo género.
+     * @param name El nombre del nuevo género.
+     */
+    public void createGenre(String name) {
+        Genre genre = new Genre();
+        genre.setGenre(name);
+        genreRepository.save(genre);
+    }
 }

@@ -196,4 +196,21 @@ public class AdminService {
             case "UserRole" -> userRoleService.updateUserRole(Integer.parseInt(id), name);
         }
     }
+
+    /**
+     * Crea una nueva entidad.
+     * @param entityType El tipo de la entidad a crear.
+     * @param name El nombre de la nueva entidad.
+     */
+    public void createEntity(String entityType, String name) {
+        switch (entityType) {
+            case "Genre" -> generoService.createGenre(name);
+            case "Keyword" -> keywordService.createKeyword(name);
+            case "ProductionCompany" -> productionCompanyService.createProductionCompany(name);
+            case "ProductionCountry" -> productionCountryService.createProductionCountry(name);
+            case "SpokenLanguage" -> spokenLanguageService.createSpokenLanguage(name);
+            case "CrewRole" -> crewRoleService.createCrewRole(name);
+            case "UserRole" -> userRoleService.createUserRole(name);
+        }
+    }
 } 

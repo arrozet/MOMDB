@@ -49,4 +49,14 @@ public class CrewRoleService {
         crewRole.setRole(name);
         crewRoleRepository.save(crewRole);
     }
+
+    /**
+     * Crea un nuevo CrewRole.
+     * @param name El nombre del nuevo rol.
+     */
+    public void createCrewRole(String name) {
+        Crewrole crewRole = new Crewrole();
+        crewRole.setRole(name);
+        crewRoleRepository.save(crewRole);
+    }
 } 

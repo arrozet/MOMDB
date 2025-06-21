@@ -139,10 +139,14 @@ public class AdminController extends BaseController {
             return "redirect:/admin/entities";
         }
 
-        model.addAttribute("entity", entity);
+        GenericEntityDTO entityDTO = new GenericEntityDTO();
+        entityDTO.setId(String.valueOf(entity.getId()));
+        entityDTO.setName(entity.getName());
+
+        model.addAttribute("entity", entityDTO);
         model.addAttribute("entityType", entityType);
 
-        return "admin/edit_entity";
+        return "admin/save_entity";
     }
 
     /**
@@ -181,6 +185,44 @@ public class AdminController extends BaseController {
         }
 
         adminService.deleteEntity(entityType, id);
+
+        return "redirect:/admin/entities";
+    }
+
+    /**
+     * Muestra el formulario para crear una entidad.
+     * @param entityType El tipo de la entidad a crear.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return La vista del formulario de edición o una redirección.
+     */
+    @GetMapping("/addEntity")
+    public String doAddEntity(@RequestParam("entityType") String entityType, HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        model.addAttribute("entity", new GenericEntityDTO());
+        model.addAttribute("entityType", entityType);
+
+        return "admin/save_entity";
+    }
+
+    /**
+     * Procesa la creación de una entidad.
+     * @param entity El DTO con los datos de la entidad a crear.
+     * @param entityType El tipo de la entidad.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return Una redirección a la lista de entidades.
+     */
+    @PostMapping("/createEntity")
+    public String doCreateEntity(@ModelAttribute("entity") GenericEntityDTO entity, @RequestParam("entityType") String entityType, HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        adminService.createEntity(entityType, entity.getName());
 
         return "redirect:/admin/entities";
     }

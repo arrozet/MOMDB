@@ -52,6 +52,13 @@
                             </span>
                         </button>
                     </div>
+                    <div class="control">
+                        <a href="/admin/addEntity?entityType=${genericEntity.selectedEntity}" class="button is-success">
+                            <span class="icon">
+                                <i class="fas fa-plus"></i>
+                            </span>
+                        </a>
+                    </div>
                 </div>
             </form:form>
             <table class="table is-striped is-fullwidth">

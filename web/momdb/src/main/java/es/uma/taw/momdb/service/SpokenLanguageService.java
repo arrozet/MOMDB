@@ -49,4 +49,16 @@ public class SpokenLanguageService {
         spokenLanguage.setLanguage(name);
         spokenLanguageRepository.save(spokenLanguage);
     }
+
+    /**
+     * Crea un nuevo idioma.
+     * El nombre se utiliza como ID (código ISO 639-1) y como nombre del idioma.
+     * @param name El nombre y código del nuevo idioma.
+     */
+    public void createSpokenLanguage(String name) {
+        Spokenlanguage spokenLanguage = new Spokenlanguage();
+        spokenLanguage.setIso6391(name);
+        spokenLanguage.setLanguage(name);
+        spokenLanguageRepository.save(spokenLanguage);
+    }
 } 
