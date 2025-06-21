@@ -29,6 +29,8 @@ public class AdminService {
     @Autowired private UserRoleService userRoleService;
     @Autowired private UserService userService;
 
+    // TODO: solo se deben devolver dtos, nada de entidades. Ni aqui ni en ningun servicio (salvo que sea otra entidad que necesita otro servicio)
+
     /**
      * Obtiene una lista de entidades basada en el tipo especificado.
      *
