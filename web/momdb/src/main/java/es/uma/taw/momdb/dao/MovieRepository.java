@@ -38,6 +38,26 @@ public interface MovieRepository extends JpaRepository<Movie, Integer> {
             @Param("popMin") BigDecimal popMin,
             @Param("popMax") BigDecimal popMax
     );
+
+    @Query("""
+    select distinct m from Movie m
+    left join m.genres g
+    where
+        (:generoId is null or g.id = :generoId)
+        and (:year is null or function('YEAR', m.releaseDate) >= :year)
+        and (:rating is null or m.voteAverage >= :rating)
+        and (:popMin is null or m.popularity >= :popMin)
+        and (:popMax is null or m.popularity < :popMax)
+    """)
+    Page<Movie> findByFiltros(
+            @Param("generoId") Integer generoId,
+            @Param("year") Integer year,
+            @Param("rating") BigDecimal rating,
+            @Param("popMin") BigDecimal popMin,
+            @Param("popMax") BigDecimal popMax,
+            Pageable pageable
+    );
+    
     //Querys analista
     @Query("SELECT AVG(m.popularity) FROM Movie m")
     BigDecimal getAveragePopularity();
