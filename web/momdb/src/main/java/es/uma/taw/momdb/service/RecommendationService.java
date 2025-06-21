@@ -3,6 +3,7 @@ package es.uma.taw.momdb.service;
 import es.uma.taw.momdb.dao.MovieRepository;
 import es.uma.taw.momdb.dao.RecommendationRepository;
 import es.uma.taw.momdb.dao.UserRepository;
+import es.uma.taw.momdb.dto.MovieDTO;
 import es.uma.taw.momdb.dto.RecommendationDTO;
 import es.uma.taw.momdb.entity.Movie;
 import es.uma.taw.momdb.entity.Recommendation;
@@ -13,10 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-/*
- * @author - amcgiluma (Juan Manuel Valenzuela)
- * @co-authors -
- */
+
 @Service
 public class RecommendationService {
 
@@ -62,17 +60,35 @@ public class RecommendationService {
         recommendationRepository.save(recommendation);
     }
 
-    public List<RecommendationDTO> findUserRecommendationsForMovie(Integer movieId) {
-        List<Recommendation> recommendations = recommendationRepository.findByMainMovieId(movieId);
-        return recommendations.stream()
+    public List<RecommendationDTO> findAggregatedUserRecommendationsForMovie(Integer movieId) {
+        List<Object[]> results = recommendationRepository.findUserRecommendationsAndCountByMainMovieId(movieId);
+        return results.stream()
+                .map(result -> {
+                    Movie movieEntity = (Movie) result[0];
+                    Long count = (Long) result[1];
+                    MovieDTO movieDTO = movieService.findPeliculaById(movieEntity.getId());
+                    return new RecommendationDTO(movieDTO, count);
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<RecommendationDTO> findCurrentUserRecommendationsForMovie(Integer movieId, Integer userId) {
+        return recommendationRepository.findByMainMovieIdAndUserId(movieId, userId)
+                .stream()
                 .map(this::entityToDTO)
                 .collect(Collectors.toList());
     }
 
+    public void deleteRecommendation(Integer recommenderId, Integer mainMovieId, Integer recommendedMovieId) {
+        RecommendationId id = new RecommendationId();
+        id.setRecommenderId(recommenderId);
+        id.setMainMovieId(mainMovieId);
+        id.setRecommendedMovieId(recommendedMovieId);
+
+        recommendationRepository.deleteById(id);
+    }
+
     private RecommendationDTO entityToDTO(Recommendation entity) {
-        RecommendationDTO dto = new RecommendationDTO();
-        dto.setRecommender(entity.getRecommender().toDTO());
-        dto.setRecommendedMovie(movieService.findPeliculaById(entity.getRecommendedMovie().getId()));
-        return dto;
+        return new RecommendationDTO(entity.getRecommender().toDTO(), movieService.findPeliculaById(entity.getRecommendedMovie().getId()));
     }
 }

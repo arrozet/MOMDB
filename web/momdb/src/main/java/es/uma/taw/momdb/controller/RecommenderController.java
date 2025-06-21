@@ -397,7 +397,6 @@ public class RecommenderController extends BaseController{
             return "redirect:/";
         }
 
-
         UserDTO user = (UserDTO) session.getAttribute("user");
         recommendationService.saveRecommendation(user.getUserId(), originalMovieId, recommendedMovieId);
 
@@ -410,23 +409,42 @@ public class RecommenderController extends BaseController{
             return "redirect:/";
         }
 
+        UserDTO user = (UserDTO) session.getAttribute("user");
+
         MovieDTO originalMovie = this.movieService.findPeliculaById(originalMovieId);
         if (originalMovie == null) {
             return "redirect:/recommender/";
         }
 
-
         // Recomendaciones basadas en género
         List<MovieDTO> genreRecommendedMovies = this.movieService.findRecommendedMovies(originalMovieId, 10);
 
-        // Recomendaciones hechas por usuarios
-        List<RecommendationDTO> userRecommendations = this.recommendationService.findUserRecommendationsForMovie(originalMovieId);
+        // Recomendaciones de usuarios (agregadas y ordenadas)
+        List<RecommendationDTO> userRecommendations = this.recommendationService.findAggregatedUserRecommendationsForMovie(originalMovieId);
+
+        // Recomendaciones del usuario actual (para poder borrarlas)
+        List<RecommendationDTO> currentUserRecommendations = this.recommendationService.findCurrentUserRecommendationsForMovie(originalMovieId, user.getUserId());
 
         model.addAttribute("originalMovie", originalMovie);
         model.addAttribute("genreRecommendedMovies", genreRecommendedMovies);
         model.addAttribute("userRecommendations", userRecommendations);
+        model.addAttribute("currentUserRecommendations", currentUserRecommendations);
 
         return "recommender/view_recommendations";
+    }
+
+    @PostMapping("/recommend/delete")
+    public String deleteRecommendation(@RequestParam("originalMovieId") Integer originalMovieId,
+                                       @RequestParam("recommendedMovieId") Integer recommendedMovieId,
+                                       HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        recommendationService.deleteRecommendation(user.getUserId(), originalMovieId, recommendedMovieId);
+
+        return "redirect:/recommender/recommend/view?id=" + originalMovieId;
     }
 
 

@@ -14,4 +14,10 @@ import java.util.List;
 public interface RecommendationRepository extends JpaRepository<Recommendation, RecommendationId> {
     @Query("SELECT r FROM Recommendation r WHERE r.mainMovie.id = :movieId")
     List<Recommendation> findByMainMovieId(@Param("movieId") Integer movieId);
+
+    @Query("SELECT r.recommendedMovie, COUNT(r.recommendedMovie) as c FROM Recommendation r WHERE r.mainMovie.id = :movieId GROUP BY r.recommendedMovie ORDER BY c DESC")
+    List<Object[]> findUserRecommendationsAndCountByMainMovieId(@Param("movieId") Integer movieId);
+
+    @Query("SELECT r FROM Recommendation r WHERE r.mainMovie.id = :movieId AND r.recommender.id = :userId")
+    List<Recommendation> findByMainMovieIdAndUserId(@Param("movieId") Integer movieId, @Param("userId") Integer userId);
 }
