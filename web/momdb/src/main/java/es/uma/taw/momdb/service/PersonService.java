@@ -11,9 +11,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/*
- * @author - Artur797 (Artur Vargas)
- * @co-authors -
+/**
+ * Servicio para gestionar la lógica de negocio de las operaciones sobre las personas.
+ * Proporciona métodos para buscar, crear, actualizar y eliminar personas del sistema.
+ * 
+ * @author Artur797 (Artur Vargas)
  */
 
 @Service
@@ -22,25 +24,47 @@ public class PersonService extends DTOService<PersonDTO, Person> {
     @Autowired
     private PersonRepository personRepository;
 
+    /**
+     * Obtiene todas las personas de la base de datos.
+     * @return Lista de DTO de personas.
+     */
     public List<PersonDTO> findAll() {
         List<Person> people = this.personRepository.findAll();
         return this.entity2DTO(people);
     }
 
+    /**
+     * Elimina una persona por su ID.
+     * @param id El ID de la persona a eliminar.
+     */
     public void deleteById(Integer id) {
         this.personRepository.deleteById(id);
     }
 
+    /**
+     * Obtiene las primeras 1000 personas de la base de datos.
+     * @return Lista de DTO de personas.
+     */
     public List<PersonDTO> findFirst1000() {
         List<Person> people = this.personRepository.findAll(PageRequest.of(0, 1000)).getContent();
         return this.entity2DTO(people);
     }
 
+    /**
+     * Busca personas por su nombre.
+     * @param name El nombre a buscar.
+     * @return Lista de DTO de personas que coinciden con el nombre.
+     */
     public List<PersonDTO> searchByName(String name) {
         List<Person> people = this.personRepository.findByNameContainingIgnoreCase(name);
         return this.entity2DTO(people);
     }
 
+    /**
+     * Guarda o actualiza una persona.
+     * Si el ID del DTO es -1, crea una nueva persona.
+     * @param personDTO DTO con la información de la persona.
+     */
     public void save(PersonDTO personDTO) {
         Person person;
         if(personDTO.getId() == -1) {
@@ -52,11 +76,23 @@ public class PersonService extends DTOService<PersonDTO, Person> {
         this.personRepository.save(person);
     }
 
+    /**
+     * Busca una persona por su ID.
+     * @param id El ID de la persona.
+     * @return El DTO de la persona, o null si no se encuentra.
+     */
     public PersonDTO findById(Integer id) {
         Person person = this.personRepository.findById(id).orElse(null);
         return person != null ? person.toDTO() : null;
     }
 
+    /**
+     * Busca personas de forma paginada y, opcionalmente, filtrada por nombre.
+     * @param name Nombre por el que filtrar (puede ser nulo o vacío).
+     * @param page Número de página.
+     * @param size Tamaño de la página.
+     * @return Página de DTO de personas.
+     */
     public Page<PersonDTO> findPeoplePaged(String name, int page, int size) {
         Page<Person> peoplePage;
         if (name != null && !name.trim().isEmpty()) {

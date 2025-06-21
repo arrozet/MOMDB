@@ -8,15 +8,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/*
- * @author - arrozet (Rubén Oliva)
- * @co-authors - 
- */
-
 /**
  * Servicio para gestionar la lógica de negocio de las operaciones sobre las palabras clave (Keywords).
  * Proporciona métodos para buscar, actualizar y eliminar palabras clave.
+ * 
+ * @author arrozet (Rubén Oliva)
  */
+
 @Service
 public class KeywordService {
 

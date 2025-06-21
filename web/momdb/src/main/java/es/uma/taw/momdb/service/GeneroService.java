@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/*
- * @author - Artur797 (Artur Vargas)
- * @co-authors - arrozet (Rubén Oliva)
+/**
+ * Servicio para gestionar la lógica de negocio de las operaciones sobre los géneros cinematográficos.
+ * Proporciona métodos para buscar, crear, actualizar y eliminar géneros del sistema.
+ * 
+ * @author Artur797 (Artur Vargas), arrozet (Rubén Oliva)
  */
 
 @Service

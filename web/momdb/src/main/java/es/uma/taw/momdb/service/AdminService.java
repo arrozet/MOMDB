@@ -14,8 +14,8 @@ import java.util.List;
 /**
  * Servicio para gestionar las operaciones de administrador.
  * Proporciona métodos para interactuar con las entidades y usuarios del sistema.
- * @author - arrozet (Rubén Oliva)
- * @co-authors - 
+ * 
+ * @author arrozet (Rubén Oliva)
  */
 
 @Service
@@ -182,6 +182,7 @@ public class AdminService {
      * @param name El nombre de la nueva entidad.
      */
     public void createEntity(String entityType, String name) {
+        // TODO: no gestiono las ids que no son auto-incrementales pq son Strings (spoken language, production country)
         switch (entityType) {
             case "Genre" -> generoService.createGenre(name);
             case "Keyword" -> keywordService.createKeyword(name);

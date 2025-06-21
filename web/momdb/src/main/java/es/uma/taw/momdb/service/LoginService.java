@@ -9,8 +9,7 @@ import org.springframework.stereotype.Service;
 /**
  * Servicio para gestionar la lógica de negocio relacionada con la autenticación de usuarios.
  *
- * @author - Artur797 (Artur Vargas)
- * @co-authors - arrozet (Rubén Oliva)
+ * @author - Artur797 (Artur Vargas), arrozet (Rubén Oliva)
  */
 
 @Service

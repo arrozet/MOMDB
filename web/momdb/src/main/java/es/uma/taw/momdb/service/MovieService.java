@@ -24,9 +24,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/*
- * @author - Artur797 (Artur Vargas)
- * @co-authors - projectGeorge (Jorge Repullo) - edugbau (Eduardo González)
+/**
+ * Servicio para gestionar la lógica de negocio de las operaciones sobre las películas.
+ * Proporciona métodos para buscar, crear, actualizar y eliminar películas, así como
+ * calcular estadísticas y generar recomendaciones.
+ * 
+ * @author Artur797 (Artur Vargas), projectGeorge (Jorge Repullo), edugbau (Eduardo González), amcgiluma (Juan Manuel Valenzuela)
  */
 
 @Service
@@ -44,10 +47,20 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
     @Autowired
     protected CrewRepository crewRepository;
 
+    /**
+     * Devuelve una lista de todas las películas.
+     * @return Lista de DTO de películas.
+     */
     public List<MovieDTO> listarPeliculas () {
         return this.listarPeliculas(null);
     }
 
+    /**
+     * Devuelve una lista de películas filtrada por título.
+     * Si el título es nulo o vacío, devuelve todas las películas.
+     * @param titulo Título por el que filtrar.
+     * @return Lista de DTO de películas.
+     */
     public List<MovieDTO> listarPeliculas (String titulo) {
         List<Movie> movies;
 
@@ -59,6 +72,11 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
         return this.entity2DTO(movies);
     }
 
+    /**
+     * Devuelve una lista de películas filtrada por varios criterios.
+     * @param filtro Objeto que contiene los filtros a aplicar.
+     * @return Lista de DTO de películas.
+     */
     public List<MovieDTO> listarPeliculasBySelectFilters(Filtro filtro) {
         BigDecimal popMin = null, popMax = null;
         if (filtro.getPopularityRange() != null && !filtro.getPopularityRange().isBlank()) {
@@ -76,10 +94,20 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
         return this.entity2DTO(movies);
     }
 
+    /**
+     * Busca una película por su ID.
+     * @param id El ID de la película.
+     * @return El DTO de la película, o null si no se encuentra.
+     */
     public MovieDTO findPeliculaById (int id) {
         Movie movie = this.movieRepository.findById(id).orElse(null);
         return movie != null ? movie.toDTO() : null;
     }
+
+    /**
+     * Guarda o actualiza la información de una película.
+     * @param movie DTO con la información de la película.
+     */
     public void saveMovie (MovieDTO movie) {
         Movie movieEntity = this.movieRepository.findById(movie.getId()).orElse(new Movie());
         movieEntity.setTitle(movie.getTitulo());
@@ -92,6 +120,10 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
         this.movieRepository.save(movieEntity);
     }
 
+    /**
+     * Crea una nueva película en la base de datos.
+     * @param movie DTO con la información de la película a crear.
+     */
     public void crearPelicula(MovieDTO movie) {
         Movie movieEntity = new Movie();
         movieEntity.setTitle(movie.getTitulo());
@@ -118,6 +150,10 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
         this.movieRepository.save(movieEntity);
     }
 
+    /**
+     * Borra una película y todas sus referencias de equipo (crew).
+     * @param id El ID de la película a borrar.
+     */
     public void borrarPelicula (Integer id) {
         Movie movie = this.movieRepository.findById(id).orElse(null);
 
@@ -133,62 +169,131 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
 
     }
 
-    //Traer peliculas en formato página para no cargar todo de golpe
+    /**
+     * Devuelve una página de películas para la paginación.
+     * @param pageNumber Número de la página a obtener.
+     * @param pageSize Tamaño de la página.
+     * @return Página de DTO de películas.
+     */
     public Page<MovieDTO> findPaginated(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<Movie> moviePage = movieRepository.findAll(pageable);
         return moviePage.map(Movie::toDTO);
     }
 
+    /**
+     * Calcula la popularidad media de todas las películas.
+     * @return La popularidad media.
+     */
     public BigDecimal getAveragePopularity() {
         return movieRepository.getAveragePopularity();
     }
 
+    /**
+     * Calcula la popularidad media de las películas de un género específico.
+     * @param genreId ID del género.
+     * @return La popularidad media para el género.
+     */
     public BigDecimal getAveragePopularityByGenre(Integer genreId) {
         return movieRepository.getAveragePopularityByGenre(genreId);
     }
 
+    /**
+     * Calcula los ingresos medios de todas las películas.
+     * @return Los ingresos medios.
+     */
     public Double getAverageRevenue() {
         return movieRepository.getAverageRevenue();
     }
 
+    /**
+     * Calcula los ingresos medios de las películas de un género específico.
+     * @param genreId ID del género.
+     * @return Los ingresos medios para el género.
+     */
     public Double getAverageRevenueByGenre(Integer genreId) {
         return movieRepository.getAverageRevenueByGenre(genreId);
     }
 
+    /**
+     * Calcula la puntuación media de todas las películas.
+     * @return La puntuación media.
+     */
     public BigDecimal getAverageVoteAverage() {
         return movieRepository.getAverageVoteAverage();
     }
 
+    /**
+     * Calcula la puntuación media de las películas de un género específico.
+     * @param genreId ID del género.
+     * @return La puntuación media para el género.
+     */
     public BigDecimal getAverageVoteAverageByGenre(Integer genreId) {
         return movieRepository.getAverageVoteAverageByGenre(genreId);
     }
 
+    /**
+     * Calcula el número medio de votos de todas las películas.
+     * @return El número medio de votos.
+     */
     public Double getAverageVoteCount() {
         return movieRepository.getAverageVoteCount();
     }
 
+    /**
+     * Calcula el número medio de votos de las películas de un género específico.
+     * @param genreId ID del género.
+     * @return El número medio de votos para el género.
+     */
     public Double getAverageVoteCountByGenre(Integer genreId) {
         return movieRepository.getAverageVoteCountByGenre(genreId);
     }
 
+    /**
+     * Calcula la duración media de todas las películas.
+     * @return La duración media.
+     */
     public Double getAverageRuntime() {
         return movieRepository.getAverageRuntime();
     }
 
+    /**
+     * Calcula la duración media de las películas de un género específico.
+     * @param genreId ID del género.
+     * @return La duración media para el género.
+     */
     public Double getAverageRuntimeByGenre(Integer genreId) {
         return movieRepository.getAverageRuntimeByGenre(genreId);
     }
+
+    /**
+     * Asigna un miembro del equipo a una película.
+     * @param movie La película.
+     * @param crew El miembro del equipo a asignar.
+     */
     public void addCrew(Movie movie, Crew crew) {
         movie.getCrews().add(crew);
         movieRepository.save(movie);
     }
 
+    /**
+     * Reemplaza un miembro del equipo de una película por otro.
+     * @param movie La película.
+     * @param crewAnt El miembro del equipo antiguo.
+     * @param crewNueva El miembro del equipo nuevo.
+     */
     public void removeAndAddCrew(Movie movie, Crew crewAnt, Crew crewNueva) {
         movie.getCrews().remove(crewAnt);
         movie.getCrews().add(crewNueva);
         movieRepository.save(movie);
     }
+
+    /**
+     * Busca películas recomendadas basadas en los géneros de una película dada.
+     * @param movieId ID de la película para la que se buscan recomendaciones.
+     * @param limit Número máximo de recomendaciones a devolver.
+     * @return Lista de DTO de películas recomendadas.
+     */
     public List<MovieDTO> findRecommendedMovies(Integer movieId, int limit) {
         Movie movie = movieRepository.findById(movieId).orElse(null);
         if (movie == null || movie.getGenres().isEmpty()) {

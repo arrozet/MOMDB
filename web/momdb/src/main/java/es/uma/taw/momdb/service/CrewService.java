@@ -18,9 +18,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-/*
- * @author - Artur797 (Artur Vargas)
- * @co-authors -
+/**
+ * Servicio para gestionar la lógica de negocio de las operaciones sobre los miembros del equipo (Crew).
+ * Proporciona métodos para buscar, actualizar y eliminar miembros del equipo, así como gestionar
+ * la relación entre actores, personajes y películas.
+ * 
+ * @author Artur797 (Artur Vargas)
  */
 @Slf4j
 @Service
@@ -46,10 +49,20 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
     @Autowired
     private CharacterService characterService;
 
+    /**
+     * Devuelve una lista de todos los actores.
+     * @return Lista de DTO de miembros del equipo que son actores.
+     */
     public List<CrewDTO> listarActores () {
         return this.listarActores(null);
     }
 
+    /**
+     * Devuelve una lista de actores filtrada por nombre.
+     * Si no se proporciona un nombre, devuelve todos los actores.
+     * @param name Nombre por el que filtrar.
+     * @return Lista de DTO de miembros del equipo que son actores.
+     */
     public List<CrewDTO> listarActores (String name) {
         List<Crew> crew;
 
@@ -61,11 +74,21 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
         return this.entity2DTO(crew);
     }
 
+    /**
+     * Busca un miembro del equipo por su ID.
+     * @param id El ID del miembro del equipo.
+     * @return El DTO del miembro del equipo, o null si no se encuentra.
+     */
     public CrewDTO findCrewById (int id) {
         Crew crew = this.crewRepository.findById(id).orElse(null);
         return crew != null ? crew.toDTO() : null;
     }
 
+    /**
+     * Guarda los cambios de un miembro del equipo (actor).
+     * Gestiona la lógica de cambiar la persona asociada a un personaje en una película.
+     * @param crewDTO DTO con la información a actualizar.
+     */
     public void saveCrew(CrewDTO crewDTO) {
         Crew crew = this.crewRepository.findById(crewDTO.getId()).orElse(null);
 
@@ -116,6 +139,12 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
         }
     }
 
+    /**
+     * Elimina la asociación de un personaje a un miembro del equipo (actor).
+     * Si el personaje no queda asignado a ningún otro actor, se elimina.
+     * @param crew DTO del miembro del equipo.
+     * @param characterId ID del personaje a desasignar.
+     */
     public void deleteCrewCharacter(CrewDTO crew,int characterId) {
         Crew crewEntity = crewRepository.findById(crew.getId()).get();
         Character character = characterRepository.findById(characterId).get();
@@ -128,6 +157,11 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
         crewRepository.save(crewEntity);
     }
 
+    /**
+     * Añade un nuevo personaje y lo asigna a un actor en una película.
+     * Si el actor no tiene un rol en esa película, se crea.
+     * @param crewDTO DTO con la información del nuevo personaje y su asignación.
+     */
     public void addNewCharacter(CrewDTO crewDTO) {
         Character character = characterService.createCharacter(crewDTO.getPersonajeName());
 
@@ -155,26 +189,50 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
 
     }
 
+    /**
+     * Busca las películas en las que una persona ha trabajado como actor.
+     * @param personaId ID de la persona.
+     * @return Lista de DTO de las películas.
+     */
     public List<MovieDTO> findMoviesWherePersonIsActor(int personaId) {
         List<Crew> crews = crewRepository.findActorByPerson(personaId);
         List<Movie> movies = crews.stream().map(Crew::getMovie).distinct().toList();
         return movieService.entity2DTO(movies);
     }
 
+    /**
+     * Busca las películas en las que una persona ha trabajado en roles que no son de actor.
+     * @param personaId ID de la persona.
+     * @return Lista de DTO de las películas.
+     */
     public List<MovieDTO> findMoviesWherePersonIsCrewNoActor(int personaId) {
         List<Crew> crews = crewRepository.findNonActorCrewByPerson(personaId);
         List<Movie> movies = crews.stream().map(Crew::getMovie).distinct().toList();
         return movieService.entity2DTO(movies);
     }
 
+    /**
+     * Elimina un miembro del equipo por su ID.
+     * @param crewId ID del miembro del equipo a eliminar.
+     */
     public void deleteCrew(int crewId) {
         crewRepository.deleteById(crewId);
     }
 
+    /**
+     * Obtiene todos los roles del equipo excepto el de "Actor".
+     * @return Lista de entidades de roles de equipo.
+     */
     public List<Crewrole> findAllRolesExceptActor() {
         return crewRoleRepository.findAllExceptActor();
     }
 
+    /**
+     * Guarda los cambios de un miembro del equipo (no actor).
+     * Puede crear un nuevo miembro o actualizar uno existente.
+     * @param crewDTO DTO con la información a guardar.
+     * @return `true` si se guardó correctamente, `false` si ya existe un miembro con la misma persona, película y rol.
+     */
     public boolean saveCrewEdit(CrewDTO crewDTO) {
         Crew crew = this.crewRepository.findById(crewDTO.getId()).orElse(null);
 

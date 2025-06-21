@@ -11,9 +11,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/*
- * @author - projectGeorge (Jorge Repullo)
- * @co-authors - amcgiluma (Juan Manuel Valenzuela), arrozet (Rubén Oliva)
+/**
+ * Servicio para gestionar la lógica de negocio de las operaciones sobre los usuarios.
+ * Proporciona métodos para registrar, actualizar y gestionar perfiles de usuarios.
+ * 
+ * @author - projectGeorge (Jorge Repullo), arrozet (Rubén Oliva), amcgiluma (Juan Manuel Valenzuela)
  */
 @Service
 public class UserService {
@@ -48,6 +50,11 @@ public class UserService {
         userRepository.save(user);
     }
 
+    /**
+     * Actualiza el perfil de un usuario.
+     * @param userDTO DTO con la información del perfil a actualizar.
+     * @return El DTO del usuario actualizado, o null si el usuario no se encuentra.
+     */
     public UserDTO updateUserProfile(UserDTO userDTO) {
         User user = userRepository.findById(userDTO.getUserId()).orElse(null);
         if (user == null) {
@@ -59,7 +66,12 @@ public class UserService {
         return user.toDTO();
     }
 
-
+    /**
+     * Registra un nuevo usuario en el sistema.
+     * @param userDTO DTO con la información de registro.
+     * @return El DTO del usuario recién creado.
+     * @throws IllegalArgumentException si el nombre de usuario o el email ya existen.
+     */
     public UserDTO registerUser(UserRegistrationDTO userDTO) {
         if (userRepository.findByUsername(userDTO.getUsername()) != null) {
             throw new IllegalArgumentException("El nombre de usuario ya está en uso.");
@@ -79,6 +91,11 @@ public class UserService {
         return savedUser.toDTO();
     }
 
+    /**
+     * Asigna el rol de "recomendador" a un usuario.
+     * @param userId ID del usuario a actualizar.
+     * @return El DTO del usuario actualizado, o null si el usuario o el rol no se encuentran.
+     */
     public UserDTO upgradeUserToRecommender(Integer userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) {

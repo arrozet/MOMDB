@@ -11,8 +11,11 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
- * @author - projectGeorge (Jorge Repullo)
+/**
+ * Servicio para gestionar la lógica de negocio de las operaciones sobre las listas de favoritos.
+ * Proporciona métodos para añadir, eliminar y consultar películas en las listas de favoritos de los usuarios.
+ * 
+ * @author projectGeorge (Jorge Repullo)
  */
 
 @Service
@@ -24,6 +27,11 @@ public class FavoriteService {
     @Autowired
     private MovieRepository movieRepository;
 
+    /**
+     * Añade una película a la lista de favoritos de un usuario.
+     * @param userId ID del usuario.
+     * @param movieId ID de la película.
+     */
     public void addToFavorites(Integer userId, Integer movieId) {
         User user = userRepository.findById(userId).orElse(null);
         Movie movie = movieRepository.findById(movieId).orElse(null);
@@ -34,6 +42,11 @@ public class FavoriteService {
         }
     }
 
+    /**
+     * Elimina una película de la lista de favoritos de un usuario.
+     * @param userId ID del usuario.
+     * @param movieId ID de la película.
+     */
     public void removeFromFavorites(Integer userId, Integer movieId) {
         User user = userRepository.findById(userId).orElse(null);
         Movie movie = movieRepository.findById(movieId).orElse(null);
@@ -44,6 +57,12 @@ public class FavoriteService {
         }
     }
 
+    /**
+     * Comprueba si una película está en la lista de favoritos de un usuario.
+     * @param userId ID del usuario.
+     * @param movieId ID de la película.
+     * @return `true` si la película está en favoritos, `false` en caso contrario.
+     */
     public boolean isFavorite(Integer userId, Integer movieId) {
         User user = userRepository.findUserWithFavorites(userId);
         if (user != null && user.getUser_favorite() != null) {
@@ -56,6 +75,11 @@ public class FavoriteService {
         return false;
     }
 
+    /**
+     * Obtiene la lista de películas favoritas de un usuario.
+     * @param userId ID del usuario.
+     * @return Lista de DTO de las películas favoritas.
+     */
     public List<MovieDTO> getUserFavorites(Integer userId) {
         User user = userRepository.findUserWithFavorites(userId);
         List<MovieDTO> listaFavoritos = new ArrayList<>();

@@ -8,14 +8,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/*
- * @author - arrozet (Rubén Oliva)
- * @co-authors - 
- */
-
 /**
  * Servicio para gestionar la lógica de negocio de las operaciones sobre los idiomas.
  * Proporciona métodos para buscar, actualizar y eliminar idiomas.
+ * 
+ * @author arrozet (Rubén Oliva)
  */
 @Service
 public class SpokenLanguageService {

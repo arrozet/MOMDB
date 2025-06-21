@@ -5,11 +5,6 @@ import es.uma.taw.momdb.dto.DTO;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
- * @author - Artur797 (Artur Vargas)
- * @co-authors -
- */
-
 /**
  * Servicio abstracto para la conversión entre entidades y DTOs.
  * Se usa un límite en el tipo genérico (EntityClass extends DTO<DTOClass>) para garantizar en tiempo de compilación
@@ -18,9 +13,16 @@ import java.util.List;
  *
  * @param <DTOClass> La clase del Data Transfer Object.
  * @param <EntityClass> La clase de la entidad, que debe implementar la interfaz DTO.
+ * 
+ * @author Artur797 (Artur Vargas)
  */
 public abstract class DTOService<DTOClass, EntityClass extends DTO<DTOClass>> {
 
+    /**
+     * Convierte una lista de entidades a una lista de DTOs.
+     * @param entidades Lista de entidades a convertir.
+     * @return Lista de DTOs correspondientes.
+     */
     protected List<DTOClass> entity2DTO (List<EntityClass> entidades) {
         List<DTOClass> lista = new ArrayList<>();
         for (EntityClass entidad : entidades) {
