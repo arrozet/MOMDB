@@ -2,7 +2,6 @@ package es.uma.taw.momdb.entity;
 
 import es.uma.taw.momdb.dto.CrewRoleDTO;
 import es.uma.taw.momdb.dto.DTO;
-import es.uma.taw.momdb.dto.UserRoleDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

@@ -36,6 +36,7 @@ public class RegisterController {
                                       @RequestParam("password") String password,
                                       Model model,
                                       HttpSession session) {
+        // TODO: cambiar esto a spring forms
         try {
             UserRegistrationDTO userRegistrationDTO = new UserRegistrationDTO();
             userRegistrationDTO.setUsername(username);

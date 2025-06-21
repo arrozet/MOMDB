@@ -1,9 +1,7 @@
 package es.uma.taw.momdb.service;
 
 import es.uma.taw.momdb.dao.CrewRoleRepository;
-import es.uma.taw.momdb.dto.CrewDTO;
 import es.uma.taw.momdb.dto.CrewRoleDTO;
-import es.uma.taw.momdb.entity.Crew;
 import es.uma.taw.momdb.entity.Crewrole;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

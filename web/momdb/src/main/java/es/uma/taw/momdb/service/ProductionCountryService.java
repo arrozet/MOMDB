@@ -59,7 +59,7 @@ public class ProductionCountryService {
         Productioncountry productionCountry = new Productioncountry();
         productionCountry.setIso31661(name.substring(0, 2).toUpperCase());
         if(this.findProductionCountry(productionCountry.getIso31661()) != null) {
-            throw new IllegalArgumentException("A production country with ISO code " + productionCountry.getIso31661() + " already exists");
+            throw new IllegalArgumentException("A production country with ISO code '" + productionCountry.getIso31661() + "' already exists");
         }
         productionCountry.setCountry(name);
         productionCountryRepository.save(productionCountry);

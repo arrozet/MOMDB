@@ -129,6 +129,7 @@ public class AdminService {
             }
 
             // TODO: echar al usuario si se cambia su propio rol (ya no es admin)
+            // TODO: obligar a que SIEMPRE haya al menos un admin
         }
     }
 
@@ -184,7 +185,6 @@ public class AdminService {
      * @param name El nombre de la nueva entidad.
      */
     public void createEntity(String entityType, String name) {
-        // TODO: no gestiono las ids que no son auto-incrementales pq son Strings (spoken language, production country)
         switch (entityType) {
             case "Genre" -> generoService.createGenre(name);
             case "Keyword" -> keywordService.createKeyword(name);
