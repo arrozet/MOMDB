@@ -219,13 +219,6 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
         crewRepository.deleteById(crewId);
     }
 
-    /**
-     * Obtiene todos los roles del equipo excepto el de "Actor".
-     * @return Lista de entidades de roles de equipo.
-     */
-    public List<Crewrole> findAllRolesExceptActor() {
-        return crewRoleRepository.findAllExceptActor();
-    }
 
     /**
      * Guarda los cambios de un miembro del equipo (no actor).

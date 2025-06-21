@@ -2,7 +2,6 @@ package es.uma.taw.momdb.controller;
 
 
 import es.uma.taw.momdb.dto.*;
-import es.uma.taw.momdb.entity.Crewrole;
 
 import es.uma.taw.momdb.service.*;
 import es.uma.taw.momdb.ui.Filtro;
@@ -41,6 +40,9 @@ public class EditorController extends BaseController{
 
     @Autowired
     private ReviewService reviewService;
+
+    @Autowired
+    private CrewRoleService crewRoleService;
 
     @GetMapping("/")
     public String doInit(HttpSession session, Model model) {
@@ -327,7 +329,7 @@ public class EditorController extends BaseController{
         }
         CrewDTO crew = this.crewService.findCrewById(crewId);
         List<PersonDTO> people = this.personService.findAll();
-        List<Crewrole> roles = this.crewService.findAllRolesExceptActor();
+        List<CrewRoleDTO> roles = this.crewRoleService.findAllRolesExceptActor();
         model.addAttribute("crew", crew);
         model.addAttribute("people", people);
         model.addAttribute("roles", roles);
@@ -343,9 +345,9 @@ public class EditorController extends BaseController{
         }
         boolean ok = this.crewService.saveCrewEdit(crew);
         if (!ok) {
-            model.addAttribute("error", "Ya existe un miembro del equipo con la misma persona y rol en esta película.");
+            model.addAttribute("error", "This person is already assigned to that role in this movie.");
             List<PersonDTO> people = this.personService.findAll();
-            List<Crewrole> roles = this.crewService.findAllRolesExceptActor();
+            List<CrewRoleDTO> roles = this.crewRoleService.findAllRolesExceptActor();
             model.addAttribute("people", people);
             model.addAttribute("roles", roles);
             model.addAttribute("movie", movieService.findPeliculaById(crew.getPeliculaId()));
@@ -362,7 +364,7 @@ public class EditorController extends BaseController{
         CrewDTO crew = new CrewDTO();
         crew.setPeliculaId(movieId);
         List<PersonDTO> people = this.personService.findAll();
-        List<Crewrole> roles = this.crewService.findAllRolesExceptActor();
+        List<CrewRoleDTO> roles = this.crewRoleService.findAllRolesExceptActor();
         model.addAttribute("crew", crew);
         model.addAttribute("people", people);
         model.addAttribute("roles", roles);

@@ -1,6 +1,9 @@
 package es.uma.taw.momdb.service;
 
 import es.uma.taw.momdb.dao.CrewRoleRepository;
+import es.uma.taw.momdb.dto.CrewDTO;
+import es.uma.taw.momdb.dto.CrewRoleDTO;
+import es.uma.taw.momdb.entity.Crew;
 import es.uma.taw.momdb.entity.Crewrole;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +18,7 @@ import java.util.List;
  * @author arrozet (Rubén Oliva)
  */
 @Service
-public class CrewRoleService {
+public class CrewRoleService extends DTOService<CrewRoleDTO, Crewrole>{
 
     @Autowired
     private CrewRoleRepository crewRoleRepository;
@@ -74,5 +77,14 @@ public class CrewRoleService {
      */
     public List<Crewrole> findCrewRolesByRole(String role) {
         return crewRoleRepository.findByRoleContainingIgnoreCase(role);
+    }
+
+    /**
+     * Obtiene todos los roles del equipo excepto el de "Actor".
+     * @return Lista de entidades de roles de equipo.
+     */
+    public List<CrewRoleDTO> findAllRolesExceptActor() {
+        List<Crewrole> roles = crewRoleRepository.findAllExceptActor();
+        return this.entity2DTO(roles);
     }
 } 
