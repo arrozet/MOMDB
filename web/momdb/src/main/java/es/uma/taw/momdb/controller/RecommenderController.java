@@ -1,15 +1,9 @@
 package es.uma.taw.momdb.controller;
 
 import es.uma.taw.momdb.dao.UserRepository;
-import es.uma.taw.momdb.dto.GenreDTO;
-import es.uma.taw.momdb.dto.MovieDTO;
-import es.uma.taw.momdb.dto.ReviewDTO;
-import es.uma.taw.momdb.dto.UserDTO;
+import es.uma.taw.momdb.dto.*;
 import es.uma.taw.momdb.entity.User;
-import es.uma.taw.momdb.service.FavoriteService;
-import es.uma.taw.momdb.service.GeneroService;
-import es.uma.taw.momdb.service.MovieService;
-import es.uma.taw.momdb.service.ReviewService;
+import es.uma.taw.momdb.service.*;
 import es.uma.taw.momdb.ui.Filtro;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -17,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import es.uma.taw.momdb.service.WatchlistService;
 
 import java.util.List;
 
@@ -45,6 +38,9 @@ public class RecommenderController extends BaseController{
 
     @Autowired
     protected WatchlistService watchlistService;
+
+    @Autowired
+    protected RecommendationService recommendationService;
 
     @GetMapping("/")
     public String doInit(HttpSession session, Model model) {
@@ -401,8 +397,11 @@ public class RecommenderController extends BaseController{
             return "redirect:/";
         }
 
-        // Lógica de guardado no implementada, solo redirige.
-        return "redirect:/recommender/movie?id=" + originalMovieId;
+
+        UserDTO user = (UserDTO) session.getAttribute("user");
+        recommendationService.saveRecommendation(user.getUserId(), originalMovieId, recommendedMovieId);
+
+        return "redirect:/recommender/recommend/view?id=" + originalMovieId;
     }
 
     @GetMapping("/recommend/view")
@@ -416,13 +415,16 @@ public class RecommenderController extends BaseController{
             return "redirect:/recommender/";
         }
 
-        // Obtenemos las películas recomendadas por género.
-        // El método findRecommendedMovies ya excluye la película original.
-        // Usamos un límite alto para que aparezcan "todas".
-        List<MovieDTO> recommendedMovies = this.movieService.findRecommendedMovies(originalMovieId, 100);
+
+        // Recomendaciones basadas en género
+        List<MovieDTO> genreRecommendedMovies = this.movieService.findRecommendedMovies(originalMovieId, 10);
+
+        // Recomendaciones hechas por usuarios
+        List<RecommendationDTO> userRecommendations = this.recommendationService.findUserRecommendationsForMovie(originalMovieId);
 
         model.addAttribute("originalMovie", originalMovie);
-        model.addAttribute("recommendedMovies", recommendedMovies);
+        model.addAttribute("genreRecommendedMovies", genreRecommendedMovies);
+        model.addAttribute("userRecommendations", userRecommendations);
 
         return "recommender/view_recommendations";
     }
