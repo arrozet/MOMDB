@@ -6,6 +6,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /*
  * @author - arrozet (Rubén Oliva)
  * @co-authors - 
@@ -58,5 +60,22 @@ public class KeywordService {
         Keyword keyword = new Keyword();
         keyword.setKeyword(name);
         keywordRepository.save(keyword);
+    }
+
+    /**
+     * Obtiene todas las palabras clave.
+     * @return Una lista de entidades {@link Keyword}.
+     */
+    public List<Keyword> findAllKeywords() {
+        return keywordRepository.findAll();
+    }
+
+    /**
+     * Busca palabras clave por su nombre.
+     * @param keyword El nombre a buscar.
+     * @return Una lista de entidades {@link Keyword} que contienen el nombre.
+     */
+    public List<Keyword> findKeywordsByKeyword(String keyword) {
+        return keywordRepository.findByKeywordContainingIgnoreCase(keyword);
     }
 } 

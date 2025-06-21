@@ -6,6 +6,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /*
  * @author - arrozet (Rubén Oliva)
  * @co-authors - 
@@ -58,5 +60,22 @@ public class CrewRoleService {
         Crewrole crewRole = new Crewrole();
         crewRole.setRole(name);
         crewRoleRepository.save(crewRole);
+    }
+
+    /**
+     * Obtiene todos los roles del equipo.
+     * @return Una lista de entidades {@link Crewrole}.
+     */
+    public List<Crewrole> findAllCrewRoles() {
+        return crewRoleRepository.findAll();
+    }
+
+    /**
+     * Busca roles del equipo por su nombre.
+     * @param role El nombre a buscar.
+     * @return Una lista de entidades {@link Crewrole} que contienen el nombre.
+     */
+    public List<Crewrole> findCrewRolesByRole(String role) {
+        return crewRoleRepository.findByRoleContainingIgnoreCase(role);
     }
 } 

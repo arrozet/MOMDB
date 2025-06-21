@@ -1,6 +1,5 @@
 package es.uma.taw.momdb.service;
 
-import es.uma.taw.momdb.dao.*;
 import es.uma.taw.momdb.dto.UserDTO;
 import es.uma.taw.momdb.dto.UsersFormDTO;
 import es.uma.taw.momdb.entity.EntityWithNameAndId;
@@ -15,33 +14,12 @@ import java.util.List;
 /**
  * Servicio para gestionar las operaciones de administrador.
  * Proporciona métodos para interactuar con las entidades y usuarios del sistema.
+ * @author - arrozet (Rubén Oliva)
+ * @co-authors - 
  */
+
 @Service
 public class AdminService {
-    @Autowired
-    protected UserRepository userRepository;
-
-    @Autowired
-    protected UserRoleRepository userRoleRepository;
-
-    @Autowired
-    protected CrewRoleRepository crewRoleRepository;
-
-    @Autowired
-    protected GenreRepository genreRepository;
-
-    @Autowired
-    protected KeywordRepository keywordRepository;
-
-    @Autowired
-    protected ProductionCompanyRepository productionCompanyRepository;
-
-    @Autowired
-    protected ProductionCountryRepository productionCountryRepository;
-
-    @Autowired
-    protected SpokenLanguageRepository spokenLanguageRepository;
-
     @Autowired private GeneroService generoService;
     @Autowired private KeywordService keywordService;
     @Autowired private ProductionCompanyService productionCompanyService;
@@ -49,6 +27,7 @@ public class AdminService {
     @Autowired private SpokenLanguageService spokenLanguageService;
     @Autowired private CrewRoleService crewRoleService;
     @Autowired private UserRoleService userRoleService;
+    @Autowired private UserService userService;
 
     /**
      * Obtiene una lista de entidades basada en el tipo especificado.
@@ -70,24 +49,24 @@ public class AdminService {
     public List<?> getEntities(String entityType, String filterName) {
         if (filterName == null || filterName.isBlank()) {
             return switch (entityType) {
-                case "Genre" -> genreRepository.findAll();
-                case "Keyword" -> keywordRepository.findAll();
-                case "ProductionCompany" -> productionCompanyRepository.findAll();
-                case "ProductionCountry" -> productionCountryRepository.findAll();
-                case "SpokenLanguage" -> spokenLanguageRepository.findAll();
-                case "CrewRole" -> crewRoleRepository.findAll();
-                case "UserRole" -> userRoleRepository.findAll();
+                case "Genre" -> generoService.findAllGenres();
+                case "Keyword" -> keywordService.findAllKeywords();
+                case "ProductionCompany" -> productionCompanyService.findAllProductionCompanies();
+                case "ProductionCountry" -> productionCountryService.findAllProductionCountries();
+                case "SpokenLanguage" -> spokenLanguageService.findAllSpokenLanguages();
+                case "CrewRole" -> crewRoleService.findAllCrewRoles();
+                case "UserRole" -> userRoleService.findAllUserRoles();
                 default -> new ArrayList<>();
             };
         } else {
             return switch (entityType) {
-                case "Genre" -> genreRepository.findByGenreContainingIgnoreCase(filterName);
-                case "Keyword" -> keywordRepository.findByKeywordContainingIgnoreCase(filterName);
-                case "ProductionCompany" -> productionCompanyRepository.findByCompanyContainingIgnoreCase(filterName);
-                case "ProductionCountry" -> productionCountryRepository.findByCountryContainingIgnoreCase(filterName);
-                case "SpokenLanguage" -> spokenLanguageRepository.findByLanguageContainingIgnoreCase(filterName);
-                case "CrewRole" -> crewRoleRepository.findByRoleContainingIgnoreCase(filterName);
-                case "UserRole" -> userRoleRepository.findByNameContainingIgnoreCase(filterName);
+                case "Genre" -> generoService.findGenresByGenre(filterName);
+                case "Keyword" -> keywordService.findKeywordsByKeyword(filterName);
+                case "ProductionCompany" -> productionCompanyService.findProductionCompaniesByCompany(filterName);
+                case "ProductionCountry" -> productionCountryService.findProductionCountriesByCountry(filterName);
+                case "SpokenLanguage" -> spokenLanguageService.findSpokenLanguagesByLanguage(filterName);
+                case "CrewRole" -> crewRoleService.findCrewRolesByRole(filterName);
+                case "UserRole" -> userRoleService.findUserRolesByName(filterName);
                 default -> new ArrayList<>();
             };
         }
@@ -116,7 +95,7 @@ public class AdminService {
      * @return Un {@link UsersFormDTO} que contiene la lista de todos los usuarios y sus roles.
      */
     public UsersFormDTO getUsersForm() {
-        List<User> users = this.userRepository.findAll();
+        List<User> users = this.userService.findAllUsers();
         UsersFormDTO usersFormDTO = new UsersFormDTO();
         List<UserDTO> userDTOs = new ArrayList<>();
 
@@ -139,12 +118,12 @@ public class AdminService {
      */
     public void updateUserRoles(UsersFormDTO usersForm) {
         for (UserDTO userDTO : usersForm.getUsers()) {
-            User user = this.userRepository.findById(userDTO.getUserId()).orElse(null);
-            UserRole role = this.userRoleRepository.findById(userDTO.getRoleId()).orElse(null);
+            User user = this.userService.findUserById(userDTO.getUserId());
+            UserRole role = this.userRoleService.findUserRole(userDTO.getRoleId());
 
             if (user != null && role != null) {
                 user.setRole(role);
-                this.userRepository.save(user);
+                this.userService.saveUser(user);
             }
 
             // TODO: echar al usuario si se cambia su propio rol (ya no es admin)

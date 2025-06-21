@@ -6,6 +6,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /*
  * @author - arrozet (Rubén Oliva)
  * @co-authors - 
@@ -60,5 +62,22 @@ public class ProductionCountryService {
         productionCountry.setIso31661(name);
         productionCountry.setCountry(name);
         productionCountryRepository.save(productionCountry);
+    }
+
+    /**
+     * Obtiene todos los países de producción.
+     * @return Una lista de entidades {@link Productioncountry}.
+     */
+    public List<Productioncountry> findAllProductionCountries() {
+        return productionCountryRepository.findAll();
+    }
+
+    /**
+     * Busca países de producción por su nombre.
+     * @param country El nombre a buscar.
+     * @return Una lista de entidades {@link Productioncountry} que contienen el nombre.
+     */
+    public List<Productioncountry> findProductionCountriesByCountry(String country) {
+        return productionCountryRepository.findByCountryContainingIgnoreCase(country);
     }
 } 

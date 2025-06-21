@@ -6,6 +6,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /*
  * @author - arrozet (Rubén Oliva)
  * @co-authors - 
@@ -20,6 +22,23 @@ public class SpokenLanguageService {
 
     @Autowired
     private SpokenLanguageRepository spokenLanguageRepository;
+
+    /**
+     * Obtiene todos los idiomas.
+     * @return Una lista de entidades {@link Spokenlanguage}.
+     */
+    public List<Spokenlanguage> findAllSpokenLanguages() {
+        return spokenLanguageRepository.findAll();
+    }
+
+    /**
+     * Busca idiomas por su nombre.
+     * @param language El nombre a buscar.
+     * @return Una lista de entidades {@link Spokenlanguage} que contienen el nombre.
+     */
+    public List<Spokenlanguage> findSpokenLanguagesByLanguage(String language) {
+        return spokenLanguageRepository.findByLanguageContainingIgnoreCase(language);
+    }
 
     /**
      * Busca un idioma por su ID (código ISO 639-1).

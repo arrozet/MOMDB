@@ -8,9 +8,12 @@ import es.uma.taw.momdb.entity.User;
 import es.uma.taw.momdb.entity.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 /*
  * @author - projectGeorge (Jorge Repullo)
- * @co-authors - amcgiluma (Juan Manuel Valenzuela)
+ * @co-authors - amcgiluma (Juan Manuel Valenzuela), arrozet (Rubén Oliva)
  */
 @Service
 public class UserService {
@@ -19,6 +22,31 @@ public class UserService {
 
     @Autowired
     private UserRoleRepository userRoleRepository;
+
+    /**
+     * Obtiene todos los usuarios del sistema.
+     * @return Una lista de entidades {@link User}.
+     */
+    public List<User> findAllUsers() {
+        return userRepository.findAll();
+    }
+
+    /**
+     * Busca un usuario por su ID.
+     * @param id El ID del usuario a buscar.
+     * @return El {@link User} encontrado, o null si no existe.
+     */
+    public User findUserById(int id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    /**
+     * Guarda o actualiza un usuario en la base de datos.
+     * @param user El usuario a guardar.
+     */
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
 
     public UserDTO updateUserProfile(UserDTO userDTO) {
         User user = userRepository.findById(userDTO.getUserId()).orElse(null);

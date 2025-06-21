@@ -32,6 +32,15 @@ public class UserRoleService {
     }
 
     /**
+     * Busca roles de usuario por su nombre.
+     * @param name El nombre a buscar.
+     * @return Una lista de entidades {@link UserRole} que contienen el nombre.
+     */
+    public List<UserRole> findUserRolesByName(String name) {
+        return userRoleRepository.findByNameContainingIgnoreCase(name);
+    }
+
+    /**
      * Busca un rol de usuario por su ID.
      * @param id El ID del rol a buscar.
      * @return El {@link UserRole} encontrado, o null si no existe.

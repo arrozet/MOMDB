@@ -20,6 +20,23 @@ public class GeneroService extends DTOService<GenreDTO, Genre>{
     @Autowired
     private GenreRepository genreRepository;
 
+    /**
+     * Obtiene todos los géneros.
+     * @return Una lista de entidades {@link Genre}.
+     */
+    public List<Genre> findAllGenres() {
+        return genreRepository.findAll();
+    }
+
+    /**
+     * Busca géneros por su nombre.
+     * @param genre El nombre a buscar.
+     * @return Una lista de entidades {@link Genre} que contienen el nombre.
+     */
+    public List<Genre> findGenresByGenre(String genre) {
+        return genreRepository.findByGenreContainingIgnoreCase(genre);
+    }
+
     public List<GenreDTO> listarGeneros () {
         List<Genre> entities = this.genreRepository.findAll();
         return this.entity2DTO(entities);

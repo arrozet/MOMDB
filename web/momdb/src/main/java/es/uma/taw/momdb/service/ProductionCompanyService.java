@@ -6,6 +6,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /*
  * @author - arrozet (Rubén Oliva)
  * @co-authors - 
@@ -58,5 +60,22 @@ public class ProductionCompanyService {
         Productioncompany productionCompany = new Productioncompany();
         productionCompany.setCompany(name);
         productionCompanyRepository.save(productionCompany);
+    }
+
+    /**
+     * Obtiene todas las compañías productoras.
+     * @return Una lista de entidades {@link Productioncompany}.
+     */
+    public List<Productioncompany> findAllProductionCompanies() {
+        return productionCompanyRepository.findAll();
+    }
+
+    /**
+     * Busca compañías productoras por su nombre.
+     * @param company El nombre a buscar.
+     * @return Una lista de entidades {@link Productioncompany} que contienen el nombre.
+     */
+    public List<Productioncompany> findProductionCompaniesByCompany(String company) {
+        return productionCompanyRepository.findByCompanyContainingIgnoreCase(company);
     }
 } 
