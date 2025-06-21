@@ -493,6 +493,39 @@ DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_unicode_ci;
 
 
+-- -----------------------------------------------------
+-- Table `moviedb`.`Recommendation`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `moviedb`.`Recommendation` ;
+
+CREATE TABLE IF NOT EXISTS `moviedb`.`Recommendation` (
+  `recommender_id` INT NOT NULL,
+  `main_movie_id` INT NOT NULL,
+  `recommended_movie_id` INT NOT NULL,
+  PRIMARY KEY (`recommender_id`, `main_movie_id`, `recommended_movie_id`),
+  INDEX `fk_Recommendation_User_idx` (`recommender_id` ASC) VISIBLE,
+  INDEX `fk_Recommendation_MainMovie_idx` (`main_movie_id` ASC) VISIBLE,
+  INDEX `fk_Recommendation_RecommendedMovie_idx` (`recommended_movie_id` ASC) VISIBLE,
+  CONSTRAINT `fk_Recommendation_User`
+    FOREIGN KEY (`recommender_id`)
+    REFERENCES `moviedb`.`User` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_Recommendation_MainMovie`
+    FOREIGN KEY (`main_movie_id`)
+    REFERENCES `moviedb`.`Movie` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_Recommendation_RecommendedMovie`
+    FOREIGN KEY (`recommended_movie_id`)
+    REFERENCES `moviedb`.`Movie` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_unicode_ci;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
