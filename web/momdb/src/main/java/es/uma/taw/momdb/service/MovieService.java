@@ -140,6 +140,33 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
         return moviePage.map(Movie::toDTO);
     }
 
+    public Page<MovieDTO> findPaginatedWithFilters(Filtro filtro, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Movie> moviePage;
+
+        if (filtro == null) {
+            moviePage = movieRepository.findAll(pageable);
+        } else if (filtro.getTexto() != null && !filtro.getTexto().isBlank()) {
+            moviePage = movieRepository.findByTitleContainingIgnoreCase(filtro.getTexto(), pageable);
+        } else {
+            BigDecimal popMin = null, popMax = null;
+            if (filtro.getPopularityRange() != null && !filtro.getPopularityRange().isBlank()) {
+                String[] parts = filtro.getPopularityRange().split("-");
+                popMin = new BigDecimal(parts[0]);
+                popMax = new BigDecimal(parts[1]);
+            }
+            moviePage = movieRepository.findByFiltros(
+                    filtro.getGeneroId(),
+                    filtro.getYear(),
+                    filtro.getRating(),
+                    popMin,
+                    popMax,
+                    pageable
+            );
+        }
+        return moviePage.map(Movie::toDTO);
+    }
+
     public BigDecimal getAveragePopularity() {
         return movieRepository.getAveragePopularity();
     }

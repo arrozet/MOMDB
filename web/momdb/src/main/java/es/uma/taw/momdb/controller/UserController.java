@@ -14,6 +14,7 @@ import es.uma.taw.momdb.ui.Filtro;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/user")
 public class UserController extends BaseController{
+
+    private static final int PAGE_SIZE = 12;
 
     @Autowired
     protected MovieService movieService;
@@ -48,41 +51,40 @@ public class UserController extends BaseController{
     protected WatchlistService watchlistService;
 
     @GetMapping("/")
-    public String doInit(HttpSession session, Model model) {
+    public String doInit(@RequestParam(name = "page", defaultValue = "1") int page, HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
-        } else {
-            return this.listarPeliculasConFiltro(null, model, session);
         }
+
+        Filtro filtro = (Filtro) session.getAttribute("filtro");
+        if (filtro != null && filtro.isEmpty()) {
+            filtro = null;
+            session.removeAttribute("filtro");
+        }
+
+        return this.listarPeliculasConFiltro(filtro, page, model, session);
     }
 
     @PostMapping("/filtrar")
     public String doFiltrar(HttpSession session, @ModelAttribute("filtro") Filtro filter, Model model) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
-        } else {
-            return this.listarPeliculasConFiltro(filter, model, session);
         }
+        session.setAttribute("filtro", filter);
+        return this.listarPeliculasConFiltro(filter, 1, model, session);
     }
 
-    protected String listarPeliculasConFiltro(Filtro filtro, Model model, HttpSession session) {
-        List<MovieDTO> movies;
-
+    protected String listarPeliculasConFiltro(Filtro filtro, int page, Model model, HttpSession session) {
         if (filtro == null) {
             filtro = new Filtro();
-            movies = movieService.listarPeliculas();
-        } else if (filtro.getTexto() != null && !filtro.getTexto().isBlank()) {
-            // Si hay texto, filtra solo por texto
-            movies = movieService.listarPeliculas(filtro.getTexto());
-        } else {
-            // Si no hay texto, filtra por los selects
-            movies = movieService.listarPeliculasBySelectFilters(filtro);
         }
+
+        Page<MovieDTO> moviePage = movieService.findPaginatedWithFilters(filtro, page - 1, PAGE_SIZE);
 
         // Verificar estado de favoritos/watchlist para cada película
         UserDTO user = (UserDTO) session.getAttribute("user");
         if (user != null) {
-            for (MovieDTO movie : movies) {
+            for (MovieDTO movie : moviePage.getContent()) {
                 boolean isFavorite = favoriteService.isFavorite(user.getUserId(), movie.getId());
                 movie.setFavorite(isFavorite);
                 boolean isInWatchlist = watchlistService.isInWatchlist(user.getUserId(), movie.getId());
@@ -92,8 +94,10 @@ public class UserController extends BaseController{
 
         List<GenreDTO> generos = this.generoService.listarGeneros();
         model.addAttribute("generos", generos);
-        model.addAttribute("movies", movies);
+        model.addAttribute("movies", moviePage.getContent());
         model.addAttribute("filtro", filtro);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", moviePage.getTotalPages());
         return "user/user";
     }
 

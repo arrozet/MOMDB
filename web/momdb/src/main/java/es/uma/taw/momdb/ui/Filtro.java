@@ -16,4 +16,14 @@ public class Filtro {
     Integer year;
     BigDecimal rating;
     String popularityRange;
+
+    //  método de limpieza para asegurarnos de que si un usuario quita los filtros, 
+    // la aplicación se comporte como si nunca los hubiera puesto, mostrando todos los resultados de nuevo.
+    public boolean isEmpty() {
+        return (texto == null || texto.isBlank()) &&
+                generoId == null &&
+                year == null &&
+                rating == null &&
+                (popularityRange == null || popularityRange.isBlank());
+    }
 }
