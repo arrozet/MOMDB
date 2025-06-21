@@ -17,6 +17,10 @@
 <body>
 <jsp:include page="cabecera_user.jsp" />
 
+<%
+  List<ReviewDTO> myReviews = (List<ReviewDTO>) request.getAttribute("reviews");
+%>
+
 <section class="hero is-light is-small page-banner">
   <div class="hero-body">
     <div class="container has-text-centered">
@@ -28,7 +32,6 @@
 <section class="section">
   <div class="container">
     <%
-      List<ReviewDTO> myReviews = (List<ReviewDTO>) request.getAttribute("reviews");
       if (myReviews != null && !myReviews.isEmpty()) {
         for (ReviewDTO review : myReviews) {
     %>

@@ -61,7 +61,6 @@ public class UserController extends BaseController{
             filtro = null;
             session.removeAttribute("filtro");
         }
-
         return this.listarPeliculasConFiltro(filtro, page, model, session);
     }
 
@@ -79,15 +78,15 @@ public class UserController extends BaseController{
             filtro = new Filtro();
         }
 
-        Page<MovieDTO> moviePage = movieService.findPaginatedWithFilters(filtro, page - 1, PAGE_SIZE);
+        Page<MovieDTO> moviePage = this.movieService.findPaginatedWithFilters(filtro, page - 1, PAGE_SIZE);
 
         // Verificar estado de favoritos/watchlist para cada película
         UserDTO user = (UserDTO) session.getAttribute("user");
         if (user != null) {
             for (MovieDTO movie : moviePage.getContent()) {
-                boolean isFavorite = favoriteService.isFavorite(user.getUserId(), movie.getId());
+                boolean isFavorite = this.favoriteService.isFavorite(user.getUserId(), movie.getId());
                 movie.setFavorite(isFavorite);
-                boolean isInWatchlist = watchlistService.isInWatchlist(user.getUserId(), movie.getId());
+                boolean isInWatchlist = this.watchlistService.isInWatchlist(user.getUserId(), movie.getId());
                 movie.setInWatchlist(isInWatchlist);
             }
         }
@@ -113,9 +112,8 @@ public class UserController extends BaseController{
             return "redirect:/user/";
         }
 
-        List<ReviewDTO> reviews = reviewService.getReviewsByMovieId(id);
+        List<ReviewDTO> reviews = this.reviewService.getReviewsByMovieId(id);
         model.addAttribute("reviews", reviews);
-
         model.addAttribute("generos", movie.getGeneros());
         model.addAttribute("movie", movie);
         return "user/movie_details";
@@ -128,7 +126,7 @@ public class UserController extends BaseController{
         }
 
         UserDTO user = (UserDTO) session.getAttribute("user");
-        List<MovieDTO> favoriteMovies = favoriteService.getUserFavorites(user.getUserId());
+        List<MovieDTO> favoriteMovies = this.favoriteService.getUserFavorites(user.getUserId());
 
         model.addAttribute("movies", favoriteMovies);
         return "user/favorites";
@@ -141,7 +139,7 @@ public class UserController extends BaseController{
             return "error";
         }
 
-        favoriteService.addToFavorites(user.getUserId(), movieId);
+        this.favoriteService.addToFavorites(user.getUserId(), movieId);
         return "redirect:/user/";
     }
 
@@ -152,7 +150,7 @@ public class UserController extends BaseController{
             return "error";
         }
 
-        favoriteService.removeFromFavorites(user.getUserId(), movieId);
+        this.favoriteService.removeFromFavorites(user.getUserId(), movieId);
         return "redirect:/user/favorites";
     }
 
@@ -164,7 +162,7 @@ public class UserController extends BaseController{
             return "false";
         }
 
-        boolean isFavorite = favoriteService.isFavorite(user.getUserId(), movieId);
+        boolean isFavorite = this.favoriteService.isFavorite(user.getUserId(), movieId);
         return isFavorite ? "true" : "false";
     }
 
@@ -179,9 +177,9 @@ public class UserController extends BaseController{
         UserDTO user = (UserDTO) session.getAttribute("user");
 
         if ("add".equals(action)) {
-            favoriteService.addToFavorites(user.getUserId(), movieId);
+            this.favoriteService.addToFavorites(user.getUserId(), movieId);
         } else if ("remove".equals(action)) {
-            favoriteService.removeFromFavorites(user.getUserId(), movieId);
+            this.favoriteService.removeFromFavorites(user.getUserId(), movieId);
         }
 
         // Redirigir de vuelta a la página anterior SOLO si no es /user/filtrar
@@ -231,7 +229,7 @@ public class UserController extends BaseController{
         }
 
         UserDTO user = (UserDTO) session.getAttribute("user");
-        ReviewDTO review = reviewService.findReviewByUserAndMovie(user.getUserId(), movieId);
+        ReviewDTO review = this.reviewService.findReviewByUserAndMovie(user.getUserId(), movieId);
         if (review == null) {
             review = new ReviewDTO();
             review.setMovieId(movieId);
@@ -251,8 +249,8 @@ public class UserController extends BaseController{
         }
 
         UserDTO user = (UserDTO) session.getAttribute("user");
-        reviewService.saveOrUpdateReview(user.getUserId(), reviewDTO.getMovieId(), reviewDTO);
-        reviewService.updateMovieRating(reviewDTO.getMovieId());
+        this.reviewService.saveOrUpdateReview(user.getUserId(), reviewDTO.getMovieId(), reviewDTO);
+        this.reviewService.updateMovieRating(reviewDTO.getMovieId());
 
         if ("myreviews".equals(from)) {
             return "redirect:/user/userReviews";
@@ -299,9 +297,9 @@ public class UserController extends BaseController{
         }
 
         UserDTO user = (UserDTO) session.getAttribute("user");
-        List<MovieDTO> watchlistMovies = watchlistService.getUserWatchlist(user.getUserId());
-        model.addAttribute("movies", watchlistMovies);
 
+        List<MovieDTO> watchlistMovies = this.watchlistService.getUserWatchlist(user.getUserId());
+        model.addAttribute("movies", watchlistMovies);
         return "user/watchlist";
     }
 
@@ -312,7 +310,7 @@ public class UserController extends BaseController{
             return "error";
         }
 
-        watchlistService.addToWatchlist(user.getUserId(), movieId);
+        this.watchlistService.addToWatchlist(user.getUserId(), movieId);
         return "redirect:/user/";
     }
 
@@ -322,8 +320,8 @@ public class UserController extends BaseController{
         if (user == null) {
             return "error";
         }
-        watchlistService.removeFromWatchlist(user.getUserId(), movieId);
 
+        this.watchlistService.removeFromWatchlist(user.getUserId(), movieId);
         return "redirect:/user/watchlist";
     }
 

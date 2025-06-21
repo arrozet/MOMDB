@@ -13,12 +13,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 
-<%
-    MovieDTO movie = (MovieDTO) request.getAttribute("movie");
-    List<GenreDTO> generos = (List<GenreDTO>) request.getAttribute("generos");
-    List<ReviewDTO> reviews = (List<ReviewDTO>) request.getAttribute("reviews");
-    UserDTO myUser = (UserDTO) session.getAttribute("user");
-%>
 <head>
     <title>Movie Details | MOMDB</title>
     <link rel="stylesheet" href="/css/common.css">
@@ -29,6 +23,13 @@
 <body>
 
 <jsp:include page="cabecera_user.jsp" />
+
+<%
+    MovieDTO movie = (MovieDTO) request.getAttribute("movie");
+    List<GenreDTO> generos = (List<GenreDTO>) request.getAttribute("generos");
+    List<ReviewDTO> reviews = (List<ReviewDTO>) request.getAttribute("reviews");
+    UserDTO myUser = (UserDTO) session.getAttribute("user");
+%>
 
 <section class="section">
     <div class="container movie-details-container">

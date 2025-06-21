@@ -236,3 +236,13 @@ input[type="checkbox"] + label {
     align-items: center;
     justify-content: center;
 }
+
+/* Estilos para cajitas de selección en user.jsp */
+select.user.has-background-grey {
+    border-radius: 8px;
+    color: #cccccc;
+}
+
+select.user.has-background-grey option {
+    color: #000000;
+}

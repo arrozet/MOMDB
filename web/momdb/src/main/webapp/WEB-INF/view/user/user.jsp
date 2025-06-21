@@ -20,6 +20,8 @@ Author: projectGeorge (Jorge Repullo)
 
 <%
     List<MovieDTO> movies = (List<MovieDTO>) request.getAttribute("movies");
+    Integer currentPage = (Integer) request.getAttribute("currentPage");
+    Integer totalPages = (Integer) request.getAttribute("totalPages");
 %>
 
 <section class="hero is-light is-small page-banner"> <%-- Hero es básicamente para los títulos --%>
@@ -183,11 +185,6 @@ Author: projectGeorge (Jorge Repullo)
             </div>
             <% } %>
         </div>
-
-        <%
-            Integer currentPage = (Integer) request.getAttribute("currentPage");
-            Integer totalPages = (Integer) request.getAttribute("totalPages");
-        %>
 
         <% if (totalPages != null && totalPages > 1) { %>
         <nav class="pagination is-centered mt-5" role="navigation" aria-label="pagination">
