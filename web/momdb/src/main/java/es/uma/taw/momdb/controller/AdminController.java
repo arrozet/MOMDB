@@ -1,6 +1,7 @@
 package es.uma.taw.momdb.controller;
 
 import es.uma.taw.momdb.dto.GenericEntityDTO;
+import es.uma.taw.momdb.dto.UserDTO;
 import es.uma.taw.momdb.dto.UsersFormDTO;
 import es.uma.taw.momdb.dto.DTOWithNameAndId;
 import es.uma.taw.momdb.service.AdminService;
@@ -94,7 +95,18 @@ public class AdminController extends BaseController {
             return "redirect:/";
         }
 
-        this.adminService.updateUserRoles(usersForm);
+        UserDTO currentUser = (UserDTO) session.getAttribute("user");
+
+        try {
+            boolean selfDemotion = this.adminService.updateUserRoles(usersForm, currentUser);
+
+            if (selfDemotion) {
+                session.invalidate();
+                return "redirect:/login?logout";
+            }
+        } catch (IllegalArgumentException e) {
+            session.setAttribute("rolesErrorMessage", e.getMessage());
+        }
 
         return "redirect:/admin/roles";
     }

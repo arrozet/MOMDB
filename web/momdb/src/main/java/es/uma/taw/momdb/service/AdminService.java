@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Servicio para gestionar las operaciones de administrador.
@@ -27,8 +29,6 @@ public class AdminService {
     @Autowired private CrewRoleService crewRoleService;
     @Autowired private UserRoleService userRoleService;
     @Autowired private UserService userService;
-
-    // TODO: solo se deben devolver dtos, nada de entidades. Ni aqui ni en ningun servicio (salvo que sea otra entidad que necesita otro servicio)
 
     /**
      * Obtiene una lista de entidades basada en el tipo especificado.
@@ -107,13 +107,57 @@ public class AdminService {
      * Actualiza los roles de los usuarios basándose en los datos del formulario.
      *
      * @param usersForm El DTO que contiene la información de los usuarios y sus nuevos roles.
+     * @param currentUser El DTO del administrador que realiza la operación.
+     * @return `true` si el administrador se degrada a sí mismo, `false` en caso contrario.
+     * @throws IllegalArgumentException si se intenta eliminar al último administrador.
      */
-    public void updateUserRoles(UsersFormDTO usersForm) {
+    public boolean updateUserRoles(UsersFormDTO usersForm, UserDTO currentUser) {
+        // 1. Lógica para no eliminar al último administrador
+        if (!willAdminsExistAfterChanges(usersForm)) {
+            throw new IllegalArgumentException("Cannot perform changes that would leave the system with no administrators.");
+        }
+
+        boolean selfDemotion = false;
         for (UserDTO userDTO : usersForm.getUsers()) {
             this.userService.updateUserRole(userDTO.getUserId(), userDTO.getRoleId());
-            // TODO: echar al usuario si se cambia su propio rol (ya no es admin)
-            // TODO: obligar a que SIEMPRE haya al menos un admin
+
+            // 2. Lógica para detectar si el admin se degrada a sí mismo
+            if (currentUser.getUserId() == userDTO.getUserId()) {
+                UserRoleDTO newRole = this.userRoleService.findUserRole(userDTO.getRoleId());
+                if (newRole != null && !"admin".equalsIgnoreCase(newRole.getName())) {
+                    selfDemotion = true;
+                }
+            }
         }
+
+        return selfDemotion;
+    }
+
+    /**
+     * Simula los cambios de rol y comprueba si quedará al menos un administrador.
+     * @param usersForm El DTO con los cambios de rol propuestos.
+     * @return `true` si quedará al menos un administrador, `false` en caso contrario.
+     */
+    private boolean willAdminsExistAfterChanges(UsersFormDTO usersForm) {
+        // Mapa de los cambios propuestos en el formulario
+        Map<Integer, Integer> proposedChanges = new HashMap<>();
+        for (UserDTO userChange : usersForm.getUsers()) {
+            proposedChanges.put(userChange.getUserId(), userChange.getRoleId());
+        }
+
+        // Miro todos los usuarios actuales
+        long futureAdminCount = this.userService.findAllUsers().stream()
+                .filter(user -> {
+                    // 1. ¿Cuál será el rol final de este usuario? (si no se ha cambiado, es el actual)
+                    Integer futureRoleId = proposedChanges.getOrDefault(user.getUserId(), user.getRoleId());
+
+                    // 2. ¿Ese rol es de administrador? (si no es admin, no se cuenta)
+                    UserRoleDTO futureRole = this.userRoleService.findUserRole(futureRoleId);
+                    return futureRole != null && "admin".equalsIgnoreCase(futureRole.getName());
+                })
+                .count(); // 3. Cuenta cuántos serán admin
+
+        return futureAdminCount >= 1;
     }
 
     /**

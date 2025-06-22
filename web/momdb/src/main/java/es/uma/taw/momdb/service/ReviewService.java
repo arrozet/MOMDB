@@ -5,7 +5,6 @@ import es.uma.taw.momdb.dao.ReviewRepository;
 import es.uma.taw.momdb.dao.UserRepository;
 import es.uma.taw.momdb.dto.MovieDTO;
 import es.uma.taw.momdb.dto.ReviewDTO;
-import es.uma.taw.momdb.entity.Movie;
 import es.uma.taw.momdb.entity.Review;
 import es.uma.taw.momdb.entity.ReviewId;
 

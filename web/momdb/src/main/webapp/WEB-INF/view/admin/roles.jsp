@@ -29,6 +29,23 @@
 <section class="section">
     <div class="container">
         <h1 class="title admin-title">Role Management</h1>
+
+        <%-- Mostrar mensaje de error si existe --%>
+        <% 
+            if (session.getAttribute("rolesErrorMessage") != null) { 
+        %>
+
+        <div class="notification is-danger">
+            <button class="delete" onclick="this.parentElement.remove();"></button>
+            <strong>Error:</strong> <%= session.getAttribute("rolesErrorMessage") %>
+        </div>
+        
+        <%-- Limpiar el atributo de error de la sesión --%>
+        <% 
+            session.removeAttribute("rolesErrorMessage");
+            } 
+        %>
+
         <div class="box">
             <form:form method="post" action="/admin/changeUser" modelAttribute="usersForm">
                 <table class="table is-striped is-fullwidth">

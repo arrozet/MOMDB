@@ -3,8 +3,6 @@ package es.uma.taw.momdb.controller;
 import es.uma.taw.momdb.dto.MovieDTO;
 import es.uma.taw.momdb.dto.MovieComparisonDTO;
 import es.uma.taw.momdb.dto.UserDTO;
-import es.uma.taw.momdb.dto.CharacterDTO;
-import es.uma.taw.momdb.dto.CrewDTO;
 import es.uma.taw.momdb.dto.PersonDTO;
 import es.uma.taw.momdb.service.MovieService;
 import jakarta.servlet.http.HttpSession;
