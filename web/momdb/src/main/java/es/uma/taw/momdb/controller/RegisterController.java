@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /*
  * @author - amcgiluma (Juan Manuel Valenzuela)
@@ -26,23 +26,16 @@ public class RegisterController {
     private LoginService loginService;
 
     @GetMapping("/register")
-    public String showRegisterForm() {
+    public String showRegisterForm(Model model) {
+        model.addAttribute("user", new UserRegistrationDTO());
         return "register";
     }
 
     @PostMapping("/register")
-    public String processRegistration(@RequestParam("username") String username,
-                                      @RequestParam("email") String email,
-                                      @RequestParam("password") String password,
+    public String processRegistration(@ModelAttribute("user") UserRegistrationDTO userRegistrationDTO,
                                       Model model,
                                       HttpSession session) {
-        // TODO: cambiar esto a spring forms
         try {
-            UserRegistrationDTO userRegistrationDTO = new UserRegistrationDTO();
-            userRegistrationDTO.setUsername(username);
-            userRegistrationDTO.setEmail(email);
-            userRegistrationDTO.setPassword(password);
-
             // 1. Registra el usuario y obtén su DTO
             UserDTO newUser = userService.registerUser(userRegistrationDTO);
 
@@ -65,5 +58,5 @@ public class RegisterController {
             return "register";
         }
     }
-    
+
 }

@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
     <title>Registration</title>
@@ -26,11 +27,11 @@
         </div>
     </c:if>
 
-    <form method="post" action="/register">
+    <form:form method="post" action="/register" modelAttribute="user">
         <div class="field">
             <label for="username" class="label">Username</label>
             <div class="control has-icons-left">
-                <input type="text" class="input is-info" id="username" name="username" required>
+                <form:input type="text" class="input is-info" id="username" path="username" required="required"/>
                 <span class="icon is-small is-left">
                     <i class="fas fa-user"></i>
                 </span>
@@ -39,7 +40,7 @@
         <div class="field">
             <label for="email" class="label">Email</label>
             <div class="control has-icons-left">
-                <input type="email" class="input is-info" id="email" name="email" required>
+                <form:input type="email" class="input is-info" id="email" path="email" required="required"/>
                 <span class="icon is-small is-left">
                     <i class="fas fa-envelope"></i>
                 </span>
@@ -48,7 +49,7 @@
         <div class="field">
             <label for="password" class="label">Password</label>
             <div class="control has-icons-left">
-                <input type="password" class="input is-info" id="password" name="password" required>
+                <form:password class="input is-info" id="password" path="password" required="required"/>
                 <span class="icon is-small is-left">
                     <i class="fas fa-lock"></i>
                 </span>
@@ -60,7 +61,7 @@
                 <a href="/login" class="button register">Back to Login</a>
             </div>
         </div>
-    </form>
+    </form:form>
 </div>
 
 </body>
