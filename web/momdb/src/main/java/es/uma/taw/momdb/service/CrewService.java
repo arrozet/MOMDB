@@ -92,6 +92,10 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
     public void saveCrew(CrewDTO crewDTO) {
         Crew crew = this.crewRepository.findById(crewDTO.getId()).orElse(null);
 
+        Character personaje = characterRepository.findById(crewDTO.getPersonajeId()).orElse(null);
+
+        characterService.updateName(personaje, crewDTO.getPersonajeName());
+
         //Actualizar la crew
         if(crew.getPerson().getId()!=crewDTO.getPersonaId()){
             Person nuevaPersona = this.personRepository.findById(crewDTO.getPersonaId()).orElse(null);
@@ -99,9 +103,6 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
             List<Crew> crewsNuevoActor = this.crewRepository.findActorByPersonAndMovie(nuevaPersona.getId(), crew.getMovie().getId());
             Movie movie = movieRepository.findById(crew.getMovie().getId()).orElse(null);
 
-            Character personaje = characterRepository.findById(crewDTO.getPersonajeId()).orElse(null);
-
-            characterService.updateName(personaje, crewDTO.getPersonajeName());
 
             if(crew.getCharacters().size()==1){
                 if(crewsNuevoActor.isEmpty()){ //Cambio a la persona (es lo comun)
@@ -186,7 +187,6 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
         }
         crewRepository.save(nuevaCrew);
         characterService.addCrew(character, nuevaCrew);
-
     }
 
     /**
