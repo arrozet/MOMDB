@@ -50,7 +50,17 @@
                     <form:button class="button is-info">Submit</form:button>
                 </div>
                 <div class="control">
-                    <a href="/user/movie?id=${movieId}" class="button is-light">Cancel</a>
+                    <%
+                        String from = request.getParameter("from");
+                        String cancelUrl;
+
+                        if ("myreviews".equals(from)) {
+                            cancelUrl = "/user/userReviews";
+                        } else {
+                            cancelUrl = "/user/movie?id=" + request.getAttribute("movieId");
+                        }
+                    %>
+                    <a href="<%= cancelUrl %>" class="button is-light">Cancel</a>
                 </div>
             </div>
         </form:form>

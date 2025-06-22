@@ -10,9 +10,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Profile | MOMDB</title>
+    <title>My profile | MOMDB</title>
     <link rel="stylesheet" href="/css/common.css">
-    <link rel="stylesheet" href="/css/user.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
@@ -29,6 +29,28 @@
 
 <section class="section">
     <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-half">
+                <div class="box" style="background-color: #4a4a4a;">
+                    <div class="media">
+                        <div class="media-left">
+                            <figure class="image is-96x96">
+                                <img class="is-rounded" src="${userDTO.profilePic}" alt="User profile picture">
+                            </figure>
+                        </div>
+                        <div class="media-content" style="display: flex; flex-direction: column; justify-content: center;">
+                            <p class="title is-4 has-text-white">
+                                ${userDTO.username}
+                                <span class="icon has-text-warning">
+                                    <i class="fas fa-medal"></i>
+                                </span>
+                            </p>
+                            <p class="subtitle is-6 has-text-grey-lighter">${userDTO.rolename}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <form:form method="POST" action="/recommender/editProfile" modelAttribute="userDTO">
             <form:hidden path="userId"/>
             <div class="field">

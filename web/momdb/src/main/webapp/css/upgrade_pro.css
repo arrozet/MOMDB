@@ -1,17 +1,49 @@
 /* Estilos para la página de upgrade_pro.jsp */
 .upgrade-hero {
-    background-color: #363636; /* Gris oscuro */
+    background-color: #5B3A7B;
 }
 
-.upgrade-hero .title {
+.upgrade-hero .title, .upgrade-hero .subtitle {
     color: #ffffff;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
 }
 
 .advantages-box {
-    background-color: #363636; /* Gris oscuro */
+    background-color: #363636;
     color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    padding: 2.5rem; /* Aumentar padding */
 }
 
 .advantages-box .title {
     color: #ffffff;
+    margin-bottom: 2.5rem;
+}
+
+.advantages-box .content strong {
+    color: #48c774; /* Verde de bulma is-success */
+}
+
+.advantages-box .content .column {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.advantages-box .icon.is-large i {
+    font-size: 3rem; /* Iconos más grandes */
+    color: #48c774; /* Verde de bulma is-success */
+    margin-bottom: 1rem;
+}
+
+.upgrade-button {
+    font-weight: bold;
+    margin-top: 1.5rem;
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    border: none;
+}
+
+.upgrade-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(72, 199, 116, 0.4);
 }

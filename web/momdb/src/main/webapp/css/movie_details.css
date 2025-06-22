@@ -23,7 +23,7 @@ body {
 }
 
 .movie-details-box {
-    background-color: #1c1226; /* Un gris oscuro para los recuadros, más sutil */
+    background-color: #1c1226;
     padding: 2rem;
     border-radius: 8px;
     margin-bottom: 2rem;
@@ -53,7 +53,7 @@ span.tag.movie-info-tag {
 }
 
 .review-box {
-    background: rgba(30, 30, 30, 0.92);
+    background: #1c1226;
     color: #d3d3d3;
     border-radius: 20px;
     margin-bottom: 2rem;

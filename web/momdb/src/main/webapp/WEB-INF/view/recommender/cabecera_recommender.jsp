@@ -52,7 +52,10 @@ Author: amcgiluma (Juan Manuel Valenzuela)
                     <span class="icon">
                         <i class="fas fa-user"></i>
                     </span>
-                    <span><%= myUser.getUsername() %></span>
+                        <span><%= myUser.getUsername() %></span>
+                    <span class="icon pl-1 has-text-warning">
+                        <i class="fas fa-medal"></i>
+                    </span>
                 </a>
 
                 <div class="navbar-dropdown is-right">
