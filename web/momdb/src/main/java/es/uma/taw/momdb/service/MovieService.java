@@ -5,6 +5,7 @@ import es.uma.taw.momdb.dao.GenreRepository;
 import es.uma.taw.momdb.dao.MovieRepository;
 import es.uma.taw.momdb.dao.StatusRepository;
 import es.uma.taw.momdb.dto.MovieDTO;
+import es.uma.taw.momdb.dto.PersonDTO;
 import es.uma.taw.momdb.entity.Crew;
 import es.uma.taw.momdb.entity.Genre;
 import es.uma.taw.momdb.entity.Movie;
@@ -18,10 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -344,5 +342,54 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
         List<Movie> recommendedMovies = movieRepository.findByExactGenresOrderByRating(movieId, genreIds, genreCount, pageable);
 
         return this.entity2DTO(recommendedMovies);
+    }
+//TODO: optimizar pasando cosas a repository
+    public Map<String, List<PersonDTO>> getCommonCrew(Integer movieId1, Integer movieId2) {
+        List<Integer> commonPersonIds = movieRepository.findCommonPersonIds(movieId1, movieId2);
+
+        List<es.uma.taw.momdb.dto.PersonDTO> sharedCast = new ArrayList<>();
+        List<es.uma.taw.momdb.dto.PersonDTO> sharedCrew = new ArrayList<>();
+
+        if (commonPersonIds == null || commonPersonIds.isEmpty()) {
+            return java.util.Map.of("sharedCast", sharedCast, "sharedCrew", sharedCrew);
+        }
+
+        MovieDTO movie1 = this.findPeliculaById(movieId1);
+        MovieDTO movie2 = this.findPeliculaById(movieId2);
+
+        Map<Integer, List<es.uma.taw.momdb.dto.CrewDTO>> crewMap1 = movie1.getEquipo().stream()
+                .collect(Collectors.groupingBy(es.uma.taw.momdb.dto.CrewDTO::getPersonaId));
+        Map<Integer, List<es.uma.taw.momdb.dto.CrewDTO>> crewMap2 = movie2.getEquipo().stream()
+                .collect(Collectors.groupingBy(es.uma.taw.momdb.dto.CrewDTO::getPersonaId));
+
+        for (Integer personId : commonPersonIds) {
+            List<es.uma.taw.momdb.dto.CrewDTO> roles1 = crewMap1.get(personId);
+            List<es.uma.taw.momdb.dto.CrewDTO> roles2 = crewMap2.get(personId);
+
+            if (roles1 == null || roles1.isEmpty() || roles2 == null || roles2.isEmpty()) continue;
+
+            boolean isActor1 = roles1.stream().anyMatch(c -> c.getPersonajes() != null && !c.getPersonajes().isEmpty());
+            boolean isActor2 = roles2.stream().anyMatch(c -> c.getPersonajes() != null && !c.getPersonajes().isEmpty());
+
+            boolean isNonActingCrew1 = roles1.stream().anyMatch(c -> c.getPersonajes() == null || c.getPersonajes().isEmpty());
+            boolean isNonActingCrew2 = roles2.stream().anyMatch(c -> c.getPersonajes() == null || c.getPersonajes().isEmpty());
+
+            es.uma.taw.momdb.dto.PersonDTO person = new es.uma.taw.momdb.dto.PersonDTO();
+            person.setId(personId);
+            person.setName(roles1.get(0).getPersona());
+
+            if (isActor1 && isActor2) {
+                sharedCast.add(person);
+            }
+
+            if(isNonActingCrew1 && isNonActingCrew2) {
+                sharedCrew.add(person);
+            }
+        }
+
+        Map<String, List<es.uma.taw.momdb.dto.PersonDTO>> result = new java.util.HashMap<>();
+        result.put("sharedCast", sharedCast);
+        result.put("sharedCrew", sharedCrew);
+        return result;
     }
 }

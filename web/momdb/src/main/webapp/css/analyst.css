@@ -137,6 +137,22 @@ table a:hover {
     margin-bottom: 0.2rem;
 }
 
+.analyst-movie-info p {
+    margin-bottom: 0.5em;
+}
+
+.movie-card.is-selected {
+    border: 3px solid #3298dc;
+    box-shadow: 0 0 15px rgba(50, 152, 220, 0.7);
+    transform: scale(1.05);
+    transition: all 0.2s ease-in-out;
+}
+
+.movie-card {
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
 .movie-poster-placeholder-icon {
     padding: 40px 0;
 }

@@ -91,4 +91,7 @@ public interface MovieRepository extends JpaRepository<Movie, Integer> {
 
     @Query("SELECT m FROM Movie m JOIN m.genres g WHERE m.id <> :movieId AND g.id IN :genreIds GROUP BY m HAVING COUNT(g.id) = :genreCount ORDER BY m.voteAverage DESC")
     List<Movie> findByExactGenresOrderByRating(@Param("movieId") Integer movieId, @Param("genreIds") List<Integer> genreIds, @Param("genreCount") long genreCount, Pageable pageable);
+
+    @Query("SELECT DISTINCT c1.person.id FROM Crew c1 WHERE c1.movie.id = :movieId1 AND c1.person.id IN (SELECT c2.person.id FROM Crew c2 WHERE c2.movie.id = :movieId2)")
+    List<Integer> findCommonPersonIds(@Param("movieId1") Integer movieId1, @Param("movieId2") Integer movieId2);
 }

@@ -3,6 +3,9 @@ package es.uma.taw.momdb.controller;
 import es.uma.taw.momdb.dto.MovieDTO;
 import es.uma.taw.momdb.dto.MovieComparisonDTO;
 import es.uma.taw.momdb.dto.UserDTO;
+import es.uma.taw.momdb.dto.CharacterDTO;
+import es.uma.taw.momdb.dto.CrewDTO;
+import es.uma.taw.momdb.dto.PersonDTO;
 import es.uma.taw.momdb.service.MovieService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /*
  * @author - edugbau (Eduardo González)
@@ -147,6 +151,66 @@ public class AnalystController extends BaseController {
         model.addAttribute("comparisons", comparisons);
 
         return "analyst/movie_comparison";
+    }
+
+    @GetMapping("/compare")
+    public String showComparePage(@RequestParam(name = "page", defaultValue = "1") int page,
+                                  @RequestParam(name = "movieId1", required = false) Integer movieId1,
+                                  @RequestParam(name = "movieId2", required = false) Integer movieId2,
+                                  HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        // Spring Data JPA numera las páginas desde 0, por eso se resta 1.
+        Page<MovieDTO> moviePage = movieService.findPaginated(page - 1, PAGE_SIZE);
+
+        model.addAttribute("movies", moviePage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", moviePage.getTotalPages());
+
+        if (movieId1 != null) {
+            model.addAttribute("movie1", movieService.findPeliculaById(movieId1));
+        }
+
+        if (movieId2 != null) {
+            model.addAttribute("movie2", movieService.findPeliculaById(movieId2));
+        }
+
+        if (movieId1 != null && movieId2 != null) {
+            Map<String, List<PersonDTO>> commonCrew = movieService.getCommonCrew(movieId1, movieId2);
+            model.addAttribute("sharedCast", commonCrew.get("sharedCast"));
+            model.addAttribute("sharedCrew", commonCrew.get("sharedCrew"));
+        }
+
+        return "analyst/compare";
+    }
+
+    @PostMapping("/compare")
+    public String doCompare(@RequestParam("movieId1") Integer movieId1,
+                            @RequestParam("movieId2") Integer movieId2,
+                            @RequestParam(name = "page", defaultValue = "1") int page,
+                            HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        MovieDTO movie1 = movieService.findPeliculaById(movieId1);
+        MovieDTO movie2 = movieService.findPeliculaById(movieId2);
+
+        model.addAttribute("movie1", movie1);
+        model.addAttribute("movie2", movie2);
+
+        Map<String, List<PersonDTO>> commonCrew = movieService.getCommonCrew(movieId1, movieId2);
+
+        model.addAttribute("sharedCast", commonCrew.get("sharedCast"));
+        model.addAttribute("sharedCrew", commonCrew.get("sharedCrew"));
+
+        Page<MovieDTO> moviePage = movieService.findPaginated(page - 1, PAGE_SIZE);
+
+        model.addAttribute("movies", moviePage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", moviePage.getTotalPages());
+
+        return "analyst/compare";
     }
 
     /**
