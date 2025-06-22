@@ -31,7 +31,7 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController extends BaseController{
 
-    private static final int PAGE_SIZE = 12;
+    private static final int PAGE_SIZE = 48;
 
     @Autowired
     protected MovieService movieService;
