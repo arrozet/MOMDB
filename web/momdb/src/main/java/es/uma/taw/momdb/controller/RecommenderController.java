@@ -463,4 +463,5 @@ public class RecommenderController extends BaseController{
     private boolean checkAuth(HttpSession session, Model model) {
         return super.checkAuth(session, model, "recomendador");
     }
+    
 }
