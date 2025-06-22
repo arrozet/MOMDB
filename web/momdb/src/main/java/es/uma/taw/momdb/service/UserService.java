@@ -18,7 +18,7 @@ import java.util.List;
  * @author - projectGeorge (Jorge Repullo), arrozet (Rubén Oliva), amcgiluma (Juan Manuel Valenzuela)
  */
 @Service
-public class UserService {
+public class UserService extends DTOService<UserDTO, User> {
     @Autowired
     private UserRepository userRepository;
 
@@ -27,19 +27,20 @@ public class UserService {
 
     /**
      * Obtiene todos los usuarios del sistema.
-     * @return Una lista de entidades {@link User}.
+     * @return Una lista de DTOs {@link UserDTO}.
      */
-    public List<User> findAllUsers() {
-        return userRepository.findAll();
+    public List<UserDTO> findAllUsers() {
+        return entity2DTO(userRepository.findAll());
     }
 
     /**
      * Busca un usuario por su ID.
      * @param id El ID del usuario a buscar.
-     * @return El {@link User} encontrado, o null si no existe.
+     * @return El {@link UserDTO} encontrado, o null si no existe.
      */
-    public User findUserById(int id) {
-        return userRepository.findById(id).orElse(null);
+    public UserDTO findUserById(int id) {
+        User user = userRepository.findById(id).orElse(null);
+        return user != null ? user.toDTO() : null;
     }
 
     /**
@@ -111,4 +112,13 @@ public class UserService {
         return user.toDTO();
     }
 
+    public void updateUserRole(int userId, int roleId) {
+        User user = userRepository.findById(userId).orElse(null);
+        UserRole role = userRoleRepository.findById(roleId).orElse(null);
+
+        if (user != null && role != null) {
+            user.setRole(role);
+            userRepository.save(user);
+        }
+    }
 }

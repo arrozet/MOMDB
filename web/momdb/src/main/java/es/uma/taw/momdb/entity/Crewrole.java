@@ -14,7 +14,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "crewrole")
-public class Crewrole implements EntityWithNameAndId<Integer>, Serializable, DTO<CrewRoleDTO> {
+public class Crewrole implements Serializable, DTO<CrewRoleDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -25,11 +25,6 @@ public class Crewrole implements EntityWithNameAndId<Integer>, Serializable, DTO
 
     @OneToMany(mappedBy = "crewRole")
     private Set<Crew> crews = new LinkedHashSet<>();
-
-    @Override
-    public String getName() {
-        return role;
-    }
 
     public CrewRoleDTO toDTO () {
         CrewRoleDTO role = new CrewRoleDTO();

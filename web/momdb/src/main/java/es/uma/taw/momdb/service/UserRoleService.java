@@ -1,6 +1,7 @@
 package es.uma.taw.momdb.service;
 
 import es.uma.taw.momdb.dao.UserRoleRepository;
+import es.uma.taw.momdb.dto.UserRoleDTO;
 import es.uma.taw.momdb.entity.UserRole;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,35 +16,36 @@ import java.util.List;
  * @author arrozet (Rubén Oliva)
  */
 @Service
-public class UserRoleService {
+public class UserRoleService extends DTOService<UserRoleDTO, UserRole> {
 
     @Autowired
     private UserRoleRepository userRoleRepository;
 
     /**
      * Obtiene todos los roles de usuario disponibles en el sistema.
-     * @return Una lista de entidades {@link UserRole}.
+     * @return Una lista de DTOs {@link UserRoleDTO}.
      */
-    public List<UserRole> findAllUserRoles() {
-        return userRoleRepository.findAll();
+    public List<UserRoleDTO> findAllUserRoles() {
+        return entity2DTO(userRoleRepository.findAll());
     }
 
     /**
      * Busca roles de usuario por su nombre.
      * @param name El nombre a buscar.
-     * @return Una lista de entidades {@link UserRole} que contienen el nombre.
+     * @return Una lista de DTOs {@link UserRoleDTO} que contienen el nombre.
      */
-    public List<UserRole> findUserRolesByName(String name) {
-        return userRoleRepository.findByNameContainingIgnoreCase(name);
+    public List<UserRoleDTO> findUserRolesByName(String name) {
+        return entity2DTO(userRoleRepository.findByNameContainingIgnoreCase(name));
     }
 
     /**
      * Busca un rol de usuario por su ID.
      * @param id El ID del rol a buscar.
-     * @return El {@link UserRole} encontrado, o null si no existe.
+     * @return El {@link UserRoleDTO} encontrado, o null si no existe.
      */
-    public UserRole findUserRole(int id) {
-        return userRoleRepository.findById(id).orElse(null);
+    public UserRoleDTO findUserRole(int id) {
+        UserRole userRole = userRoleRepository.findById(id).orElse(null);
+        return userRole != null ? userRole.toDTO() : null;
     }
 
     /**

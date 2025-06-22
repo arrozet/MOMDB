@@ -2,7 +2,7 @@ package es.uma.taw.momdb.controller;
 
 import es.uma.taw.momdb.dto.GenericEntityDTO;
 import es.uma.taw.momdb.dto.UsersFormDTO;
-import es.uma.taw.momdb.entity.EntityWithNameAndId;
+import es.uma.taw.momdb.dto.DTOWithNameAndId;
 import es.uma.taw.momdb.service.AdminService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,7 +134,7 @@ public class AdminController extends BaseController {
             return "redirect:/";
         }
 
-        EntityWithNameAndId<?> entity = adminService.findEntity(entityType, id);
+        DTOWithNameAndId<?> entity = adminService.findEntity(entityType, id);
         if (entity == null) {
             return "redirect:/admin/entities";
         }

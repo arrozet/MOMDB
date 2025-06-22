@@ -8,7 +8,11 @@ import lombok.Data;
  */
 
 @Data
-public class GenreDTO {
+public class GenreDTO implements DTOWithNameAndId<Integer> {
     private Integer id;
     private String genero;
+
+    public String getName() {
+        return genero;
+    }
 }

@@ -24,10 +24,11 @@ public class CrewRoleService extends DTOService<CrewRoleDTO, Crewrole>{
     /**
      * Busca un CrewRole por su ID.
      * @param id El ID del rol a buscar.
-     * @return El {@link Crewrole} encontrado, o null si no existe.
+     * @return El {@link CrewRoleDTO} encontrado, o null si no existe.
      */
-    public Crewrole findCrewRole(int id) {
-        return crewRoleRepository.findById(id).orElse(null);
+    public CrewRoleDTO findCrewRole(int id) {
+        Crewrole crewRole = crewRoleRepository.findById(id).orElse(null);
+        return crewRole != null ? crewRole.toDTO() : null;
     }
 
     /**
@@ -62,19 +63,19 @@ public class CrewRoleService extends DTOService<CrewRoleDTO, Crewrole>{
 
     /**
      * Obtiene todos los roles del equipo.
-     * @return Una lista de entidades {@link Crewrole}.
+     * @return Una lista de DTOs {@link CrewRoleDTO}.
      */
-    public List<Crewrole> findAllCrewRoles() {
-        return crewRoleRepository.findAll();
+    public List<CrewRoleDTO> findAllCrewRoles() {
+        return entity2DTO(crewRoleRepository.findAll());
     }
 
     /**
      * Busca roles del equipo por su nombre.
      * @param role El nombre a buscar.
-     * @return Una lista de entidades {@link Crewrole} que contienen el nombre.
+     * @return Una lista de DTOs {@link CrewRoleDTO} que contienen el nombre.
      */
-    public List<Crewrole> findCrewRolesByRole(String role) {
-        return crewRoleRepository.findByRoleContainingIgnoreCase(role);
+    public List<CrewRoleDTO> findCrewRolesByRole(String role) {
+        return entity2DTO(crewRoleRepository.findByRoleContainingIgnoreCase(role));
     }
 
     /**

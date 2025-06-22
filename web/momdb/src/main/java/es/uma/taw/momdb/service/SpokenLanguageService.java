@@ -1,6 +1,7 @@
 package es.uma.taw.momdb.service;
 
 import es.uma.taw.momdb.dao.SpokenLanguageRepository;
+import es.uma.taw.momdb.dto.SpokenLanguageDTO;
 import es.uma.taw.momdb.entity.Spokenlanguage;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,35 +16,36 @@ import java.util.List;
  * @author arrozet (Rubén Oliva)
  */
 @Service
-public class SpokenLanguageService {
+public class SpokenLanguageService extends DTOService<SpokenLanguageDTO, Spokenlanguage> {
 
     @Autowired
     private SpokenLanguageRepository spokenLanguageRepository;
 
     /**
      * Obtiene todos los idiomas.
-     * @return Una lista de entidades {@link Spokenlanguage}.
+     * @return Una lista de DTOs {@link SpokenLanguageDTO}.
      */
-    public List<Spokenlanguage> findAllSpokenLanguages() {
-        return spokenLanguageRepository.findAll();
+    public List<SpokenLanguageDTO> findAllSpokenLanguages() {
+        return entity2DTO(spokenLanguageRepository.findAll());
     }
 
     /**
      * Busca idiomas por su nombre.
      * @param language El nombre a buscar.
-     * @return Una lista de entidades {@link Spokenlanguage} que contienen el nombre.
+     * @return Una lista de DTOs {@link SpokenLanguageDTO} que contienen el nombre.
      */
-    public List<Spokenlanguage> findSpokenLanguagesByLanguage(String language) {
-        return spokenLanguageRepository.findByLanguageContainingIgnoreCase(language);
+    public List<SpokenLanguageDTO> findSpokenLanguagesByLanguage(String language) {
+        return entity2DTO(spokenLanguageRepository.findByLanguageContainingIgnoreCase(language));
     }
 
     /**
      * Busca un idioma por su ID (código ISO 639-1).
      * @param id El ID del idioma a buscar.
-     * @return El {@link Spokenlanguage} encontrado, o null si no existe.
+     * @return El {@link SpokenLanguageDTO} encontrado, o null si no existe.
      */
-    public Spokenlanguage findSpokenLanguage(String id) {
-        return spokenLanguageRepository.findById(id).orElse(null);
+    public SpokenLanguageDTO findSpokenLanguage(String id) {
+        Spokenlanguage spokenLanguage = spokenLanguageRepository.findById(id).orElse(null);
+        return spokenLanguage != null ? spokenLanguage.toDTO() : null;
     }
 
     /**

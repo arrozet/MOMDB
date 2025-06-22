@@ -1,9 +1,12 @@
 package es.uma.taw.momdb.entity;
 
+import es.uma.taw.momdb.dto.DTO;
+import es.uma.taw.momdb.dto.KeywordDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -11,7 +14,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "keywords")
-public class Keyword implements EntityWithNameAndId<Integer> {
+public class Keyword implements Serializable, DTO<KeywordDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -26,9 +29,10 @@ public class Keyword implements EntityWithNameAndId<Integer> {
             inverseJoinColumns = @JoinColumn(name = "movie_id"))
     private Set<Movie> movies = new LinkedHashSet<>();
 
-    @Override
-    public String getName() {
-        return keyword;
+    public KeywordDTO toDTO() {
+        KeywordDTO dto = new KeywordDTO();
+        dto.setId(this.id);
+        dto.setKeyword(this.keyword);
+        return dto;
     }
-
 }

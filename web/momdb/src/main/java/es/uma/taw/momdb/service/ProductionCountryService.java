@@ -1,6 +1,7 @@
 package es.uma.taw.momdb.service;
 
 import es.uma.taw.momdb.dao.ProductionCountryRepository;
+import es.uma.taw.momdb.dto.ProductionCountryDTO;
 import es.uma.taw.momdb.entity.Productioncountry;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import java.util.List;
  * @author arrozet (Rubén Oliva)
  */
 @Service
-public class ProductionCountryService {
+public class ProductionCountryService extends DTOService<ProductionCountryDTO, Productioncountry> {
 
     @Autowired
     private ProductionCountryRepository productionCountryRepository;
@@ -23,10 +24,11 @@ public class ProductionCountryService {
     /**
      * Busca un país de producción por su ID (código ISO 3166-1).
      * @param id El ID del país a buscar.
-     * @return El {@link Productioncountry} encontrado, o null si no existe.
+     * @return El {@link ProductionCountryDTO} encontrado, o null si no existe.
      */
-    public Productioncountry findProductionCountry(String id) {
-        return productionCountryRepository.findById(id).orElse(null);
+    public ProductionCountryDTO findProductionCountry(String id) {
+        Productioncountry productionCountry = productionCountryRepository.findById(id).orElse(null);
+        return productionCountry != null ? productionCountry.toDTO() : null;
     }
 
     /**
@@ -67,18 +69,18 @@ public class ProductionCountryService {
 
     /**
      * Obtiene todos los países de producción.
-     * @return Una lista de entidades {@link Productioncountry}.
+     * @return Una lista de DTOs {@link ProductionCountryDTO}.
      */
-    public List<Productioncountry> findAllProductionCountries() {
-        return productionCountryRepository.findAll();
+    public List<ProductionCountryDTO> findAllProductionCountries() {
+        return entity2DTO(productionCountryRepository.findAll());
     }
 
     /**
      * Busca países de producción por su nombre.
      * @param country El nombre a buscar.
-     * @return Una lista de entidades {@link Productioncountry} que contienen el nombre.
+     * @return Una lista de DTOs {@link ProductionCountryDTO} que contienen el nombre.
      */
-    public List<Productioncountry> findProductionCountriesByCountry(String country) {
-        return productionCountryRepository.findByCountryContainingIgnoreCase(country);
+    public List<ProductionCountryDTO> findProductionCountriesByCountry(String country) {
+        return entity2DTO(productionCountryRepository.findByCountryContainingIgnoreCase(country));
     }
 } 

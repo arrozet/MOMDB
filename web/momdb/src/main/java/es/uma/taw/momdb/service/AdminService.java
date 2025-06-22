@@ -1,10 +1,9 @@
 package es.uma.taw.momdb.service;
 
 import es.uma.taw.momdb.dto.UserDTO;
+import es.uma.taw.momdb.dto.UserRoleDTO;
 import es.uma.taw.momdb.dto.UsersFormDTO;
-import es.uma.taw.momdb.entity.EntityWithNameAndId;
-import es.uma.taw.momdb.entity.User;
-import es.uma.taw.momdb.entity.UserRole;
+import es.uma.taw.momdb.dto.DTOWithNameAndId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -97,18 +96,9 @@ public class AdminService {
      * @return Un {@link UsersFormDTO} que contiene la lista de todos los usuarios y sus roles.
      */
     public UsersFormDTO getUsersForm() {
-        List<User> users = this.userService.findAllUsers();
+        List<UserDTO> users = this.userService.findAllUsers();
         UsersFormDTO usersFormDTO = new UsersFormDTO();
-        List<UserDTO> userDTOs = new ArrayList<>();
-
-        for (User u : users) {
-            UserDTO dto = new UserDTO();
-            dto.setUserId(u.getId());
-            dto.setRoleId(u.getRole().getId());
-            dto.setUsername(u.getUsername());
-            userDTOs.add(dto);
-        }
-        usersFormDTO.setUsers(userDTOs);
+        usersFormDTO.setUsers(users);
 
         return usersFormDTO;
     }
@@ -120,14 +110,7 @@ public class AdminService {
      */
     public void updateUserRoles(UsersFormDTO usersForm) {
         for (UserDTO userDTO : usersForm.getUsers()) {
-            User user = this.userService.findUserById(userDTO.getUserId());
-            UserRole role = this.userRoleService.findUserRole(userDTO.getRoleId());
-
-            if (user != null && role != null) {
-                user.setRole(role);
-                this.userService.saveUser(user);
-            }
-
+            this.userService.updateUserRole(userDTO.getUserId(), userDTO.getRoleId());
             // TODO: echar al usuario si se cambia su propio rol (ya no es admin)
             // TODO: obligar a que SIEMPRE haya al menos un admin
         }
@@ -136,9 +119,9 @@ public class AdminService {
     /**
      * Obtiene todos los roles de usuario disponibles en el sistema.
      *
-     * @return Una lista de entidades {@link UserRole}.
+     * @return Una lista de DTOs {@link UserRoleDTO}.
      */
-    public List<UserRole> findAllUserRoles() {
+    public List<UserRoleDTO> findAllUserRoles() {
         return this.userRoleService.findAllUserRoles();
     }
 
@@ -146,9 +129,9 @@ public class AdminService {
      * Busca una entidad por su tipo e ID.
      * @param entityType El tipo de la entidad a buscar.
      * @param id El ID de la entidad a buscar.
-     * @return Un objeto que implementa EntityWithNameAndId, o null si no se encuentra.
+     * @return Un DTO que implementa DTOWithNameAndId, o null si no se encuentra.
      */
-    public EntityWithNameAndId<?> findEntity(String entityType, String id) {
+    public DTOWithNameAndId<?> findEntity(String entityType, String id) {
         return switch (entityType) {
             case "Genre" -> generoService.findGenre(Integer.parseInt(id));
             case "Keyword" -> keywordService.findKeyword(Integer.parseInt(id));

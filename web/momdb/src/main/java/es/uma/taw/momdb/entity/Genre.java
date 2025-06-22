@@ -14,7 +14,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "genre")
-public class Genre implements EntityWithNameAndId<Integer>, Serializable, DTO<GenreDTO> {
+public class Genre implements Serializable, DTO<GenreDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -28,11 +28,6 @@ public class Genre implements EntityWithNameAndId<Integer>, Serializable, DTO<Ge
             joinColumns = @JoinColumn(name = "genre_id"),
             inverseJoinColumns = @JoinColumn(name = "movie_id"))
     private Set<Movie> movies = new LinkedHashSet<>();
-
-    @Override
-    public String getName() {
-        return genre;
-    }
 
     public GenreDTO toDTO () {
         GenreDTO genero = new GenreDTO();

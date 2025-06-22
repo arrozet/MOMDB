@@ -1,6 +1,7 @@
 package es.uma.taw.momdb.service;
 
 import es.uma.taw.momdb.dao.KeywordRepository;
+import es.uma.taw.momdb.dto.KeywordDTO;
 import es.uma.taw.momdb.entity.Keyword;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 
 @Service
-public class KeywordService {
+public class KeywordService extends DTOService<KeywordDTO, Keyword> {
 
     @Autowired
     private KeywordRepository keywordRepository;
@@ -24,10 +25,11 @@ public class KeywordService {
     /**
      * Busca una palabra clave por su ID.
      * @param id El ID de la palabra clave a buscar.
-     * @return El {@link Keyword} encontrado, o null si no existe.
+     * @return El {@link KeywordDTO} encontrado, o null si no existe.
      */
-    public Keyword findKeyword(int id) {
-        return keywordRepository.findById(id).orElse(null);
+    public KeywordDTO findKeyword(int id) {
+        Keyword keyword = keywordRepository.findById(id).orElse(null);
+        return keyword != null ? keyword.toDTO() : null;
     }
 
     /**
@@ -62,18 +64,18 @@ public class KeywordService {
 
     /**
      * Obtiene todas las palabras clave.
-     * @return Una lista de entidades {@link Keyword}.
+     * @return Una lista de DTOs {@link KeywordDTO}.
      */
-    public List<Keyword> findAllKeywords() {
-        return keywordRepository.findAll();
+    public List<KeywordDTO> findAllKeywords() {
+        return entity2DTO(keywordRepository.findAll());
     }
 
     /**
      * Busca palabras clave por su nombre.
      * @param keyword El nombre a buscar.
-     * @return Una lista de entidades {@link Keyword} que contienen el nombre.
+     * @return Una lista de DTOs {@link KeywordDTO} que contienen el nombre.
      */
-    public List<Keyword> findKeywordsByKeyword(String keyword) {
-        return keywordRepository.findByKeywordContainingIgnoreCase(keyword);
+    public List<KeywordDTO> findKeywordsByKeyword(String keyword) {
+        return entity2DTO(keywordRepository.findByKeywordContainingIgnoreCase(keyword));
     }
 } 

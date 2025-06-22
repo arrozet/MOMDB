@@ -14,7 +14,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "userrole")
-public class UserRole implements EntityWithNameAndId<Integer>, Serializable, DTO<UserRoleDTO> {
+public class UserRole implements Serializable, DTO<UserRoleDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

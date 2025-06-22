@@ -1,9 +1,12 @@
 package es.uma.taw.momdb.entity;
 
+import es.uma.taw.momdb.dto.DTO;
+import es.uma.taw.momdb.dto.ProductionCountryDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -11,7 +14,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "productioncountry")
-public class Productioncountry implements EntityWithNameAndId<String>{
+public class Productioncountry implements Serializable, DTO<ProductionCountryDTO> {
     @Id
     @Column(name = "iso_3166_1", nullable = false, length = 5)
     private String iso31661;
@@ -22,13 +25,10 @@ public class Productioncountry implements EntityWithNameAndId<String>{
     @ManyToMany(mappedBy = "productioncountries")
     private Set<Movie> movies = new LinkedHashSet<>();
 
-    @Override
-    public String getId(){
-        return iso31661;
-    }
-
-    @Override
-    public String getName() {
-        return country;
+    public ProductionCountryDTO toDTO() {
+        ProductionCountryDTO dto = new ProductionCountryDTO();
+        dto.setIso31661(this.iso31661);
+        dto.setCountry(this.country);
+        return dto;
     }
 }
