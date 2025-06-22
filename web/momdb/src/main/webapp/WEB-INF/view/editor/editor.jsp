@@ -25,6 +25,8 @@
 
 <%
     List<MovieDTO> movies = (List<MovieDTO>) request.getAttribute("movies");
+    Integer currentPage = (Integer) request.getAttribute("currentPage");
+    Integer totalPages = (Integer) request.getAttribute("totalPages");
 %>
 <section class="hero is-light is-small page-banner"> <%-- Hero es básicamente para los títulos --%>
     <div class="hero-body">
@@ -102,6 +104,32 @@
             </div>
             <% } %>
         </div>
+
+        <% if (totalPages != null && totalPages > 1) { %>
+        <nav class="pagination is-centered mt-5" role="navigation" aria-label="pagination">
+            <%-- Previous Button --%>
+            <% if (currentPage > 1) { %>
+            <a href="/editor/?page=<%= currentPage - 1 %>" class="pagination-previous">Previous</a>
+            <% } else { %>
+            <a class="pagination-previous" disabled>Previous</a>
+            <% } %>
+
+            <%-- Next Button --%>
+            <% if (currentPage < totalPages) { %>
+            <a href="/editor/?page=<%= currentPage + 1 %>" class="pagination-next">Next</a>
+            <% } else { %>
+            <a class="pagination-next" disabled>Next</a>
+            <% } %>
+
+            <ul class="pagination-list">
+                <li>
+                    <span class="pagination-link is-current has-background-info has-text-white" aria-current="page">
+                        Page <%= currentPage %> of <%= totalPages %>
+                    </span>
+                </li>
+            </ul>
+        </nav>
+        <% } %>
     </div>
 </section>
 </body>

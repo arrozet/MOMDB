@@ -23,6 +23,8 @@ import java.util.List;
 @RequestMapping("/editor")
 public class EditorController extends BaseController{
 
+    private static final int PAGE_SIZE = 54;
+
     @Autowired
     private MovieService movieService;
 
@@ -45,31 +47,34 @@ public class EditorController extends BaseController{
     private CrewRoleService crewRoleService;
 
     @GetMapping("/")
-    public String doInit(HttpSession session, Model model) {
+    public String doInit(@RequestParam(name = "page", defaultValue = "1") int page, HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
         } else {
-            return this.listarPeliculasConFiltro(null, model);
+            return this.listarPeliculasConFiltro(null, page, model, session);
         }
     }
 
-    protected String listarPeliculasConFiltro(Filtro filtro, Model model) {
-        List<MovieDTO> movies;
-
+    protected String listarPeliculasConFiltro(Filtro filtro, int page, Model model, HttpSession session) {
         if (filtro == null) {
             filtro = new Filtro();
-            movies = movieService.listarPeliculas();
-        } else {
-            movies = movieService.listarPeliculas(filtro.getTexto());
         }
-        model.addAttribute("movies", movies);
+
+        Page<MovieDTO> moviePage = this.movieService.findPaginatedWithFilters(filtro, page - 1, PAGE_SIZE);
+
+        model.addAttribute("movies", moviePage.getContent());
         model.addAttribute("filtro", filtro);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", moviePage.getTotalPages());
         return "editor/editor";
     }
 
     @PostMapping("/filtrar")
-    public String doFiltrar (@ModelAttribute("filtro") Filtro filtro, Model model) {
-        return this.listarPeliculasConFiltro(filtro, model);
+    public String doFiltrar(HttpSession session, @ModelAttribute("filtro") Filtro filtro, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        return this.listarPeliculasConFiltro(filtro, 1, model, session);
     }
 
 
