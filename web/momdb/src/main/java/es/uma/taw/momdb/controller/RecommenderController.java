@@ -278,7 +278,7 @@ public class RecommenderController extends BaseController{
 
         List<ReviewDTO> reviews = this.reviewService.getReviewsByUserId(user.getUserId());
         model.addAttribute("reviews", reviews);
-        return "user/user_reviews";
+        return "recommender/recommender_reviews";
     }
 
     @GetMapping("/watchlist")
@@ -291,7 +291,7 @@ public class RecommenderController extends BaseController{
         List<MovieDTO> watchlistMovies = watchlistService.getUserWatchlist(user.getUserId());
         model.addAttribute("movies", watchlistMovies);
 
-        return "user/watchlist";
+        return "recommender/watchlist";
     }
 
     @PostMapping("/watchlist/add")
@@ -302,7 +302,7 @@ public class RecommenderController extends BaseController{
         }
 
         watchlistService.addToWatchlist(user.getUserId(), movieId);
-        return "redirect:/user/";
+        return "redirect:/recommender/";
     }
 
     @PostMapping("/watchlist/remove")
@@ -313,7 +313,7 @@ public class RecommenderController extends BaseController{
         }
         watchlistService.removeFromWatchlist(user.getUserId(), movieId);
 
-        return "redirect:/user/watchlist";
+        return "redirect:/recommender/watchlist";
     }
 
     @PostMapping("/watchlist/toggle")
@@ -337,7 +337,7 @@ public class RecommenderController extends BaseController{
             return "redirect:" + referer;
         }
 
-        return "redirect:/user/";
+        return "redirect:/recommender/";
     }
 
     @GetMapping("/recommend/add")
