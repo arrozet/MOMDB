@@ -1,9 +1,6 @@
 package es.uma.taw.momdb.controller;
 
-import es.uma.taw.momdb.dto.MovieDTO;
-import es.uma.taw.momdb.dto.MovieComparisonDTO;
-import es.uma.taw.momdb.dto.UserDTO;
-import es.uma.taw.momdb.dto.PersonDTO;
+import es.uma.taw.momdb.dto.*;
 import es.uma.taw.momdb.service.GeneroService;
 import es.uma.taw.momdb.service.MovieService;
 import es.uma.taw.momdb.ui.Filtro;
@@ -36,42 +33,46 @@ public class AnalystController extends BaseController {
 
     @GetMapping("/")
     public String doInit(@RequestParam(name = "page", defaultValue = "1") int page, Model model, HttpSession session) {
-        UserDTO user = (UserDTO) session.getAttribute("user");
         if (!checkAuth(session, model)) {
             return "redirect:/";
         }
 
-
-
-        // Spring Data JPA numera las páginas desde 0, por eso se resta 1.
-        Page<MovieDTO> moviePage = movieService.findPaginated(page - 1, PAGE_SIZE);
-
-        model.addAttribute("movies", moviePage.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", moviePage.getTotalPages());
-        // No es necesario volver a añadir el usuario si ya está en la sesión,
-        // pero es buena práctica pasarlo explícitamente al modelo.
-        model.addAttribute("user", user);
-
-        return "analyst/analyst";
+        Filtro filtro = (Filtro) session.getAttribute("filtroAnalyst");
+        if (filtro != null && filtro.isEmpty()) {
+            filtro = null;
+            session.removeAttribute("filtroAnalyst");
+        }
+        return this.listarPeliculasConFiltro(filtro, page, model, session);
     }
 
     @PostMapping("/filtrar")
-    public String doFiltrar(HttpSession session, Model model, @RequestParam("filter") String filter) {
+    public String doFiltrar(HttpSession session, Model model, @ModelAttribute("filtro") Filtro filter) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
         }
 
-        List<MovieDTO> movies;
-        if (filter == null || filter.trim().isEmpty()) {
-            movies = this.movieService.listarPeliculas(); // Cargar todas
-        } else {
-            movies = this.movieService.listarPeliculas(filter);
+        session.setAttribute("filtroAnalyst", filter);
+        return this.listarPeliculasConFiltro(filter, 1, model, session);
+    }
+
+    protected String listarPeliculasConFiltro(Filtro filtro, int page, Model model, HttpSession session) {
+        addFilteredMoviesToModel(filtro, page, model);
+        return "analyst/analyst";
+    }
+
+    private void addFilteredMoviesToModel(Filtro filtro, int page, Model model) {
+        if (filtro == null) {
+            filtro = new Filtro();
         }
 
-        model.addAttribute("movies", movies);
-        model.addAttribute("currentFilter", filter);
-        return "analyst/analyst";
+        Page<MovieDTO> moviePage = this.movieService.findPaginatedWithFilters(filtro, page - 1, PAGE_SIZE);
+
+        List<GenreDTO> generos = this.generoService.listarGeneros();
+        model.addAttribute("generos", generos);
+        model.addAttribute("movies", moviePage.getContent());
+        model.addAttribute("filtro", filtro);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", moviePage.getTotalPages());
     }
 
     @GetMapping("/movie/{id}")
@@ -162,17 +163,7 @@ public class AnalystController extends BaseController {
         }
 
         Filtro filtro = (Filtro) session.getAttribute("filtroCompare");
-        if (filtro == null) {
-            filtro = new Filtro();
-        }
-
-        Page<MovieDTO> moviePage = movieService.findPaginatedWithFilters(filtro, page - 1, PAGE_SIZE);
-
-        model.addAttribute("movies", moviePage.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", moviePage.getTotalPages());
-        model.addAttribute("filtro", filtro);
-        model.addAttribute("generos", generoService.listarGeneros());
+        addFilteredMoviesToModel(filtro, page, model);
 
         if (movieId1 != null) {
             model.addAttribute("movie1", movieService.findPeliculaById(movieId1));
@@ -211,16 +202,7 @@ public class AnalystController extends BaseController {
         model.addAttribute("sharedCrew", commonCrew.get("sharedCrew"));
 
         Filtro filtro = (Filtro) session.getAttribute("filtroCompare");
-        if (filtro == null) {
-            filtro = new Filtro();
-        }
-        Page<MovieDTO> moviePage = movieService.findPaginatedWithFilters(filtro, page - 1, PAGE_SIZE);
-
-        model.addAttribute("movies", moviePage.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", moviePage.getTotalPages());
-        model.addAttribute("filtro", filtro);
-        model.addAttribute("generos", generoService.listarGeneros());
+        addFilteredMoviesToModel(filtro, page, model);
 
         return "analyst/compare";
     }

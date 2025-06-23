@@ -10,6 +10,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="es.uma.taw.momdb.dto.UserDTO" %>
 <%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -28,8 +29,6 @@
 
 <section class="section">
     <div class="container">
-
-
         <div class="dropdown mb-4" id="tools-dropdown">
             <div class="dropdown-trigger">
                 <button class="button" aria-haspopup="true" aria-controls="dropdown-menu-tools">
@@ -48,25 +47,72 @@
             </div>
         </div>
 
-        <h2>Available movies to analyze</h2><br>
-        <div class="columns">
-            <div class="column is-half is-offset-one-quarter">
-                <form method="POST" action="/analyst/filtrar">
-                    <div class="field has-addons">
-                        <div class="control is-expanded">
-                            <input class="input is-info has-background-grey" type="text" name="filter" placeholder="Search movies...">
-                        </div>
+        <h2 class="title is-4 has-text-white mt-5">Available movies to analyze</h2>
+
+        <form:form method="POST" action="${pageContext.request.contextPath}/analyst/filtrar" modelAttribute="filtro">
+            <div class="columns is-vcentered is-mobile is-multiline">
+                <div class="column is-3-desktop is-6-tablet is-12-mobile">
+                    <div class="field">
+                        <label class="label has-text-white">Search</label>
                         <div class="control">
-                            <button class="button is-info" type="submit">
-                                <span class="icon">
-                                    <i class="fas fa-search"></i>
-                                </span>
+                            <form:input path="texto" class="input is-info has-background-grey" placeholder="Movie title..."/>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-2-desktop is-3-tablet is-6-mobile">
+                    <div class="field">
+                        <label class="label has-text-white">Genre</label>
+                        <div class="control is-expanded">
+                            <form:select path="generoId" class="select is-info has-background-grey is-fullwidth">
+                                <form:option value="" label="All"/>
+                                <form:options items="${generos}" itemValue="id" itemLabel="genero"/>
+                            </form:select>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-2-desktop is-3-tablet is-6-mobile">
+                    <div class="field">
+                        <label class="label has-text-white">Year</label>
+                        <div class="control is-expanded">
+                            <form:select path="year" class="select is-info has-background-grey is-fullwidth">
+                                <form:option value="">All</form:option>
+                                <form:option value="1960" label="> 1960"/>
+                                <form:option value="1970" label="> 1970"/>
+                                <form:option value="1980" label="> 1980"/>
+                                <form:option value="1990" label="> 1990"/>
+                                <form:option value="2000" label="> 2000"/>
+                                <form:option value="2010" label="> 2010"/>
+                            </form:select>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-2-desktop is-3-tablet is-6-mobile">
+                    <div class="field">
+                        <label class="label has-text-white">Rating</label>
+                        <div class="control is-expanded">
+                            <form:select path="rating" class="select is-info has-background-grey is-fullwidth">
+                                <form:option value="">All</form:option>
+                                <form:option value="0.0" label="> 0"/>
+                                <form:option value="2.5" label="> 2.5"/>
+                                <form:option value="5.0" label="> 5"/>
+                                <form:option value="7.5" label="> 7.5"/>
+                            </form:select>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-2-desktop is-12-tablet is-12-mobile">
+                    <div class="field">
+                        <label class="label has-text-white is-hidden-mobile">&nbsp;</label>
+                        <div class="control">
+                            <button type="submit" class="button is-info is-fullwidth">
+                                <span class="icon"><i class="fas fa-search"></i></span>
+                                <span>Filter</span>
                             </button>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
-        </div>
+        </form:form>
 
         <div class="columns is-multiline mt-4" id="movies-container">
             <%
@@ -117,25 +163,21 @@
         <%
             Integer currentPage = (Integer) request.getAttribute("currentPage");
             Integer totalPages = (Integer) request.getAttribute("totalPages");
-            String filter = request.getParameter("filter");
-            String baseUrl = "/analyst/filtrar";
-            if (filter == null || filter.isEmpty()) {
-                baseUrl = "/analyst/";
-            }
+            String baseUrl = "/analyst/";
         %>
 
         <% if (totalPages != null && totalPages > 1) { %>
         <nav class="pagination is-centered mt-5" role="navigation" aria-label="pagination">
             <%-- Botón Anterior --%>
             <% if (currentPage > 1) { %>
-            <a href="<%= baseUrl %>?page=<%= currentPage - 1 %><%= (filter != null ? "&filter=" + filter : "") %>" class="pagination-previous">Anterior</a>
+            <a href="<%= baseUrl %>?page=<%= currentPage - 1 %>" class="pagination-previous">Anterior</a>
             <% } else { %>
             <a class="pagination-previous" disabled>Anterior</a>
             <% } %>
 
             <%-- Botón Siguiente --%>
             <% if (currentPage < totalPages) { %>
-            <a href="<%= baseUrl %>?page=<%= currentPage + 1 %><%= (filter != null ? "&filter=" + filter : "") %>" class="pagination-next">Siguiente</a>
+            <a href="<%= baseUrl %>?page=<%= currentPage + 1 %>" class="pagination-next">Siguiente</a>
             <% } else { %>
             <a class="pagination-next" disabled>Siguiente</a>
             <% } %>
