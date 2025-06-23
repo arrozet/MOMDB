@@ -2,6 +2,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>
 <%@ page import="es.uma.taw.momdb.dto.PersonDTO" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%--
@@ -111,6 +112,87 @@
 
         <h2 class="title is-4 has-text-white mt-5">Select two movies to compare</h2>
 
+        <form:form method="POST" action="${pageContext.request.contextPath}/analyst/compare/filtrar" modelAttribute="filtro">
+            <input type="hidden" name="movieId1" id="filter-form-movieId1" value="<%= movie1 != null ? movie1.getId() : "" %>">
+            <input type="hidden" name="movieId2" id="filter-form-movieId2" value="<%= movie2 != null ? movie2.getId() : "" %>">
+            <div class="columns is-vcentered is-mobile is-multiline">
+                <div class="column is-3-desktop is-6-tablet is-12-mobile">
+                    <div class="field">
+                        <label class="label has-text-white">Search</label>
+                        <div class="control">
+                            <form:input path="texto" class="input is-info has-background-grey" placeholder="Movie title..."/>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-2-desktop is-3-tablet is-6-mobile">
+                    <div class="field">
+                        <label class="label has-text-white">Genre</label>
+                        <div class="control is-expanded">
+                            <form:select path="generoId" class="select is-info has-background-grey is-fullwidth">
+                                <form:option value="" label="All"/>
+                                <form:options items="${generos}" itemValue="id" itemLabel="genero"/>
+                            </form:select>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-2-desktop is-3-tablet is-6-mobile">
+                    <div class="field">
+                        <label class="label has-text-white">Year</label>
+                        <div class="control is-expanded">
+                            <form:select path="year" class="select is-info has-background-grey is-fullwidth">
+                                <form:option value="">All</form:option>
+                                <form:option value="1960" label="> 1960"/>
+                                <form:option value="1970" label="> 1970"/>
+                                <form:option value="1980" label="> 1980"/>
+                                <form:option value="1990" label="> 1990"/>
+                                <form:option value="2000" label="> 2000"/>
+                                <form:option value="2010" label="> 2010"/>
+                            </form:select>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-2-desktop is-3-tablet is-6-mobile">
+                    <div class="field">
+                        <label class="label has-text-white">Rating</label>
+                        <div class="control is-expanded">
+                            <form:select path="rating" class="select is-info has-background-grey is-fullwidth">
+                                <form:option value="">All</form:option>
+                                <form:option value="0.0" label="> 0"/>
+                                <form:option value="2.5" label="> 2.5"/>
+                                <form:option value="5.0" label="> 5"/>
+                                <form:option value="7.5" label="> 7.5"/>
+                            </form:select>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-2-desktop is-3-tablet is-6-mobile">
+                    <div class="field">
+                        <label class="label has-text-white">Popularity</label>
+                        <div class="control is-expanded">
+                            <form:select path="popularityRange" class="select is-info has-background-grey is-fullwidth">
+                                <form:option value="">All</form:option>
+                                <form:option value="0-10" label="0-10"/>
+                                <form:option value="10-50" label="10-50"/>
+                                <form:option value="50-200" label="50-200"/>
+                                <form:option value="200-900" label="200-900"/>
+                            </form:select>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-1-desktop is-12-tablet is-12-mobile">
+                    <div class="field">
+                        <label class="label has-text-white is-hidden-mobile">&nbsp;</label>
+                        <div class="control">
+                            <button type="submit" class="button is-info is-fullwidth">
+                                <span class="icon"><i class="fas fa-search"></i></span>
+                                <span class="is-hidden-mobile is-hidden-tablet-only">Filter</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form:form>
+
         <%-- Comparison Form and Button --%>
         <form method="POST" action="${pageContext.request.contextPath}/analyst/compare?page=<%= currentPage %>" id="compare-form">
             <input type="hidden" name="movieId1" id="movieId1">
@@ -200,6 +282,8 @@
         const movieCards = document.querySelectorAll('.movie-card');
         const movieId1Input = document.getElementById('movieId1');
         const movieId2Input = document.getElementById('movieId2');
+        const filterMovieId1Input = document.getElementById('filter-form-movieId1');
+        const filterMovieId2Input = document.getElementById('filter-form-movieId2');
         const compareButton = document.getElementById('compare-button');
         const paginationLinks = document.querySelectorAll('a.pagination-previous, a.pagination-next');
 
@@ -213,8 +297,17 @@
         }
 
         function updateState() {
-            movieId1Input.value = selectedMovies.length > 0 ? selectedMovies[0] : '';
-            movieId2Input.value = selectedMovies.length > 1 ? selectedMovies[1] : '';
+            const movie1Id = selectedMovies.length > 0 ? selectedMovies[0] : '';
+            const movie2Id = selectedMovies.length > 1 ? selectedMovies[1] : '';
+
+            movieId1Input.value = movie1Id;
+            movieId2Input.value = movie2Id;
+            if (filterMovieId1Input) {
+                filterMovieId1Input.value = movie1Id;
+            }
+            if (filterMovieId2Input) {
+                filterMovieId2Input.value = movie2Id;
+            }
 
             compareButton.disabled = selectedMovies.length !== 2;
 

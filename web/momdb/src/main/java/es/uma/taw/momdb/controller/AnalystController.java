@@ -4,17 +4,15 @@ import es.uma.taw.momdb.dto.MovieDTO;
 import es.uma.taw.momdb.dto.MovieComparisonDTO;
 import es.uma.taw.momdb.dto.UserDTO;
 import es.uma.taw.momdb.dto.PersonDTO;
+import es.uma.taw.momdb.service.GeneroService;
 import es.uma.taw.momdb.service.MovieService;
+import es.uma.taw.momdb.ui.Filtro;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +30,9 @@ public class AnalystController extends BaseController {
 
     @Autowired
     private MovieService movieService;
+
+    @Autowired
+    private GeneroService generoService;
 
     @GetMapping("/")
     public String doInit(@RequestParam(name = "page", defaultValue = "1") int page, Model model, HttpSession session) {
@@ -159,12 +160,19 @@ public class AnalystController extends BaseController {
         if (!checkAuth(session, model)) {
             return "redirect:/";
         }
-        // Spring Data JPA numera las páginas desde 0, por eso se resta 1.
-        Page<MovieDTO> moviePage = movieService.findPaginated(page - 1, PAGE_SIZE);
+
+        Filtro filtro = (Filtro) session.getAttribute("filtroCompare");
+        if (filtro == null) {
+            filtro = new Filtro();
+        }
+
+        Page<MovieDTO> moviePage = movieService.findPaginatedWithFilters(filtro, page - 1, PAGE_SIZE);
 
         model.addAttribute("movies", moviePage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", moviePage.getTotalPages());
+        model.addAttribute("filtro", filtro);
+        model.addAttribute("generos", generoService.listarGeneros());
 
         if (movieId1 != null) {
             model.addAttribute("movie1", movieService.findPeliculaById(movieId1));
@@ -202,13 +210,42 @@ public class AnalystController extends BaseController {
         model.addAttribute("sharedCast", commonCrew.get("sharedCast"));
         model.addAttribute("sharedCrew", commonCrew.get("sharedCrew"));
 
-        Page<MovieDTO> moviePage = movieService.findPaginated(page - 1, PAGE_SIZE);
+        Filtro filtro = (Filtro) session.getAttribute("filtroCompare");
+        if (filtro == null) {
+            filtro = new Filtro();
+        }
+        Page<MovieDTO> moviePage = movieService.findPaginatedWithFilters(filtro, page - 1, PAGE_SIZE);
 
         model.addAttribute("movies", moviePage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", moviePage.getTotalPages());
+        model.addAttribute("filtro", filtro);
+        model.addAttribute("generos", generoService.listarGeneros());
 
         return "analyst/compare";
+    }
+
+    @PostMapping("/compare/filtrar")
+    public String doFiltrarCompare(@ModelAttribute("filtro") Filtro filtro,
+                                   @RequestParam(name = "movieId1", required = false) String movieId1,
+                                   @RequestParam(name = "movieId2", required = false) String movieId2,
+                                   HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        session.setAttribute("filtroCompare", filtro);
+
+        StringBuilder redirectUrl = new StringBuilder("redirect:/analyst/compare");
+        boolean hasParams = false;
+        if (movieId1 != null && !movieId1.isEmpty()) {
+            redirectUrl.append("?movieId1=").append(movieId1);
+            hasParams = true;
+        }
+        if (movieId2 != null && !movieId2.isEmpty()) {
+            redirectUrl.append(hasParams ? "&" : "?").append("movieId2=").append(movieId2);
+        }
+
+        return redirectUrl.toString();
     }
 
     /**
