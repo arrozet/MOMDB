@@ -165,27 +165,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="column is-2-desktop is-3-tablet is-6-mobile">
-                    <div class="field">
-                        <label class="label has-text-white">Popularity</label>
-                        <div class="control is-expanded">
-                            <form:select path="popularityRange" class="select is-info has-background-grey is-fullwidth">
-                                <form:option value="">All</form:option>
-                                <form:option value="0-10" label="0-10"/>
-                                <form:option value="10-50" label="10-50"/>
-                                <form:option value="50-200" label="50-200"/>
-                                <form:option value="200-900" label="200-900"/>
-                            </form:select>
-                        </div>
-                    </div>
-                </div>
-                <div class="column is-1-desktop is-12-tablet is-12-mobile">
+                <div class="column is-2-desktop is-12-tablet is-12-mobile">
                     <div class="field">
                         <label class="label has-text-white is-hidden-mobile">&nbsp;</label>
                         <div class="control">
                             <button type="submit" class="button is-info is-fullwidth">
                                 <span class="icon"><i class="fas fa-search"></i></span>
-                                <span class="is-hidden-mobile is-hidden-tablet-only">Filter</span>
+                                <span>Filter</span>
                             </button>
                         </div>
                     </div>
