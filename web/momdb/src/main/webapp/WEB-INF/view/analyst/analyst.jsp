@@ -29,7 +29,6 @@
 <section class="section">
     <div class="container">
 
-        <h1>Welcome back, <%= myUser.getUsername() %>!<br></h1>
 
         <div class="dropdown mb-4" id="tools-dropdown">
             <div class="dropdown-trigger">
@@ -49,11 +48,25 @@
             </div>
         </div>
 
-        <h2>Available movies to analyze</h2>
-        <form method="POST" action="/analyst/filtrar">
-            <input type="text" name="filter" placeholder="Search Movies">
-            <input type="submit">
-        </form>
+        <h2>Available movies to analyze</h2><br>
+        <div class="columns">
+            <div class="column is-half is-offset-one-quarter">
+                <form method="POST" action="/analyst/filtrar">
+                    <div class="field has-addons">
+                        <div class="control is-expanded">
+                            <input class="input is-info has-background-grey" type="text" name="filter" placeholder="Search movies...">
+                        </div>
+                        <div class="control">
+                            <button class="button is-info" type="submit">
+                                <span class="icon">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
 
         <div class="columns is-multiline mt-4" id="movies-container">
             <%
