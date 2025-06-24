@@ -230,6 +230,18 @@ public class AnalystController extends BaseController {
         return redirectUrl.toString();
     }
 
+    @GetMapping("/tool2")
+    public String showTool2(HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        List<GenreAnalyticsDTO> analytics = generoService.getGenreAnalytics();
+        model.addAttribute("genreAnalytics", analytics);
+
+        return "analyst/genre_analytics";
+    }
+
     /**
      * Comprueba si el usuario en sesión tiene el rol de analista.
      * Utiliza el método centralizado de BaseController para realizar la verificación.

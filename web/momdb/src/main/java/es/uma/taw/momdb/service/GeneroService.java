@@ -1,12 +1,14 @@
 package es.uma.taw.momdb.service;
 
 import es.uma.taw.momdb.dao.GenreRepository;
+import es.uma.taw.momdb.dto.GenreAnalyticsDTO;
 import es.uma.taw.momdb.dto.GenreDTO;
 import es.uma.taw.momdb.entity.Genre;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,6 +16,7 @@ import java.util.List;
  * Proporciona métodos para buscar, crear, actualizar y eliminar géneros del sistema.
  * 
  * @author Artur797 (Artur Vargas), arrozet (Rubén Oliva)
+ * @coauthor edugbau (Eduardo González)
  */
 
 @Service
@@ -21,6 +24,9 @@ public class GeneroService extends DTOService<GenreDTO, Genre>{
 
     @Autowired
     private GenreRepository genreRepository;
+
+    @Autowired
+    private MovieService movieService;
 
     /**
      * Obtiene todos los géneros.
@@ -82,5 +88,25 @@ public class GeneroService extends DTOService<GenreDTO, Genre>{
         Genre genre = new Genre();
         genre.setGenre(name);
         genreRepository.save(genre);
+    }
+
+    public List<GenreAnalyticsDTO> getGenreAnalytics() {
+        List<GenreDTO> genres = findAllGenres();
+        List<GenreAnalyticsDTO> analyticsList = new ArrayList<>();
+
+        for (GenreDTO genre : genres) {
+            GenreAnalyticsDTO analytics = new GenreAnalyticsDTO();
+            analytics.setGenreName(genre.getGenero());
+            analytics.setAverageRevenue(movieService.getAverageRevenueByGenre(genre.getId()));
+            analytics.setAverageBudget(movieService.getAverageBudgetByGenre(genre.getId()));
+            analytics.setAverageRuntime(movieService.getAverageRuntimeByGenre(genre.getId()));
+            analytics.setAveragePopularity(movieService.getAveragePopularityByGenre(genre.getId()));
+            analytics.setAverageVoteCount(movieService.getAverageVoteCountByGenre(genre.getId()));
+            analytics.setFavoriteCount(movieService.getFavoriteCountByGenre(genre.getId()));
+            analytics.setWatchlistCount(movieService.getWatchlistCountByGenre(genre.getId()));
+            analyticsList.add(analytics);
+        }
+
+        return analyticsList;
     }
 }

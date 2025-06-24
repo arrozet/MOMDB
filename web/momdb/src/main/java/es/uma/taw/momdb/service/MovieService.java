@@ -299,6 +299,33 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
     }
 
     /**
+     * Calcula el presupuesto medio de las películas de un género específico.
+     * @param genreId ID del género.
+     * @return El presupuesto medio para el género.
+     */
+    public Double getAverageBudgetByGenre(Integer genreId) {
+        return movieRepository.getAverageBudgetByGenre(genreId);
+    }
+
+    /**
+     * Obtiene el número de veces que las películas de un género han sido añadidas a favoritos.
+     * @param genreId ID del género.
+     * @return El número de veces que se ha añadido a favoritos.
+     */
+    public Long getFavoriteCountByGenre(Integer genreId) {
+        return movieRepository.getFavoriteCountByGenre(genreId);
+    }
+
+    /**
+     * Obtiene el número de veces que las películas de un género han sido añadidas a la lista de seguimiento.
+     * @param genreId ID del género.
+     * @return El número de veces que se ha añadido a la lista de seguimiento.
+     */
+    public Long getWatchlistCountByGenre(Integer genreId) {
+        return movieRepository.getWatchlistCountByGenre(genreId);
+    }
+
+    /**
      * Asigna un miembro del equipo a una película.
      * @param movie La película.
      * @param crew El miembro del equipo a asignar.
