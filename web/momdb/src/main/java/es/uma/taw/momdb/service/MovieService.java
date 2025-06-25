@@ -457,26 +457,25 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
         // 10 actores más rentables
         List<Object[]> top10ProfitableActors = movieRepository.findMostProfitableActors(PageRequest.of(0, 10));
         List<String> profitableActorsList = top10ProfitableActors.stream()
-                .map(row -> String.format("%s (Rentabilidad: $%,.0f)", row[0], ((Number) row[1]).doubleValue()))
+                .map(row -> String.format("%s (Rentabilidad: $%,.2fM)", row[0], ((Number) row[1]).doubleValue() / 1000000.0))
                 .collect(Collectors.toList());
-        statistics.add(new AggregatedStatisticDTO("Top 10 Actores más rentables", profitableActorsList, "Basado en la suma de ingresos de sus películas"));
+        statistics.add(new AggregatedStatisticDTO("Top 10 Actores más rentables (en millones)", profitableActorsList, "Basado en la suma de ingresos de sus películas"));
 
         // 10 directores más rentables
         List<Object[]> top10ProfitableDirectors = movieRepository.findMostProfitableDirectors(PageRequest.of(0, 10));
         List<String> profitableDirectorsList = top10ProfitableDirectors.stream()
-                .map(row -> String.format("%s (Rentabilidad: $%,.0f)", row[0], ((Number) row[1]).doubleValue()))
+                .map(row -> String.format("%s (Rentabilidad: $%,.2fM)", row[0], ((Number) row[1]).doubleValue() / 1000000.0))
                 .collect(Collectors.toList());
-        statistics.add(new AggregatedStatisticDTO("Top 10 Directores más rentables", profitableDirectorsList, "Basado en la suma de ingresos de sus películas"));
+        statistics.add(new AggregatedStatisticDTO("Top 10 Directores más rentables (en millones)", profitableDirectorsList, "Basado en la suma de ingresos de sus películas"));
 
 
         // Evolución de la duración media por década
         List<Object[]> runtimeEvolution = movieRepository.findAverageRuntimeEvolutionByDecade();
         Map<String, Double> runtimeEvolutionMap = runtimeEvolution.stream()
-                .collect(Collectors.toMap(
+                .collect(Collectors.groupingBy(
                         row -> String.valueOf((((Number) row[0]).intValue() / 10) * 10) + "s",
-                        row -> ((Number) row[1]).doubleValue(),
-                        (v1, v2) -> v1, // En caso de claves duplicadas, nos quedamos con la primera
-                        LinkedHashMap::new // Mantenemos el orden de inserción
+                        LinkedHashMap::new,
+                        Collectors.averagingDouble(row -> ((Number) row[1]).doubleValue())
                 ));
         statistics.add(new AggregatedStatisticDTO("Evolución de la duración media por década", runtimeEvolutionMap, "Duración media en minutos"));
 
