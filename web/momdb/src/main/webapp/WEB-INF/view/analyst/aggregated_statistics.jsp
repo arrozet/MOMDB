@@ -8,6 +8,8 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <html>
 <head>
@@ -33,8 +35,37 @@
                                 <div class="card-content">
                                     <div class="content">
                                         <p class="subtitle is-6 has-text-grey-light">${stat.name}</p>
-                                        <p class="title is-4 has-text-white">${stat.value}</p>
-                                        <p class="has-text-grey">${stat.description}</p>
+                                        <c:set var="value" value="${stat.value}" />
+                                        <c:set var="valueClass" value="${value.getClass().simpleName}" />
+                                        <c:choose>
+                                            <c:when test="${valueClass.contains('List')}">
+                                                <div class="statistic-list-container">
+                                                    <c:set var="listSize" value="${fn:length(value)}" />
+                                                    <ul class="statistic-list ${listSize > 4 ? 'multi-column' : ''}">
+                                                        <c:forEach items="${value}" var="item">
+                                                            <li>${item}</li>
+                                                        </c:forEach>
+                                                    </ul>
+                                                </div>
+                                            </c:when>
+                                            <c:when test="${valueClass.contains('Map')}">
+                                                <div class="statistic-list-container">
+                                                    <c:set var="listSize" value="${fn:length(value)}" />
+                                                    <ul class="statistic-list ${listSize > 4 ? 'multi-column' : ''}">
+                                                        <c:forEach items="${value}" var="entry">
+                                                            <li>
+                                                                <strong>${entry.key}:</strong>
+                                                                <fmt:formatNumber value="${entry.value}" maxFractionDigits="2"/>
+                                                            </li>
+                                                        </c:forEach>
+                                                    </ul>
+                                                </div>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <p class="title is-4 has-text-white">${value}</p>
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <p class="has-text-grey mt-2">${stat.description}</p>
                                     </div>
                                 </div>
                             </div>

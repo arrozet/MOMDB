@@ -473,8 +473,10 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
         List<Object[]> runtimeEvolution = movieRepository.findAverageRuntimeEvolutionByDecade();
         Map<String, Double> runtimeEvolutionMap = runtimeEvolution.stream()
                 .collect(Collectors.toMap(
-                        row -> String.valueOf(((Number) row[0]).intValue() * 10) + "s",
-                        row -> ((Number) row[1]).doubleValue()
+                        row -> String.valueOf((((Number) row[0]).intValue() / 10) * 10) + "s",
+                        row -> ((Number) row[1]).doubleValue(),
+                        (v1, v2) -> v1, // En caso de claves duplicadas, nos quedamos con la primera
+                        LinkedHashMap::new // Mantenemos el orden de inserción
                 ));
         statistics.add(new AggregatedStatisticDTO("Evolución de la duración media por década", runtimeEvolutionMap, "Duración media en minutos"));
 

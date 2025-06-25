@@ -169,3 +169,65 @@ table a:hover {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
 }
+
+.statistic-card .content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.statistic-list-container {
+    max-height: 200px; /* Ajusta esta altura según tus necesidades */
+    overflow-y: auto;
+}
+
+.statistic-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.statistic-list.multi-column {
+    column-count: 2;
+    column-gap: 20px;
+}
+
+.statistic-list li {
+    padding: 2px 0;
+    border-bottom: none;
+    color: #ddd;
+    font-size: 0.9em;
+}
+
+.statistic-list li:last-child {
+    border-bottom: none;
+}
+
+.statistic-list li strong {
+    color: #fff;
+    font-weight: bold;
+}
+
+.statistic-card {
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.statistic-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.statistic-card .card-content {
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+}
