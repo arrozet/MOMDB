@@ -4,6 +4,8 @@ import es.uma.taw.momdb.dao.CrewRepository;
 import es.uma.taw.momdb.dao.GenreRepository;
 import es.uma.taw.momdb.dao.MovieRepository;
 import es.uma.taw.momdb.dao.StatusRepository;
+import es.uma.taw.momdb.dto.AggregatedStatisticDTO;
+import es.uma.taw.momdb.dto.CrewDTO;
 import es.uma.taw.momdb.dto.MovieDTO;
 import es.uma.taw.momdb.dto.PersonDTO;
 import es.uma.taw.momdb.entity.Crew;
@@ -386,8 +388,8 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
         //TODO: optimizar pasando cosas a repository
         List<Integer> commonPersonIds = movieRepository.findCommonPersonIds(movieId1, movieId2);
 
-        List<es.uma.taw.momdb.dto.PersonDTO> sharedCast = new ArrayList<>();
-        List<es.uma.taw.momdb.dto.PersonDTO> sharedCrew = new ArrayList<>();
+        List<PersonDTO> sharedCast = new ArrayList<>();
+        List<PersonDTO> sharedCrew = new ArrayList<>();
 
         if (commonPersonIds == null || commonPersonIds.isEmpty()) {
             return java.util.Map.of("sharedCast", sharedCast, "sharedCrew", sharedCrew);
@@ -396,10 +398,10 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
         MovieDTO movie1 = this.findPeliculaById(movieId1);
         MovieDTO movie2 = this.findPeliculaById(movieId2);
 
-        Map<Integer, List<es.uma.taw.momdb.dto.CrewDTO>> crewMap1 = movie1.getEquipo().stream()
-                .collect(Collectors.groupingBy(es.uma.taw.momdb.dto.CrewDTO::getPersonaId));
-        Map<Integer, List<es.uma.taw.momdb.dto.CrewDTO>> crewMap2 = movie2.getEquipo().stream()
-                .collect(Collectors.groupingBy(es.uma.taw.momdb.dto.CrewDTO::getPersonaId));
+        Map<Integer, List<CrewDTO>> crewMap1 = movie1.getEquipo().stream()
+                .collect(Collectors.groupingBy(CrewDTO::getPersonaId));
+        Map<Integer, List<CrewDTO>> crewMap2 = movie2.getEquipo().stream()
+                .collect(Collectors.groupingBy(CrewDTO::getPersonaId));
 
         for (Integer personId : commonPersonIds) {
             List<es.uma.taw.momdb.dto.CrewDTO> roles1 = crewMap1.get(personId);
@@ -436,8 +438,8 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
      * Calcula una serie de estadísticas agregadas sobre todas las películas.
      * @return Una lista de DTOs, cada uno representando una estadística.
      */
-    public List<es.uma.taw.momdb.dto.AggregatedStatisticDTO> getAggregatedStatistics() {
-        List<es.uma.taw.momdb.dto.AggregatedStatisticDTO> statistics = new ArrayList<>();
+    public List<AggregatedStatisticDTO> getAggregatedStatistics() {
+        List<AggregatedStatisticDTO> statistics = new ArrayList<>();
 
         // Género con mayor recaudación media
         List<Object[]> genreWithHighestAvgRevenue = movieRepository.findGenreWithHighestAverageRevenue();
@@ -457,14 +459,14 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
         List<String> profitableActorsList = top10ProfitableActors.stream()
                 .map(row -> String.format("%s (Rentabilidad: $%,.0f)", row[0], ((Number) row[1]).doubleValue()))
                 .collect(Collectors.toList());
-        statistics.add(new es.uma.taw.momdb.dto.AggregatedStatisticDTO("Top 10 Actores más rentables", profitableActorsList, "Basado en la suma de ingresos de sus películas"));
+        statistics.add(new AggregatedStatisticDTO("Top 10 Actores más rentables", profitableActorsList, "Basado en la suma de ingresos de sus películas"));
 
         // 10 directores más rentables
         List<Object[]> top10ProfitableDirectors = movieRepository.findMostProfitableDirectors(PageRequest.of(0, 10));
         List<String> profitableDirectorsList = top10ProfitableDirectors.stream()
                 .map(row -> String.format("%s (Rentabilidad: $%,.0f)", row[0], ((Number) row[1]).doubleValue()))
                 .collect(Collectors.toList());
-        statistics.add(new es.uma.taw.momdb.dto.AggregatedStatisticDTO("Top 10 Directores más rentables", profitableDirectorsList, "Basado en la suma de ingresos de sus películas"));
+        statistics.add(new AggregatedStatisticDTO("Top 10 Directores más rentables", profitableDirectorsList, "Basado en la suma de ingresos de sus películas"));
 
 
         // Evolución de la duración media por década
@@ -474,7 +476,7 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
                         row -> String.valueOf(((Number) row[0]).intValue() * 10) + "s",
                         row -> ((Number) row[1]).doubleValue()
                 ));
-        statistics.add(new es.uma.taw.momdb.dto.AggregatedStatisticDTO("Evolución de la duración media por década", runtimeEvolutionMap, "Duración media en minutos"));
+        statistics.add(new AggregatedStatisticDTO("Evolución de la duración media por década", runtimeEvolutionMap, "Duración media en minutos"));
 
 
         return statistics;
