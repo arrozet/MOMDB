@@ -15,6 +15,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Servicio para gestionar las recomendaciones de películas.
+ * Permite guardar, buscar y eliminar recomendaciones hechas por los usuarios.
+ *
+ * @author amcgiluma (Juan Manuel Valenzuela), arrozet (Rubén Oliva, Javadocs)
+ */
 @Service
 public class RecommendationService {
 
@@ -30,6 +36,15 @@ public class RecommendationService {
     @Autowired
     private MovieService movieService;
 
+    /**
+     * Guarda una nueva recomendación de una película hecha por un usuario.
+     * No permite que un usuario recomiende una película a sí misma o que cree una recomendación duplicada.
+     *
+     * @param recommenderId El ID del usuario que hace la recomendación.
+     * @param mainMovieId El ID de la película para la cual se hace la recomendación.
+     * @param recommendedMovieId El ID de la película que está siendo recomendada.
+     * @throws RuntimeException si el usuario o alguna de las películas no se encuentran.
+     */
     public void saveRecommendation(Integer recommenderId, Integer mainMovieId, Integer recommendedMovieId) {
         if (mainMovieId.equals(recommendedMovieId)) {
             return; // No se puede recomendar una película a sí misma.
@@ -60,6 +75,13 @@ public class RecommendationService {
         recommendationRepository.save(recommendation);
     }
 
+    /**
+     * Busca y agrega las recomendaciones de usuarios para una película específica.
+     * Devuelve una lista de películas recomendadas junto con el número de veces que cada una ha sido recomendada.
+     *
+     * @param movieId El ID de la película principal.
+     * @return Una lista de {@link RecommendationDTO} con las películas recomendadas y su contador de recomendaciones.
+     */
     public List<RecommendationDTO> findAggregatedUserRecommendationsForMovie(Integer movieId) {
         List<Object[]> results = recommendationRepository.findUserRecommendationsAndCountByMainMovieId(movieId);
         return results.stream()
@@ -72,6 +94,13 @@ public class RecommendationService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Busca todas las recomendaciones que el usuario actual ha hecho para una película específica.
+     *
+     * @param movieId El ID de la película principal.
+     * @param userId El ID del usuario actual.
+     * @return Una lista de {@link RecommendationDTO} que representa las recomendaciones del usuario.
+     */
     public List<RecommendationDTO> findCurrentUserRecommendationsForMovie(Integer movieId, Integer userId) {
         return recommendationRepository.findByMainMovieIdAndUserId(movieId, userId)
                 .stream()
@@ -79,6 +108,13 @@ public class RecommendationService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Elimina una recomendación específica hecha por un usuario para una película.
+     *
+     * @param recommenderId El ID del usuario que hizo la recomendación.
+     * @param mainMovieId El ID de la película principal.
+     * @param recommendedMovieId El ID de la película recomendada que se va a eliminar.
+     */
     public void deleteRecommendation(Integer recommenderId, Integer mainMovieId, Integer recommendedMovieId) {
         RecommendationId id = new RecommendationId();
         id.setRecommenderId(recommenderId);
@@ -88,6 +124,12 @@ public class RecommendationService {
         recommendationRepository.deleteById(id);
     }
 
+    /**
+     * Convierte una entidad {@link Recommendation} a su correspondiente {@link RecommendationDTO}.
+     *
+     * @param entity La entidad de recomendación a convertir.
+     * @return El DTO de la recomendación.
+     */
     private RecommendationDTO entityToDTO(Recommendation entity) {
         return new RecommendationDTO(entity.getRecommender().toDTO(), movieService.findPeliculaById(entity.getRecommendedMovie().getId()));
     }

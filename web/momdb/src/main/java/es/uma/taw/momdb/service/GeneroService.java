@@ -15,8 +15,7 @@ import java.util.List;
  * Servicio para gestionar la lógica de negocio de las operaciones sobre los géneros cinematográficos.
  * Proporciona métodos para buscar, crear, actualizar y eliminar géneros del sistema.
  * 
- * @author Artur797 (Artur Vargas), arrozet (Rubén Oliva)
- * @coauthor edugbau (Eduardo González)
+ * @author Artur797 (Artur Vargas), arrozet (Rubén Oliva), edugbau (Eduardo González)
  */
 
 @Service
@@ -90,6 +89,13 @@ public class GeneroService extends DTOService<GenreDTO, Genre>{
         genreRepository.save(genre);
     }
 
+    /**
+     * Calcula y obtiene una lista de analíticas para cada género de película.
+     * Para cada género, se recopilan métricas como ingresos medios, presupuesto medio,
+     * duración media, popularidad media, y conteos de favoritos y watchlist.
+     *
+     * @return Una lista de objetos {@link GenreAnalyticsDTO}, donde cada objeto contiene las analíticas de un género.
+     */
     public List<GenreAnalyticsDTO> getGenreAnalytics() {
         List<GenreDTO> genres = findAllGenres();
         List<GenreAnalyticsDTO> analyticsList = new ArrayList<>();
