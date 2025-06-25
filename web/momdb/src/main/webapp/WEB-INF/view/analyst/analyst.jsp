@@ -29,24 +29,6 @@
 
 <section class="section">
     <div class="container">
-        <div class="dropdown mb-4" id="tools-dropdown">
-            <div class="dropdown-trigger">
-                <button class="button" aria-haspopup="true" aria-controls="dropdown-menu-tools">
-                    <span>Tools</span>
-                    <span class="icon is-small">
-                        <i class="fas fa-angle-down" aria-hidden="true"></i>
-                    </span>
-                </button>
-            </div>
-            <div class="dropdown-menu" id="dropdown-menu-tools" role="menu">
-                <div class="dropdown-content">
-                    <a href="${pageContext.request.contextPath}/analyst/compare" class="dropdown-item">Compare movies</a>
-                    <a href="${pageContext.request.contextPath}/analyst/tool2" class="dropdown-item">Genre Analytics</a>
-                    <a href="${pageContext.request.contextPath}/analyst/aggregated-statistics" class="dropdown-item">Aggregated Statistics</a>
-                </div>
-            </div>
-        </div>
-
         <h2 class="title is-4 has-text-white mt-5">Available movies to analyze</h2>
 
         <form:form method="POST" action="${pageContext.request.contextPath}/analyst/filtrar" modelAttribute="filtro">
@@ -196,25 +178,6 @@
 
     </div>
 </section>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var dropdown = document.querySelector('#tools-dropdown');
-        var dropdownTrigger = dropdown.querySelector('.dropdown-trigger');
-
-        dropdownTrigger.addEventListener('click', function (event) {
-            event.stopPropagation();
-            dropdown.classList.toggle('is-active');
-        });
-
-        document.addEventListener('click', function(event) {
-            // Close dropdown if click is outside
-            if (!dropdown.contains(event.target)) {
-                dropdown.classList.remove('is-active');
-            }
-        });
-    });
-</script>
 
 </body>
 </html>

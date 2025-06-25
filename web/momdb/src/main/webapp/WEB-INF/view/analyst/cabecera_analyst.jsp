@@ -20,21 +20,26 @@
                 <span class="icon">
                     <i class="fas fa-film"></i>
                 </span>
-                <span>My Movies</span>
+                <span>Main Page</span>
             </a>
 
-            <a class="navbar-item" href="#">
+            <a href="${pageContext.request.contextPath}/analyst/compare" class="navbar-item">
                 <span class="icon">
-                    <i class="fas fa-star"></i>
+                    <i class="fas fa-balance-scale"></i>
                 </span>
-                <span>My Reviews</span>
+                <span>Compare movies</span>
             </a>
-
-            <a class="navbar-item" href="#">
+            <a href="${pageContext.request.contextPath}/analyst/tool2" class="navbar-item">
                 <span class="icon">
-                    <i class="fas fa-thumbs-up"></i>
+                    <i class="fas fa-chart-line"></i>
                 </span>
-                <span>My Favorites</span>
+                <span>Genre Analytics</span>
+            </a>
+            <a href="${pageContext.request.contextPath}/analyst/aggregated-statistics" class="navbar-item">
+                <span class="icon">
+                    <i class="fas fa-chart-bar"></i>
+                </span>
+                <span>Aggregated Statistics</span>
             </a>
         </div>
 
@@ -78,5 +83,6 @@
         </div>
     </div>
 </nav>
+
 
 </html>
