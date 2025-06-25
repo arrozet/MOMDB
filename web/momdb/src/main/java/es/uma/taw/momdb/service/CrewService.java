@@ -118,26 +118,57 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
                     crewRepository.save(crewNuevoActor);
                 }
             }else{
-                Crew nuevaCrew;
-                if(crewsNuevoActor.isEmpty()){ //Creo la crew de la nueva persona
-                    nuevaCrew = new Crew();
-                    nuevaCrew.setPerson(nuevaPersona);
-                    nuevaCrew.setMovie(movie);
-                    Set<Character> characters = new LinkedHashSet<>();
-                    characters.add(personaje);
-                    nuevaCrew.setCharacters(characters);
-                    nuevaCrew.setCrewRole(crew.getCrewRole());
-                    movieService.removeAndAddCrew(movie,crew,nuevaCrew);
-                }else{ //Añado a la otra persona
-                    nuevaCrew = crewsNuevoActor.get(0);
-                    Set<Character> characters = nuevaCrew.getCharacters();
-                    characters.add(personaje);
-                    nuevaCrew.setCharacters(characters);
-                }
-                crewRepository.save(nuevaCrew);
-                characterService.removeAndAddCrew(personaje, crew, nuevaCrew);
+                manageActorCrewAssignment(crewsNuevoActor, nuevaPersona, movie, personaje, crew);
             }
         }
+    }
+
+
+    /**
+     * Añade un nuevo personaje y lo asigna a un actor en una película.
+     * Si el actor no tiene un rol en esa película, se crea.
+     * @param crewDTO DTO con la información del nuevo personaje y su asignación.
+     */
+    public void addNewCharacter(CrewDTO crewDTO) {
+        Character character = characterService.createCharacter(crewDTO.getPersonajeName());
+
+        Movie movie = movieRepository.findById(crewDTO.getPeliculaId()).orElse(null);
+        Person nuevaPersona = this.personRepository.findById(crewDTO.getPersonaId()).orElse(null);
+        List<Crew> crewsNuevoActor = this.crewRepository.findActorByPersonAndMovie(nuevaPersona.getId(), movie.getId());
+        manageActorCrewAssignment(crewsNuevoActor, nuevaPersona, movie, character, null);
+    }
+
+    /**
+     * Gestiona la asignación de un personaje a un actor en una película.
+     * Si el actor no tiene un registro de Crew en esa película, se crea uno nuevo.
+     * Si ya existe, se añade el personaje a la lista de personajes del Crew existente.
+     * Además, actualiza las relaciones entre personaje y Crew, y entre película y Crew.
+     *
+     * @param crewsNuevoActor Lista de Crew existentes para la persona y película dadas.
+     * @param nuevaPersona    La persona (actor) a la que se va a asignar el personaje.
+     * @param movie           La película en la que se realiza la asignación.
+     * @param personaje       El personaje que se va a asignar.
+     * @param crew            El Crew original (puede ser null si se está creando uno nuevo).
+     */
+    private void manageActorCrewAssignment(List<Crew> crewsNuevoActor, Person nuevaPersona, Movie movie, Character personaje, Crew crew) {
+        Crew nuevaCrew;
+        if(crewsNuevoActor.isEmpty()){ //Creo la crew de la nueva persona
+            nuevaCrew = new Crew();
+            nuevaCrew.setPerson(nuevaPersona);
+            nuevaCrew.setMovie(movie);
+            Set<Character> characters = new LinkedHashSet<>();
+            characters.add(personaje);
+            nuevaCrew.setCharacters(characters);
+            nuevaCrew.setCrewRole(crewRoleRepository.findActor());
+            movieService.removeAndAddCrew(movie, crew,nuevaCrew);
+        }else{ //Añado a la otra persona
+            nuevaCrew = crewsNuevoActor.get(0);
+            Set<Character> characters = nuevaCrew.getCharacters();
+            characters.add(personaje);
+            nuevaCrew.setCharacters(characters);
+        }
+        crewRepository.save(nuevaCrew);
+        characterService.removeAndAddCrew(personaje, crew, nuevaCrew);
     }
 
     /**
@@ -156,37 +187,6 @@ public class CrewService extends DTOService<CrewDTO, Crew>{
             characterService.removeCrew(character, crewEntity);
         }
         crewRepository.save(crewEntity);
-    }
-
-    /**
-     * Añade un nuevo personaje y lo asigna a un actor en una película.
-     * Si el actor no tiene un rol en esa película, se crea.
-     * @param crewDTO DTO con la información del nuevo personaje y su asignación.
-     */
-    public void addNewCharacter(CrewDTO crewDTO) {
-        Character character = characterService.createCharacter(crewDTO.getPersonajeName());
-
-        Movie movie = movieRepository.findById(crewDTO.getPeliculaId()).orElse(null);
-        Person nuevaPersona = this.personRepository.findById(crewDTO.getPersonaId()).orElse(null);
-        List<Crew> crewsNuevoActor = this.crewRepository.findActorByPersonAndMovie(nuevaPersona.getId(), movie.getId());
-        Crew nuevaCrew;
-        if(crewsNuevoActor.isEmpty()){ //Creo la crew de la nueva persona
-            nuevaCrew = new Crew();
-            nuevaCrew.setPerson(nuevaPersona);
-            nuevaCrew.setMovie(movie);
-            Set<Character> characters = new LinkedHashSet<>();
-            characters.add(character);
-            nuevaCrew.setCharacters(characters);
-            nuevaCrew.setCrewRole(crewRoleRepository.findActor());
-            movieService.addCrew(movie,nuevaCrew);
-        }else{ //Añado a la otra persona
-            nuevaCrew  = crewsNuevoActor.get(0);
-            Set<Character> characters = nuevaCrew.getCharacters();
-            characters.add(character);
-            nuevaCrew.setCharacters(characters);
-        }
-        crewRepository.save(nuevaCrew);
-        characterService.addCrew(character, nuevaCrew);
     }
 
     /**

@@ -25,7 +25,7 @@ import java.util.List;
 @RequestMapping("/editor")
 public class EditorController extends BaseController{
 
-    private static final int PAGE_SIZE = 54;
+    private static final int PAGE_SIZE = 48;
 
     @Autowired
     private MovieService movieService;
