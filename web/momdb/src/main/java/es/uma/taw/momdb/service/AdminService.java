@@ -91,6 +91,58 @@ public class AdminService {
     }
 
     /**
+     * Obtiene una lista de DTOs de usuario, opcionalmente filtrada por nombre de usuario.
+     * @param filterName El nombre de usuario por el que filtrar. Si es nulo o vacío, devuelve todos los usuarios.
+     * @return Una lista de {@link UserDTO}.
+     */
+    public List<UserDTO> getUsers(String filterName) {
+        if (filterName == null || filterName.isBlank()) {
+            return this.userService.findAllUsers();
+        } else {
+            return this.userService.findUsersByUsername(filterName);
+        }
+    }
+
+    /**
+     * Borra un usuario por su ID.
+     * @param userId El ID del usuario a borrar.
+     * @param currentUser El usuario que realiza la operación.
+     * @throws IllegalArgumentException si se intenta borrar al único administrador.
+     */
+    public void deleteUser(int userId, UserDTO currentUser) {
+        // Lógica para no eliminar al último administrador
+        UserDTO userToDelete = userService.findUser(userId);
+        if ("admin".equalsIgnoreCase(userToDelete.getRolename())) {
+            List<UserDTO> allUsers = userService.findAllUsers();
+            long adminCount = allUsers.stream()
+                    .filter(u -> "admin".equalsIgnoreCase(u.getRolename()))
+                    .count();
+            if (adminCount <= 1) {
+                throw new IllegalArgumentException("Cannot delete the last administrator.");
+            }
+        }
+
+        userService.deleteUser(userId);
+    }
+
+    /**
+     * Busca un usuario por su ID.
+     * @param userId El ID del usuario a buscar.
+     * @return El DTO del usuario.
+     */
+    public UserDTO findUser(int userId) {
+        return userService.findUser(userId);
+    }
+
+    /**
+     * Guarda un usuario (nuevo o existente) desde el panel de administración.
+     * @param userDTO El DTO del usuario con los datos a guardar.
+     */
+    public void saveUser(UserDTO userDTO) {
+        userService.saveUserFromAdminPanel(userDTO);
+    }
+
+    /**
      * Prepara un DTO para el formulario de gestión de usuarios.
      *
      * @return Un {@link UsersFormDTO} que contiene la lista de todos los usuarios y sus roles.
@@ -165,7 +217,7 @@ public class AdminService {
      *
      * @return Una lista de DTOs {@link UserRoleDTO}.
      */
-    public List<UserRoleDTO> findAllUserRoles() {
+    public List<UserRoleDTO> getUserRoles() {
         return this.userRoleService.findAllUserRoles();
     }
 

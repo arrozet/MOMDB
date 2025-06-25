@@ -23,11 +23,11 @@
 
     <div id="navbarMenu" class="navbar-menu">
         <div class="navbar-start">
-            <a class="navbar-item" href="/admin/roles">
+            <a class="navbar-item" href="/admin/users">
                 <span class="icon">
                     <i class="fas fa-users-cog"></i>
                 </span>
-                <span>Role management</span>
+                <span>User management</span>
             </a>
 
             <a class="navbar-item" href="/admin/entities">

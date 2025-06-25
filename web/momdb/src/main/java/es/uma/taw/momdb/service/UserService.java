@@ -34,11 +34,20 @@ public class UserService extends DTOService<UserDTO, User> {
     }
 
     /**
+     * Busca usuarios cuyo nombre de usuario contenga el texto proporcionado.
+     * @param username El texto a buscar en el nombre de usuario.
+     * @return Una lista de DTOs {@link UserDTO}.
+     */
+    public List<UserDTO> findUsersByUsername(String username) {
+        return entity2DTO(userRepository.findByUsernameContainingIgnoreCase(username));
+    }
+
+    /**
      * Busca un usuario por su ID.
      * @param id El ID del usuario a buscar.
      * @return El {@link UserDTO} encontrado, o null si no existe.
      */
-    public UserDTO findUserById(int id) {
+    public UserDTO findUser(int id) {
         User user = userRepository.findById(id).orElse(null);
         return user != null ? user.toDTO() : null;
     }
@@ -118,6 +127,68 @@ public class UserService extends DTOService<UserDTO, User> {
 
         if (user != null && role != null) {
             user.setRole(role);
+            userRepository.save(user);
+        }
+    }
+
+    /**
+     * Borra un usuario por su ID.
+     * @param userId El ID del usuario a borrar.
+     */
+    public void deleteUser(int userId) {
+        userRepository.deleteById(userId);
+    }
+
+    /**
+     * Guarda un usuario (nuevo o existente) desde el panel de administración.
+     * @param userDTO DTO con la información del usuario.
+     * @throws IllegalArgumentException si el nombre de usuario o email ya existen.
+     */
+    public void saveUserFromAdminPanel(UserDTO userDTO) {
+        // Si el ID es 0, es un usuario nuevo
+        if (userDTO.getUserId() == 0) {
+            if (userRepository.findByUsername(userDTO.getUsername()) != null) {
+                throw new IllegalArgumentException("Username already exists.");
+            }
+            if (userRepository.findByEmail(userDTO.getEmail()) != null) {
+                throw new IllegalArgumentException("Email already exists.");
+            }
+            if (userDTO.getPassword() == null || userDTO.getPassword().isEmpty()) {
+                throw new IllegalArgumentException("Password is required for new users.");
+            }
+
+            User user = new User();
+            user.setUsername(userDTO.getUsername());
+            user.setEmail(userDTO.getEmail());
+            user.setPassword(userDTO.getPassword()); // En un caso real, hashearíamos la contraseña
+            UserRole role = userRoleRepository.findById(userDTO.getRoleId()).orElse(null);
+            user.setRole(role);
+            user.setProfilePicLink(userDTO.getProfilePic());
+            userRepository.save(user);
+        } else { // Si no, es una actualización
+            User user = userRepository.findById(userDTO.getUserId()).orElse(null);
+            if (user == null) {
+                throw new IllegalArgumentException("User not found.");
+            }
+
+            // Comprobar si el nuevo username o email ya existen en OTRO usuario
+            User byUsername = userRepository.findByUsername(userDTO.getUsername());
+            if (byUsername != null && byUsername.getId() != user.getId()) {
+                throw new IllegalArgumentException("Username already exists.");
+            }
+            User byEmail = userRepository.findByEmail(userDTO.getEmail());
+            if (byEmail != null && byEmail.getId() != user.getId()) {
+                throw new IllegalArgumentException("Email already exists.");
+            }
+
+            user.setUsername(userDTO.getUsername());
+            user.setEmail(userDTO.getEmail());
+            if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
+                user.setPassword(userDTO.getPassword()); // En un caso real, hashearíamos la contraseña
+            }
+            UserRole role = userRoleRepository.findById(userDTO.getRoleId()).orElse(null);
+            user.setRole(role);
+            user.setProfilePicLink(userDTO.getProfilePic());
             userRepository.save(user);
         }
     }

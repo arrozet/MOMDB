@@ -60,6 +60,7 @@ public class User implements Serializable, DTO<UserDTO> {
         user.setRoleId(this.role.getId());
         user.setRolename(this.role.getName());
         user.setUsername(this.username);
+        user.setEmail(this.email);
         user.setProfilePic(this.profilePicLink);
         
         // Convertir las películas favoritas a DTOs

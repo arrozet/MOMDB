@@ -29,31 +29,31 @@ public class AdminController extends BaseController {
     @Autowired private AdminService adminService;
 
     /**
-     * Redirige a la página de gestión de roles de usuario por defecto.
+     * Redirige a la página de gestión de usuarios por defecto.
      *
-     * @return La redirección a la página de gestión de roles.
+     * @return La redirección a la página de gestión de usuarios.
      */
     @GetMapping("/")
     public String doInit() {
-        return "redirect:/admin/roles";
+        return "redirect:/admin/users";
     }
 
     /**
-     * Prepara la página de gestión de roles de usuario.
+     * Prepara la página de gestión de usuarios.
      *
      * @param session La sesión HTTP.
      * @param model   El modelo para la vista.
-     * @return La vista "admin/roles" o una redirección si no hay autorización.
+     * @return La vista "admin/users" o una redirección si no hay autorización.
      */
-    @GetMapping("/roles")
-    public String doRoles(HttpSession session, Model model) {
+    @GetMapping("/users")
+    public String doUsers(@RequestParam(value = "filterName", required = false) String filterName, HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
         }
 
-        handleRolesData(model);
+        handleUsersData(model, filterName);
 
-        return "admin/roles";
+        return "admin/users";
     }
 
     /**
@@ -105,10 +105,10 @@ public class AdminController extends BaseController {
                 return "redirect:/login?logout";
             }
         } catch (IllegalArgumentException e) {
-            session.setAttribute("rolesErrorMessage", e.getMessage());
+            session.setAttribute("usersErrorMessage", e.getMessage());
         }
 
-        return "redirect:/admin/roles";
+        return "redirect:/admin/users";
     }
 
     /**
@@ -247,6 +247,35 @@ public class AdminController extends BaseController {
     }
 
     /**
+     * Maneja la petición para borrar un usuario.
+     * @param id El ID del usuario a borrar.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return Una redirección a la lista de usuarios.
+     */
+    @PostMapping("/deleteUser")
+    public String doDeleteUser(@RequestParam("id") int id, HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        UserDTO currentUser = (UserDTO) session.getAttribute("user");
+
+        if (currentUser.getUserId() == id) {
+            session.setAttribute("usersErrorMessage", "You cannot delete your own account. Please ask another administrator to do it.");
+            return "redirect:/admin/users";
+        }
+
+        try {
+            adminService.deleteUser(id, currentUser);
+        } catch (IllegalArgumentException e) {
+            session.setAttribute("usersErrorMessage", e.getMessage());
+        }
+
+        return "redirect:/admin/users";
+    }
+
+    /**
      * Comprueba si el usuario tiene permisos de administrador.
      *
      * @param session La sesión HTTP.
@@ -258,13 +287,19 @@ public class AdminController extends BaseController {
     }
 
     /**
-     * Prepara los datos necesarios para la vista de gestión de roles.
+     * Prepara los datos para la vista de gestión de usuarios.
      *
      * @param model El modelo para la vista.
+     * @param filterName El filtro para buscar usuarios por nombre.
      */
-    private void handleRolesData(Model model) {
-        model.addAttribute("usersForm", this.adminService.getUsersForm());
-        model.addAttribute("userRoles", this.adminService.findAllUserRoles());
+    private void handleUsersData(Model model, String filterName) {
+        List<UserDTO> users = this.adminService.getUsers(filterName);
+        UsersFormDTO usersForm = new UsersFormDTO();
+        usersForm.setUsers(users);
+
+        model.addAttribute("usersForm", usersForm);
+        model.addAttribute("userRoles", this.adminService.getUserRoles());
+        model.addAttribute("filterName", filterName);
     }
 
     /**
@@ -290,5 +325,59 @@ public class AdminController extends BaseController {
         model.addAttribute("genericEntity", genericEntity);
         model.addAttribute("everyEntity", List.of("Genre", "Keyword", "ProductionCompany",
                 "ProductionCountry", "SpokenLanguage", "CrewRole", "UserRole"));
+    }
+
+    /**
+     * Muestra el formulario para añadir un nuevo usuario.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return La vista del formulario para guardar un usuario.
+     */
+    @GetMapping("/addUser")
+    public String doAddUser(Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        model.addAttribute("user", new UserDTO());
+        model.addAttribute("userRoles", adminService.getUserRoles());
+        return "admin/save_user";
+    }
+
+    /**
+     * Muestra el formulario para editar un usuario existente.
+     * @param id El ID del usuario a editar.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return La vista del formulario para guardar un usuario.
+     */
+    @GetMapping("/editUser")
+    public String doEditUser(@RequestParam("id") int id, Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        UserDTO user = adminService.findUser(id);
+        model.addAttribute("user", user);
+        model.addAttribute("userRoles", adminService.getUserRoles());
+        return "admin/save_user";
+    }
+
+    /**
+     * Guarda un usuario (nuevo o existente).
+     * @param userDTO El DTO del usuario con los datos del formulario.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return Una redirección a la lista de usuarios.
+     */
+    @PostMapping("/saveUser")
+    public String doSaveUser(@ModelAttribute("user") UserDTO userDTO, HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        try {
+            adminService.saveUser(userDTO);
+        } catch (IllegalArgumentException e) {
+            session.setAttribute("usersErrorMessage", e.getMessage());
+        }
+        return "redirect:/admin/users";
     }
 }

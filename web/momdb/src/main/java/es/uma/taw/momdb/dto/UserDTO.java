@@ -14,6 +14,8 @@ public class UserDTO {
     int roleId;
     String rolename;
     String username;
+    String email;
+    String password;
     String profilePic;
     List<MovieDTO> favoriteMovies;
 }
