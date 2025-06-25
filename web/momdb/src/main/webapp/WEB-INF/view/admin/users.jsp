@@ -101,12 +101,9 @@
                                         </a>
                                     </p>
                                     <p class="control">
-                                        <form action="/admin/deleteUser" method="post" style="display: inline;">
-                                            <input type="hidden" name="id" value="${user.userId}">
-                                            <button type="submit" class="button is-small is-danger">
-                                                <span class="icon"><i class="fas fa-trash"></i></span>
-                                            </button>
-                                        </form>
+                                        <a href="/admin/deleteUser?id=${user.userId}" class="button is-small is-danger">
+                                            <span class="icon"><i class="fas fa-trash"></i></span>
+                                        </a>
                                     </p>
                                 </div>
                             </td>

@@ -106,6 +106,12 @@ public class AdminController extends BaseController {
             if (selfDemotion) {
                 session.invalidate();
                 return "redirect:/login?logout";
+            } else {
+                // Actualizo la sesión si estoy cambiando mi usuario
+                usersForm.getUsers().stream()
+                        .filter(u -> u.getUserId() == currentUser.getUserId())
+                        .findFirst()
+                        .ifPresent(u -> session.setAttribute("user", adminService.findUser(currentUser.getUserId())));
             }
         } catch (IllegalArgumentException e) {
             session.setAttribute("usersErrorMessage", e.getMessage());
@@ -256,7 +262,7 @@ public class AdminController extends BaseController {
      * @param model El modelo para la vista.
      * @return Una redirección a la lista de usuarios.
      */
-    @PostMapping("/deleteUser")
+    @GetMapping("/deleteUser")
     public String doDeleteUser(@RequestParam("id") int id, HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
@@ -377,6 +383,11 @@ public class AdminController extends BaseController {
         }
         try {
             adminService.saveUser(userDTO);
+
+            UserDTO sessionUser = (UserDTO) session.getAttribute("user");
+            if (userDTO.getUserId() != 0 && sessionUser.getUserId() == userDTO.getUserId()) {
+                session.setAttribute("user", adminService.findUser(userDTO.getUserId()));
+            }
         } catch (IllegalArgumentException e) {
             session.setAttribute("usersErrorMessage", e.getMessage());
         }
