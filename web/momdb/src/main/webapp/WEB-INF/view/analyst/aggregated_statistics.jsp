@@ -13,7 +13,7 @@
 
 <html>
 <head>
-    <title>Estadísticas Agregadas | MOMDB</title>
+    <title>Aggregated Statistics | MOMDB</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/analyst.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -25,7 +25,7 @@
 
 <section class="section">
     <div class="container">
-        <h2 class="title is-4 has-text-white mt-5">Estadísticas Agregadas</h2>
+        <h2 class="title is-4 has-text-white mt-5">Aggregated Statistics</h2>
 
         <c:choose>
             <c:when test="${not empty statistics}">
@@ -85,7 +85,7 @@
             </c:when>
             <c:otherwise>
                 <div class="notification is-info is-light">
-                    <p class="has-text-centered">No se pudieron calcular las estadísticas.</p>
+                    <p class="has-text-centered">Could not calculate statistics.</p>
                 </div>
             </c:otherwise>
         </c:choose>
@@ -148,8 +148,8 @@
                             const text = item.innerText;
                             let parts;
 
-                            // Case 1: Rentabilidad (e.g., "Actor Name (Rentabilidad: $1,234.56M)")
-                            parts = text.split(' (Rentabilidad:');
+                            // Case 1: Profitability (e.g., "Actor Name (Profitability: $1,234.56M)")
+                            parts = text.split(' (Profitability:');
                             if (parts.length === 2) {
                                 const name = parts[0];
                                 let valueString = parts[1].replace(/[^\d,.-]/g, ''); // Keep only numbers and separators
@@ -164,13 +164,13 @@
                                 labels.push(name);
                                 data.push(parseFloat(valueString));
                             }
-                            // Case 2: Evolución de duración (e.g., "Década de 1990: 105,5 minutos")
+                            // Case 2: Runtime Evolution (e.g., "1990s: 105.5 minutes")
                             else {
                                 parts = text.split(':');
                                 if (parts.length > 1) {
                                     const name = parts[0].trim();
                                     let valueString = parts.slice(1).join(':').trim();
-                                    // Remove any text after the number, e.g., " minutos"
+                                    // Remove any text after the number, e.g., " minutes"
                                     valueString = valueString.split(' ')[0];
                                     // Standardize decimal separator to dot for parseFloat
                                     valueString = valueString.replace(',', '.');

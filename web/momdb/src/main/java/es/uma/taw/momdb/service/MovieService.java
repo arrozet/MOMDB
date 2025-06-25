@@ -443,30 +443,30 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
 
         // Género con mayor recaudación media
         List<Object[]> genreWithHighestAvgRevenue = movieRepository.findGenreWithHighestAverageRevenue();
-        if (genreWithHighestAvgRevenue != null && genreWithHighestAvgRevenue.size() > 0) {
-            Object[] result = (Object[]) genreWithHighestAvgRevenue.get(0);
+        if (genreWithHighestAvgRevenue != null && !genreWithHighestAvgRevenue.isEmpty()) {
+            Object[] result = genreWithHighestAvgRevenue.get(0);
             String genreName = (String) result[0];
             Double avgRevenue = (Double) result[1];
-            statistics.add(new es.uma.taw.momdb.dto.AggregatedStatisticDTO("Género con mayor recaudación media", genreName, String.format("Recaudación media: $%,.2f", avgRevenue)));
+            statistics.add(new es.uma.taw.momdb.dto.AggregatedStatisticDTO("Genre with Highest Average Revenue", genreName, String.format("Average Revenue: $%,.2f", avgRevenue)));
         }
 
         // Correlación presupuesto-ingresos
         Double budgetRevenueCorrelation = movieRepository.findBudgetRevenueCorrelation();
-        statistics.add(new es.uma.taw.momdb.dto.AggregatedStatisticDTO("Correlación Presupuesto-Ingresos", String.format("%.4f", budgetRevenueCorrelation), "Coeficiente de correlación de Pearson"));
+        statistics.add(new es.uma.taw.momdb.dto.AggregatedStatisticDTO("Budget-Revenue Correlation", String.format("%.4f", budgetRevenueCorrelation), "Pearson correlation coefficient"));
 
         // 10 actores más rentables
         List<Object[]> top10ProfitableActors = movieRepository.findMostProfitableActors(PageRequest.of(0, 10));
         List<String> profitableActorsList = top10ProfitableActors.stream()
-                .map(row -> String.format("%s (Rentabilidad: $%,.2fM)", row[0], ((Number) row[1]).doubleValue() / 1000000.0))
+                .map(row -> String.format("%s (Profitability: $%,.2fM)", row[0], ((Number) row[1]).doubleValue() / 1000000.0))
                 .collect(Collectors.toList());
-        statistics.add(new AggregatedStatisticDTO("Top 10 Actores más rentables (en millones)", profitableActorsList, "Basado en la suma de ingresos de sus películas"));
+        statistics.add(new AggregatedStatisticDTO("Top 10 Most Profitable Actors (in millions)", profitableActorsList, "Based on the sum of their movies' revenue"));
 
         // 10 directores más rentables
         List<Object[]> top10ProfitableDirectors = movieRepository.findMostProfitableDirectors(PageRequest.of(0, 10));
         List<String> profitableDirectorsList = top10ProfitableDirectors.stream()
-                .map(row -> String.format("%s (Rentabilidad: $%,.2fM)", row[0], ((Number) row[1]).doubleValue() / 1000000.0))
+                .map(row -> String.format("%s (Profitability: $%,.2fM)", row[0], ((Number) row[1]).doubleValue() / 1000000.0))
                 .collect(Collectors.toList());
-        statistics.add(new AggregatedStatisticDTO("Top 10 Directores más rentables (en millones)", profitableDirectorsList, "Basado en la suma de ingresos de sus películas"));
+        statistics.add(new AggregatedStatisticDTO("Top 10 Most Profitable Directors (in millions)", profitableDirectorsList, "Based on the sum of their movies' revenue"));
 
 
         // Evolución de la duración media por década
@@ -477,7 +477,7 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
                         LinkedHashMap::new,
                         Collectors.averagingDouble(row -> ((Number) row[1]).doubleValue())
                 ));
-        statistics.add(new AggregatedStatisticDTO("Evolución de la duración media por década", runtimeEvolutionMap, "Duración media en minutos"));
+        statistics.add(new AggregatedStatisticDTO("Average Runtime Evolution by Decade", runtimeEvolutionMap, "Average runtime in minutes"));
 
 
         return statistics;
