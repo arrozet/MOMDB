@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  * Proporciona métodos para buscar, crear, actualizar y eliminar películas, así como
  * calcular estadísticas y generar recomendaciones.
  * 
- * @author Artur797 (Artur Vargas), projectGeorge (Jorge Repullo), edugbau (Eduardo González), amcgiluma (Juan Manuel Valenzuela)
+ * @author Artur797 (Artur Vargas), projectGeorge (Jorge Repullo), edugbau (Eduardo González), amcgiluma (Juan Manuel Valenzuela), arrozet (Rubén Oliva, Javadocs)
  */
 
 @Service
@@ -370,8 +370,20 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
 
         return this.entity2DTO(recommendedMovies);
     }
-//TODO: optimizar pasando cosas a repository
+
+    /**
+     * Encuentra y clasifica a los miembros del equipo y reparto que son comunes a dos películas.
+     * Identifica a las personas que han trabajado en ambas películas y las divide en dos categorías:
+     * "sharedCast" para aquellos que actuaron en ambas, y "sharedCrew" para aquellos que tuvieron
+     * roles técnicos (no de actuación) en ambas.
+     *
+     * @param movieId1 El ID de la primera película para la comparación.
+     * @param movieId2 El ID de la segunda película para la comparación.
+     * @return Un mapa que contiene dos listas: una para el reparto en común ("sharedCast")
+     *         y otra para el equipo técnico en común ("sharedCrew").
+     */
     public Map<String, List<PersonDTO>> getCommonCrew(Integer movieId1, Integer movieId2) {
+        //TODO: optimizar pasando cosas a repository
         List<Integer> commonPersonIds = movieRepository.findCommonPersonIds(movieId1, movieId2);
 
         List<es.uma.taw.momdb.dto.PersonDTO> sharedCast = new ArrayList<>();
