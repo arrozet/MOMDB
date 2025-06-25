@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-/*
- * @author - amcgiluma (Juan Manuel Valenzuela)
- * @co-authors -
+/**
+ * Controlador para gestionar el registro de nuevos usuarios.
+ *
+ * @author amcgiluma (Juan Manuel Valenzuela), arrozet (Rubén Oliva, Javadocs)
  */
 @Controller
 public class RegisterController {
@@ -25,12 +26,28 @@ public class RegisterController {
     @Autowired
     private LoginService loginService;
 
+    /**
+     * Muestra el formulario de registro.
+     *
+     * @param model El modelo para la vista.
+     * @return El nombre de la vista "register".
+     */
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
         model.addAttribute("user", new UserRegistrationDTO());
         return "register";
     }
 
+    /**
+     * Procesa la petición de registro de un nuevo usuario.
+     * Si el registro es exitoso, inicia la sesión del usuario y lo redirige a su página principal.
+     * Si hay un error, muestra el mensaje correspondiente en el formulario de registro.
+     *
+     * @param userRegistrationDTO DTO con los datos del formulario de registro.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return Una redirección a la página principal del usuario o la vista de registro si hay errores.
+     */
     @PostMapping("/register")
     public String processRegistration(@ModelAttribute("user") UserRegistrationDTO userRegistrationDTO,
                                       Model model,

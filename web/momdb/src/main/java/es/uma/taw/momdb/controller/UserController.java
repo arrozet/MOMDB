@@ -22,9 +22,12 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-/*
- * @author - projectGeorge (Jorge Repullo)
- * @co-authors - arrozet (Rubén Oliva - refactorización para auth)
+/**
+ * Controlador para las funcionalidades del rol de Usuario.
+ * Permite a los usuarios navegar por las películas, gestionar sus favoritos y watchlist,
+ * editar su perfil y escribir reseñas.
+ *
+ * @author projectGeorge (Jorge Repullo), arrozet (Rubén Oliva - refactorización para auth, Javadocs)
  */
 
 @Controller
@@ -51,6 +54,15 @@ public class UserController extends BaseController{
     @Autowired
     protected WatchlistService watchlistService;
 
+    /**
+     * Inicializa la página principal del usuario.
+     * Muestra una lista paginada de películas, aplicando filtros si existen en la sesión.
+     *
+     * @param page El número de página a mostrar.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return La vista "user/user" o una redirección si no hay autorización.
+     */
     @GetMapping("/")
     public String doInit(@RequestParam(name = "page", defaultValue = "1") int page, HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -65,6 +77,14 @@ public class UserController extends BaseController{
         return this.listarPeliculasConFiltro(filtro, page, model, session);
     }
 
+    /**
+     * Aplica un filtro a la lista de películas.
+     *
+     * @param session La sesión HTTP.
+     * @param filter El filtro a aplicar.
+     * @param model El modelo para la vista.
+     * @return La vista "user/user" con las películas filtradas.
+     */
     @PostMapping("/filtrar")
     public String doFiltrar(HttpSession session, @ModelAttribute("filtro") Filtro filter, Model model) {
         if (!checkAuth(session, model)) {
@@ -74,6 +94,15 @@ public class UserController extends BaseController{
         return this.listarPeliculasConFiltro(filter, 1, model, session);
     }
 
+    /**
+     * Prepara el modelo con la lista de películas filtradas y paginadas.
+     *
+     * @param filtro El filtro a aplicar.
+     * @param page El número de página.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return El nombre de la vista a renderizar.
+     */
     protected String listarPeliculasConFiltro(Filtro filtro, int page, Model model, HttpSession session) {
         if (filtro == null) {
             filtro = new Filtro();
@@ -101,6 +130,14 @@ public class UserController extends BaseController{
         return "user/user";
     }
 
+    /**
+     * Muestra los detalles de una película.
+     *
+     * @param id El ID de la película.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return La vista "user/movie_details" o una redirección si la película no existe.
+     */
     @GetMapping("/movie")
     public String verPelicula(@RequestParam("id") Integer id, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
@@ -123,6 +160,13 @@ public class UserController extends BaseController{
         return "user/movie_details";
     }
 
+    /**
+     * Muestra la lista de películas favoritas del usuario.
+     *
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return La vista "user/favorites".
+     */
     @GetMapping("/favorites")
     public String verFavoritos(HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -136,6 +180,13 @@ public class UserController extends BaseController{
         return "user/favorites";
     }
 
+    /**
+     * Añade una película a la lista de favoritos del usuario.
+     *
+     * @param movieId El ID de la película a añadir.
+     * @param session La sesión HTTP.
+     * @return Redirección a la página principal del usuario.
+     */
     @PostMapping("/favorites/add")
     public String anyadirAFavoritos(@RequestParam("movieId") Integer movieId, HttpSession session) {
         UserDTO user = (UserDTO) session.getAttribute("user");
@@ -147,6 +198,13 @@ public class UserController extends BaseController{
         return "redirect:/user/";
     }
 
+    /**
+     * Elimina una película de la lista de favoritos del usuario.
+     *
+     * @param movieId El ID de la película a eliminar.
+     * @param session La sesión HTTP.
+     * @return Redirección a la lista de favoritos.
+     */
     @PostMapping("/favorites/remove")
     public String eliminarDeFavoritos(@RequestParam("movieId") Integer movieId, HttpSession session) {
         UserDTO user = (UserDTO) session.getAttribute("user");
@@ -158,6 +216,13 @@ public class UserController extends BaseController{
         return "redirect:/user/favorites";
     }
 
+    /**
+     * Comprueba si una película está en la lista de favoritos del usuario.
+     *
+     * @param movieId El ID de la película a comprobar.
+     * @param session La sesión HTTP.
+     * @return "true" si es favorita, "false" en caso contrario.
+     */
     @GetMapping("/favorites/check")
     @ResponseBody
     public String checkearFavorito(@RequestParam("movieId") Integer movieId, HttpSession session) {
@@ -170,6 +235,16 @@ public class UserController extends BaseController{
         return isFavorite ? "true" : "false";
     }
 
+    /**
+     * Añade o elimina una película de la lista de favoritos.
+     *
+     * @param movieId El ID de la película.
+     * @param action La acción a realizar ("add" o "remove").
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @param request La petición HTTP.
+     * @return Redirección a la página anterior o a la principal.
+     */
     @PostMapping("/favorites/toggle")
     public String toggleFavorito(@RequestParam("movieId") Integer movieId,
                                  @RequestParam("action") String action,
@@ -194,6 +269,13 @@ public class UserController extends BaseController{
         return "redirect:/user/";
     }
 
+    /**
+     * Muestra el perfil del usuario.
+     *
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return La vista "user/profile".
+     */
     @GetMapping("/profile")
     public String verPerfil(HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -209,6 +291,14 @@ public class UserController extends BaseController{
         return "user/profile";
     }
 
+    /**
+     * Procesa la edición del perfil del usuario.
+     *
+     * @param userDTO DTO con los datos del usuario a actualizar.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return Redirección al perfil del usuario.
+     */
     @PostMapping("/editProfile")
     public String editarPerfil(@ModelAttribute("userDTO") UserDTO userDTO, HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -226,6 +316,14 @@ public class UserController extends BaseController{
         return "redirect:/user/";
     }
 
+    /**
+     * Muestra el formulario para escribir o editar una reseña de una película.
+     *
+     * @param movieId El ID de la película.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return La vista "user/write_review".
+     */
     @GetMapping("/review/write")
     public String escribirReview(@RequestParam("id") Integer movieId, HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -244,6 +342,15 @@ public class UserController extends BaseController{
         return "user/write_review";
     }
 
+    /**
+     * Guarda o actualiza una reseña.
+     *
+     * @param reviewDTO DTO con los datos de la reseña.
+     * @param from Cadena opcional para redirigir a la página de "Mis reseñas".
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return Redirección a la página de detalles de la película o a "Mis reseñas".
+     */
     @PostMapping("/review/save")
     public String guardarReview(@ModelAttribute("reviewDTO") ReviewDTO reviewDTO,
                                 @RequestParam(value = "from", required = false) String from,
@@ -262,6 +369,16 @@ public class UserController extends BaseController{
         }
     }
 
+    /**
+     * Elimina una reseña.
+     *
+     * @param movieId El ID de la película.
+     * @param userId El ID del usuario.
+     * @param from Cadena opcional para redirigir a la página de "Mis reseñas".
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return Redirección a la página de detalles de la película o a "Mis reseñas".
+     */
     @GetMapping("/movie/review/delete")
     public String eliminarReview(@RequestParam("movieId") Integer movieId,
                                  @RequestParam("userId") Integer userId,
@@ -280,6 +397,13 @@ public class UserController extends BaseController{
         }
     }
 
+    /**
+     * Muestra todas las reseñas escritas por el usuario.
+     *
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return La vista "user/user_reviews".
+     */
     @GetMapping("/userReviews")
     public String verMisReviews(HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -293,6 +417,13 @@ public class UserController extends BaseController{
         return "user/user_reviews";
     }
 
+    /**
+     * Muestra la watchlist del usuario.
+     *
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return La vista "user/watchlist".
+     */
     @GetMapping("/watchlist")
     public String verWatchlist(HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -306,6 +437,13 @@ public class UserController extends BaseController{
         return "user/watchlist";
     }
 
+    /**
+     * Añade una película a la watchlist del usuario.
+     *
+     * @param movieId El ID de la película a añadir.
+     * @param session La sesión HTTP.
+     * @return Redirección a la página principal del usuario.
+     */
     @PostMapping("/watchlist/add")
     public String anyadirAWatchlist(@RequestParam("movieId") Integer movieId, HttpSession session) {
         UserDTO user = (UserDTO) session.getAttribute("user");
@@ -317,6 +455,13 @@ public class UserController extends BaseController{
         return "redirect:/user/";
     }
 
+    /**
+     * Elimina una película de la watchlist del usuario.
+     *
+     * @param movieId El ID de la película a eliminar.
+     * @param session La sesión HTTP.
+     * @return Redirección a la watchlist.
+     */
     @PostMapping("/watchlist/remove")
     public String eliminarDeWatchlist(@RequestParam("movieId") Integer movieId, HttpSession session) {
         UserDTO user = (UserDTO) session.getAttribute("user");
@@ -328,6 +473,16 @@ public class UserController extends BaseController{
         return "redirect:/user/watchlist";
     }
 
+    /**
+     * Añade o elimina una película de la watchlist.
+     *
+     * @param movieId El ID de la película.
+     * @param action La acción a realizar ("add" o "remove").
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @param request La petición HTTP.
+     * @return Redirección a la página anterior o a la principal.
+     */
     @PostMapping("/watchlist/toggle")
     public String toggleWatchlist(@RequestParam("movieId") Integer movieId,
                                   @RequestParam("action") String action,
@@ -352,6 +507,13 @@ public class UserController extends BaseController{
         return "redirect:/user/";
     }
 
+    /**
+     * Muestra la página para que un usuario pueda mejorar su cuenta a Recomendador.
+     *
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return La vista "user/upgrade_pro" o una redirección si el usuario no es de tipo "usuario".
+     */
     @GetMapping("/upgrade")
     public String upgradePage(HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -364,6 +526,13 @@ public class UserController extends BaseController{
         return "user/upgrade_pro";
     }
 
+    /**
+     * Procesa la petición para mejorar la cuenta de un usuario a Recomendador.
+     *
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return Redirección al área de recomendador.
+     */
     @PostMapping("/perform-upgrade")
     public String performUpgrade(HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -374,6 +543,7 @@ public class UserController extends BaseController{
         session.setAttribute("user", updatedUser);
         return "redirect:/recommender/";
     }
+    
     /**
      * Comprueba si el usuario en sesión tiene el rol de usuario.
      * Utiliza el método centralizado de BaseController para realizar la verificación.

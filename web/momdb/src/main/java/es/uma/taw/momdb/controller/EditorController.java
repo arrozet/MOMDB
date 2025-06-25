@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/*
- * @author - Artur797 (Artur Vargas)
- * @co-authors - arrozet (Rubén Oliva - refactorización para auth)
+/**
+ * Controlador para las funcionalidades del rol Editor.
+ * Permite la gestión de películas, incluyendo su creación, edición y borrado,
+ * así como la gestión de su reparto, equipo técnico y reseñas.
+ *
+ * @author Artur797 (Artur Vargas), arrozet (Rubén Oliva - refactorización para auth, Javadocs)
  */
-
 @Controller
 @RequestMapping("/editor")
 public class EditorController extends BaseController{
@@ -46,6 +48,15 @@ public class EditorController extends BaseController{
     @Autowired
     private CrewRoleService crewRoleService;
 
+    /**
+     * Inicializa la página principal del editor.
+     * Muestra una lista paginada de películas.
+     *
+     * @param page El número de página a mostrar.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return La vista "editor/editor" o una redirección si no hay autorización.
+     */
     @GetMapping("/")
     public String doInit(@RequestParam(name = "page", defaultValue = "1") int page, HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -55,6 +66,15 @@ public class EditorController extends BaseController{
         }
     }
 
+    /**
+     * Prepara el modelo con la lista de películas filtradas y paginadas.
+     *
+     * @param filtro El filtro a aplicar.
+     * @param page El número de página a mostrar.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return El nombre de la vista a renderizar.
+     */
     protected String listarPeliculasConFiltro(Filtro filtro, int page, Model model, HttpSession session) {
         if (filtro == null) {
             filtro = new Filtro();
@@ -69,6 +89,14 @@ public class EditorController extends BaseController{
         return "editor/editor";
     }
 
+    /**
+     * Aplica un filtro a la lista de películas.
+     *
+     * @param session La sesión HTTP.
+     * @param filtro El filtro a aplicar.
+     * @param model El modelo para la vista.
+     * @return La vista "editor/editor" con las películas filtradas.
+     */
     @PostMapping("/filtrar")
     public String doFiltrar(HttpSession session, @ModelAttribute("filtro") Filtro filtro, Model model) {
         if (!checkAuth(session, model)) {
@@ -78,6 +106,15 @@ public class EditorController extends BaseController{
     }
 
 
+    /**
+     * Maneja la carga de datos de una película para diferentes secciones de edición.
+     *
+     * @param id El ID de la película.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @param viewName El nombre de la vista a la que se redirigirá.
+     * @return El nombre de la vista o una redirección si la película no se encuentra.
+     */
     private String handleMovieSection(Integer id, Model model, HttpSession session, String viewName) {
 
         MovieDTO movie = this.movieService.findPeliculaById(id);
@@ -89,6 +126,14 @@ public class EditorController extends BaseController{
         return viewName;
     }
 
+    /**
+     * Muestra el formulario para ver o editar los detalles de una película.
+     *
+     * @param id El ID de la película.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return La vista "editor/movie_editor".
+     */
     @GetMapping("/movie")
     public String verPelicula(@RequestParam("id") Integer id, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
@@ -100,6 +145,14 @@ public class EditorController extends BaseController{
         return handleMovieSection(id, model, session, "editor/movie_editor");
     }
 
+    /**
+     * Muestra la lista de personajes de una película.
+     *
+     * @param id El ID de la película.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return La vista "editor/movie_characters".
+     */
     @GetMapping("/movie/characters")
     public String movieCharacters(@RequestParam("id") Integer id, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
@@ -109,6 +162,14 @@ public class EditorController extends BaseController{
         return handleMovieSection(id, model, session, "editor/movie_characters");
     }
 
+    /**
+     * Muestra la lista del equipo técnico de una película.
+     *
+     * @param id El ID de la película.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return La vista "editor/movie_crew".
+     */
     @GetMapping("/movie/crew")
     public String movieCrew(@RequestParam("id") Integer id, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
@@ -117,6 +178,14 @@ public class EditorController extends BaseController{
         return handleMovieSection(id, model, session, "editor/movie_crew");
     }
 
+    /**
+     * Muestra las reseñas de una película.
+     *
+     * @param id El ID de la película.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return La vista "editor/movie_reviews".
+     */
     @GetMapping("/movie/reviews")
     public String movieReviews(@RequestParam("id") Integer id, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
@@ -131,6 +200,15 @@ public class EditorController extends BaseController{
         return "editor/movie_reviews";
     }
 
+    /**
+     * Elimina una reseña de una película.
+     *
+     * @param movieId El ID de la película.
+     * @param userId El ID del usuario que escribió la reseña.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return Redirige a la lista de reseñas de la película.
+     */
     @GetMapping("/movie/review/delete")
     public String deleteReview(@RequestParam("movieId") Integer movieId, 
                              @RequestParam("userId") Integer userId,
@@ -157,6 +235,13 @@ public class EditorController extends BaseController{
         return super.checkAuth(session, model, "editor");
     }
 
+    /**
+     * Guarda o actualiza una película.
+     * Si el ID es -1, crea una nueva película; de lo contrario, la actualiza.
+     *
+     * @param movie DTO de la película con los datos a guardar.
+     * @return Redirige a la página principal del editor.
+     */
     @PostMapping("/saveMovie")
     public String doGuardar (@ModelAttribute("movie") MovieDTO movie) {
         if (movie.getId() == -1) {
@@ -170,6 +255,14 @@ public class EditorController extends BaseController{
         return "redirect:/editor/";
     }
 
+    /**
+     * Elimina una película.
+     *
+     * @param id El ID de la película a eliminar.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return Redirige a la página principal del editor.
+     */
     @GetMapping("/delete")
     public String doBorrar (@RequestParam("id") Integer id, HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -180,6 +273,16 @@ public class EditorController extends BaseController{
         }
     }
 
+    /**
+     * Muestra una lista paginada de personas (actores y equipo técnico).
+     *
+     * @param filtro Objeto para filtrar por texto.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @param page Número de página.
+     * @param size Tamaño de la página.
+     * @return La vista "editor/people".
+     */
     @GetMapping("/people")
     public String listPeople(@ModelAttribute("filtro") Filtro filtro, HttpSession session, Model model,
                             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
@@ -199,6 +302,15 @@ public class EditorController extends BaseController{
 
     }
 
+    /**
+     * Muestra el formulario para editar un personaje de una película.
+     *
+     * @param id El ID del registro en la tabla crew.
+     * @param characterId El ID del personaje.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return La vista "editor/edit_character".
+     */
     @GetMapping("/movie/character/edit")
     public String editCharacter(@RequestParam("id") Integer id, @RequestParam("characterId") Integer characterId, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
@@ -219,6 +331,14 @@ public class EditorController extends BaseController{
         return "/editor/edit_character";
     }
 
+    /**
+     * Guarda los cambios de un personaje.
+     *
+     * @param crew DTO con los datos del personaje y su actor.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return Redirige a la lista de personajes de la película.
+     */
     @PostMapping("/movie/character/save")
     public String saveCharacter(@ModelAttribute("crew") CrewDTO crew, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
@@ -230,6 +350,15 @@ public class EditorController extends BaseController{
     }
 
     
+    /**
+     * Elimina un personaje de una película.
+     *
+     * @param characterId El ID del personaje a eliminar.
+     * @param crewId El ID del registro en la tabla crew.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return Redirige a la lista de personajes de la película.
+     */
     @GetMapping("/movie/character/delete")
     public String deleteCharacter(@RequestParam("characterId") int characterId, @RequestParam("crewId") int crewId, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
@@ -241,6 +370,14 @@ public class EditorController extends BaseController{
         return "redirect:/editor/movie/characters?id=" + crew.getPeliculaId();
     }
 
+    /**
+     * Muestra el formulario para añadir un nuevo personaje a una película.
+     *
+     * @param movieId El ID de la película.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return La vista "editor/add_character".
+     */
     @GetMapping("/movie/character/new")
     public String addCharacter(@RequestParam("movieId") int movieId, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
@@ -256,6 +393,14 @@ public class EditorController extends BaseController{
         return "editor/add_character";
     }
 
+    /**
+     * Procesa la adición de un nuevo personaje a una película.
+     *
+     * @param crew DTO con los datos del nuevo personaje.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return Redirige a la lista de personajes de la película.
+     */
     @PostMapping("/movie/character/add")
     public String doAddCharacter(@ModelAttribute("crew") CrewDTO crew, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
@@ -266,6 +411,13 @@ public class EditorController extends BaseController{
         return "redirect:/editor/movie/characters?id=" + crew.getPeliculaId();
     }
 
+    /**
+     * Muestra el formulario para crear una nueva película.
+     *
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return La vista "editor/movie_editor".
+     */
     @GetMapping("/newMovie")
     public String newMovie(Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
@@ -279,6 +431,14 @@ public class EditorController extends BaseController{
         return "editor/movie_editor";
     }
 
+    /**
+     * Elimina una persona de la base de datos.
+     *
+     * @param id El ID de la persona a eliminar.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return Redirige a la lista de personas.
+     */
     @GetMapping("/person/delete")
     public String deletePerson(@RequestParam("id") Integer id, HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -288,6 +448,13 @@ public class EditorController extends BaseController{
         return "redirect:/editor/people";
     }
 
+    /**
+     * Muestra el formulario para añadir una nueva persona.
+     *
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return La vista "editor/edit_person".
+     */
     @GetMapping("/person/add")
     public String addPersonForm(Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
@@ -297,6 +464,14 @@ public class EditorController extends BaseController{
         return "editor/edit_person";
     }
 
+    /**
+     * Muestra el formulario para editar una persona existente.
+     *
+     * @param id El ID de la persona a editar.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return La vista "editor/edit_person".
+     */
     @GetMapping("/person/edit")
     public String editPerson(@RequestParam("id") Integer id, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
@@ -309,6 +484,14 @@ public class EditorController extends BaseController{
         return "editor/edit_person";
     }
 
+    /**
+     * Guarda los datos de una persona (nueva o existente).
+     *
+     * @param person DTO con los datos de la persona.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return Redirige a la lista de personas.
+     */
     @PostMapping("/person/save")
     public String savePerson(@ModelAttribute("person") PersonDTO person, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
@@ -318,6 +501,15 @@ public class EditorController extends BaseController{
         return "redirect:/editor/people";
     }
 
+    /**
+     * Elimina un miembro del equipo técnico de una película.
+     *
+     * @param crewId El ID del registro en la tabla crew.
+     * @param movieId El ID de la película.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return Redirige a la lista del equipo técnico de la película.
+     */
     @GetMapping("/movie/crew/delete")
     public String deleteCrew(@RequestParam("crewId") int crewId, @RequestParam("movieId") int movieId, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
@@ -327,6 +519,14 @@ public class EditorController extends BaseController{
         return "redirect:/editor/movie/crew?id=" + movieId;
     }
 
+    /**
+     * Muestra el formulario para editar un miembro del equipo técnico.
+     *
+     * @param crewId El ID del registro en la tabla crew.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return La vista "editor/edit_crew".
+     */
     @GetMapping("/movie/crew/edit")
     public String editCrew(@RequestParam("crewId") Integer crewId, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
@@ -343,6 +543,14 @@ public class EditorController extends BaseController{
         return "editor/edit_crew";
     }
 
+    /**
+     * Guarda los cambios de un miembro del equipo técnico.
+     *
+     * @param crew DTO con los datos a guardar.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return Redirige a la lista del equipo técnico de la película o recarga el formulario si hay un error.
+     */
     @PostMapping("/movie/crew/save")
     public String saveCrew(@ModelAttribute("crew") CrewDTO crew, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
@@ -361,6 +569,14 @@ public class EditorController extends BaseController{
         return "redirect:/editor/movie/crew?id=" + crew.getPeliculaId();
     }
 
+    /**
+     * Muestra el formulario para añadir un nuevo miembro del equipo técnico a una película.
+     *
+     * @param movieId El ID de la película.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return La vista "editor/edit_crew".
+     */
     @GetMapping("/movie/crew/new")
     public String addCrew(@RequestParam("movieId") int movieId, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {

@@ -4,15 +4,12 @@ import es.uma.taw.momdb.dto.UserDTO;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.ui.Model;
 
-/*
- * @author - arrozet (Rubén Oliva)
- * @co-authors -
- */
-
 /**
  * Controlador base que proporciona funcionalidades comunes de autenticación y autorización
  * para el resto de controladores de la aplicación.
  * Centraliza la lógica de comprobación de sesión y roles.
+ * 
+ * @author arrozet (Rubén Oliva)
  */
 public class BaseController {
     /**

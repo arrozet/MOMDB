@@ -13,14 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/*
- * @author - arrozet (Rubén Oliva)
- * @co-authors -
- */
-
 /**
  * Controlador para la gestión de las funcionalidades del administrador.
  * Permite la gestión de usuarios y entidades del sistema.
+ 
+ * @author arrozet (Rubén Oliva)
  */
 @Controller
 @RequestMapping("/admin")

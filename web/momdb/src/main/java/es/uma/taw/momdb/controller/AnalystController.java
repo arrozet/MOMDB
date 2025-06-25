@@ -15,9 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/*
- * @author - edugbau (Eduardo González)
- * @co-authors - arrozet (Rubén Oliva - refactorización para auth)
+/**
+ * Controlador para la gestión de las funcionalidades del analista.
+ * Permite visualizar películas, compararlas y ver analíticas de géneros.
+ *
+ * @author edugbau (Eduardo González), arrozet (Rubén Oliva - refactorización para auth, Javadocs)
  */
 
 @Controller
@@ -31,6 +33,15 @@ public class AnalystController extends BaseController {
     @Autowired
     private GeneroService generoService;
 
+    /**
+     * Inicializa la página principal del analista.
+     * Muestra una lista paginada de películas, aplicando filtros si existen en la sesión.
+     *
+     * @param page El número de página a mostrar.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return La vista "analyst/analyst" o una redirección si no hay autorización.
+     */
     @GetMapping("/")
     public String doInit(@RequestParam(name = "page", defaultValue = "1") int page, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
@@ -45,6 +56,15 @@ public class AnalystController extends BaseController {
         return this.listarPeliculasConFiltro(filtro, page, model, session);
     }
 
+    /**
+     * Aplica un filtro a la lista de películas.
+     * Guarda el filtro en la sesión y redirige a la vista principal para mostrar los resultados.
+     *
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @param filter El filtro a aplicar.
+     * @return La vista "analyst/analyst" con las películas filtradas.
+     */
     @PostMapping("/filtrar")
     public String doFiltrar(HttpSession session, Model model, @ModelAttribute("filtro") Filtro filter) {
         if (!checkAuth(session, model)) {
@@ -55,11 +75,29 @@ public class AnalystController extends BaseController {
         return this.listarPeliculasConFiltro(filter, 1, model, session);
     }
 
+    /**
+     * Prepara el modelo con la lista de películas filtradas y paginadas.
+     *
+     * @param filtro El filtro a aplicar.
+     * @param page El número de página a mostrar.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return El nombre de la vista a renderizar.
+     */
     protected String listarPeliculasConFiltro(Filtro filtro, int page, Model model, HttpSession session) {
         addFilteredMoviesToModel(filtro, page, model);
         return "analyst/analyst";
     }
 
+    /**
+     * Añade al modelo los datos necesarios para la vista de películas filtradas.
+     * Incluye la lista de películas paginada, los géneros para el filtro,
+     * el filtro actual y la información de paginación.
+     *
+     * @param filtro El filtro a aplicar a la búsqueda de películas. Si es nulo, se crea uno nuevo.
+     * @param page El número de página actual.
+     * @param model El modelo al que se añadirán los atributos para la vista.
+     */
     private void addFilteredMoviesToModel(Filtro filtro, int page, Model model) {
         if (filtro == null) {
             filtro = new Filtro();
@@ -75,6 +113,14 @@ public class AnalystController extends BaseController {
         model.addAttribute("totalPages", moviePage.getTotalPages());
     }
 
+    /**
+     * Muestra los detalles de una película específica.
+     *
+     * @param id El ID de la película a mostrar.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return La vista "analyst/movie_details" o una redirección si no hay autorización.
+     */
     @GetMapping("/movie/{id}")
     public String doShowMovie(@PathVariable("id") Integer id, HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -87,6 +133,14 @@ public class AnalystController extends BaseController {
         return "analyst/movie_details";
     }
 
+    /**
+     * Muestra una comparativa de métricas de una película con la media total y la media por género.
+     *
+     * @param id El ID de la película a comparar.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return La vista "analyst/movie_comparison" o una redirección si no hay autorización.
+     */
     @GetMapping("/movie/{id}/comparison")
     public String doShowMovieComparison(@PathVariable("id") Integer id, HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -153,6 +207,17 @@ public class AnalystController extends BaseController {
         return "analyst/movie_comparison";
     }
 
+    /**
+     * Muestra la página para comparar dos películas.
+     * Carga las películas seleccionadas y su reparto en común si se proporcionan IDs.
+     *
+     * @param page El número de página para la lista de películas.
+     * @param movieId1 El ID de la primera película a comparar (opcional).
+     * @param movieId2 El ID de la segunda película a comparar (opcional).
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return La vista "analyst/compare" o una redirección si no hay autorización.
+     */
     @GetMapping("/compare")
     public String showComparePage(@RequestParam(name = "page", defaultValue = "1") int page,
                                   @RequestParam(name = "movieId1", required = false) Integer movieId1,
@@ -182,6 +247,17 @@ public class AnalystController extends BaseController {
         return "analyst/compare";
     }
 
+    /**
+     * Realiza la comparación entre dos películas.
+     * Muestra los detalles de ambas películas y el reparto que tienen en común.
+     *
+     * @param movieId1 El ID de la primera película.
+     * @param movieId2 El ID de la segunda película.
+     * @param page El número de página actual de la lista de películas.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return La vista "analyst/compare" con los resultados de la comparación.
+     */
     @PostMapping("/compare")
     public String doCompare(@RequestParam("movieId1") Integer movieId1,
                             @RequestParam("movieId2") Integer movieId2,
@@ -207,6 +283,17 @@ public class AnalystController extends BaseController {
         return "analyst/compare";
     }
 
+    /**
+     * Aplica un filtro a la lista de películas en la página de comparación.
+     * Guarda el filtro en sesión y redirige a la página de comparación manteniendo las películas seleccionadas.
+     *
+     * @param filtro El filtro a aplicar.
+     * @param movieId1 El ID de la primera película seleccionada (opcional).
+     * @param movieId2 El ID de la segunda película seleccionada (opcional).
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return Una redirección a la página de comparación.
+     */
     @PostMapping("/compare/filtrar")
     public String doFiltrarCompare(@ModelAttribute("filtro") Filtro filtro,
                                    @RequestParam(name = "movieId1", required = false) String movieId1,
@@ -230,6 +317,13 @@ public class AnalystController extends BaseController {
         return redirectUrl.toString();
     }
 
+    /**
+     * Muestra la herramienta de analíticas por género.
+     *
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return La vista "analyst/genre_analytics" o una redirección si no hay autorización.
+     */
     @GetMapping("/tool2")
     public String showTool2(HttpSession session, Model model) {
         if (!checkAuth(session, model)) {

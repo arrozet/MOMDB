@@ -15,8 +15,12 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-/*
- * @author - amcgiluma (Juan Manuel Valenzuela)
+/**
+ * Controlador para las funcionalidades del rol Recomendador.
+ * Gestiona la visualización de películas, favoritos, watchlist, perfiles de usuario,
+ * reseñas y recomendaciones de películas.
+ *
+ * @author amcgiluma (Juan Manuel Valenzuela), arrozet (Rubén Oliva, Javadocs)
  */
 @Controller
 @RequestMapping("/recommender")
@@ -43,6 +47,14 @@ public class RecommenderController extends BaseController{
     @Autowired
     protected RecommendationService recommendationService;
 
+    /**
+     * Inicializa la página principal del recomendador.
+     * Muestra una lista de películas sin filtrar.
+     *
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return La vista "recommender/recommender" o una redirección si no hay autorización.
+     */
     @GetMapping("/")
     public String doInit(HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -52,6 +64,14 @@ public class RecommenderController extends BaseController{
         }
     }
 
+    /**
+     * Aplica un filtro a la lista de películas.
+     *
+     * @param session La sesión HTTP.
+     * @param filter El filtro a aplicar.
+     * @param model El modelo para la vista.
+     * @return La vista "recommender/recommender" con las películas filtradas.
+     */
     @PostMapping("/filtrar")
     public String doFiltrar(HttpSession session, @ModelAttribute("filtro") Filtro filter, Model model) {
         if (!checkAuth(session, model)) {
@@ -61,6 +81,14 @@ public class RecommenderController extends BaseController{
         }
     }
 
+    /**
+     * Prepara el modelo con la lista de películas filtradas.
+     *
+     * @param filtro El filtro a aplicar.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return El nombre de la vista a renderizar.
+     */
     protected String listarPeliculasConFiltro(Filtro filtro, Model model, HttpSession session) {
         List<MovieDTO> movies;
 
@@ -95,6 +123,14 @@ public class RecommenderController extends BaseController{
         return "recommender/recommender";
     }
 
+    /**
+     * Muestra los detalles de una película.
+     *
+     * @param id El ID de la película.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return La vista "recommender/movie_details" o una redirección si la película no existe.
+     */
     @GetMapping("/movie")
     public String verPelicula(@RequestParam("id") Integer id, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
@@ -120,6 +156,13 @@ public class RecommenderController extends BaseController{
         return "recommender/movie_details";
     }
 
+    /**
+     * Muestra la lista de películas favoritas del usuario.
+     *
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return La vista "recommender/favorites".
+     */
     @GetMapping("/favorites")
     public String verFavoritos(HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -133,6 +176,13 @@ public class RecommenderController extends BaseController{
         return "recommender/favorites";
     }
 
+    /**
+     * Añade una película a la lista de favoritos del usuario.
+     *
+     * @param movieId El ID de la película a añadir.
+     * @param session La sesión HTTP.
+     * @return Redirección a la página principal del recomendador.
+     */
     @PostMapping("/favorites/add")
     public String addToFavorites(@RequestParam("movieId") Integer movieId, HttpSession session) {
         UserDTO user = (UserDTO) session.getAttribute("user");
@@ -144,6 +194,13 @@ public class RecommenderController extends BaseController{
         return "redirect:/recommender/";
     }
 
+    /**
+     * Elimina una película de la lista de favoritos del usuario.
+     *
+     * @param movieId El ID de la película a eliminar.
+     * @param session La sesión HTTP.
+     * @return Redirección a la lista de favoritos.
+     */
     @PostMapping("/favorites/remove")
     public String removeFromFavorites(@RequestParam("movieId") Integer movieId, HttpSession session) {
         UserDTO user = (UserDTO) session.getAttribute("user");
@@ -155,6 +212,13 @@ public class RecommenderController extends BaseController{
         return "redirect:/recommender/favorites";
     }
 
+    /**
+     * Comprueba si una película está en la lista de favoritos del usuario.
+     *
+     * @param movieId El ID de la película a comprobar.
+     * @param session La sesión HTTP.
+     * @return "true" si es favorita, "false" en caso contrario.
+     */
     @GetMapping("/favorites/check")
     @ResponseBody
     public String checkFavorite(@RequestParam("movieId") Integer movieId, HttpSession session) {
@@ -167,6 +231,16 @@ public class RecommenderController extends BaseController{
         return isFavorite ? "true" : "false";
     }
 
+    /**
+     * Añade o elimina una película de la lista de favoritos.
+     *
+     * @param movieId El ID de la película.
+     * @param action La acción a realizar ("add" o "remove").
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @param request La petición HTTP.
+     * @return Redirección a la página anterior o a la principal.
+     */
     @PostMapping("/favorites/toggle")
     public String toggleFavorite(@RequestParam("movieId") Integer movieId,
                                  @RequestParam("action") String action,
@@ -190,6 +264,13 @@ public class RecommenderController extends BaseController{
         return "redirect:/recommender/";
     }
 
+    /**
+     * Muestra el perfil del usuario.
+     *
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return La vista "recommender/profile".
+     */
     @GetMapping("/profile")
     public String verPerfil(HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -205,6 +286,14 @@ public class RecommenderController extends BaseController{
         return "recommender/profile";
     }
 
+    /**
+     * Procesa la edición del perfil del usuario.
+     *
+     * @param userDTO DTO con los datos del usuario a actualizar.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return Redirección al perfil del usuario.
+     */
     @PostMapping("/editProfile")
     public String editarPerfil(@ModelAttribute("userDTO") UserDTO userDTO, HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -225,6 +314,14 @@ public class RecommenderController extends BaseController{
         return "redirect:/recommender/profile";
     }
 
+    /**
+     * Muestra el formulario para escribir o editar una reseña de una película.
+     *
+     * @param movieId El ID de la película.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return La vista "recommender/write_review".
+     */
     @GetMapping("/review/write")
     public String writeReview(@RequestParam("id") Integer movieId, HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -243,6 +340,14 @@ public class RecommenderController extends BaseController{
         return "recommender/write_review";
     }
 
+    /**
+     * Guarda o actualiza una reseña.
+     *
+     * @param reviewDTO DTO con los datos de la reseña.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return Redirección a la página de detalles de la película.
+     */
     @PostMapping("/review/save")
     public String saveReview(@ModelAttribute("reviewDTO") ReviewDTO reviewDTO,
                              HttpSession session, Model model) {
@@ -256,6 +361,15 @@ public class RecommenderController extends BaseController{
         return "redirect:/recommender/movie?id=" + reviewDTO.getMovieId();
     }
 
+    /**
+     * Elimina una reseña.
+     *
+     * @param movieId El ID de la película.
+     * @param userId El ID del usuario.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return Redirección a la página de detalles de la película.
+     */
     @GetMapping("/movie/review/delete")
     public String deleteReview(@RequestParam("movieId") Integer movieId,
                                @RequestParam("userId") Integer userId,
@@ -268,6 +382,14 @@ public class RecommenderController extends BaseController{
         this.reviewService.deleteReview(movieId, userId);
         return "redirect:/recommender/movie?id=" + movieId;
     }
+
+    /**
+     * Muestra todas las reseñas escritas por el usuario.
+     *
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return La vista "recommender/recommender_reviews".
+     */
     @GetMapping("/userReviews")
     public String verMisReviews(HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -281,6 +403,13 @@ public class RecommenderController extends BaseController{
         return "recommender/recommender_reviews";
     }
 
+    /**
+     * Muestra la watchlist del usuario.
+     *
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return La vista "recommender/watchlist".
+     */
     @GetMapping("/watchlist")
     public String verWatchlist(HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
@@ -294,6 +423,13 @@ public class RecommenderController extends BaseController{
         return "recommender/watchlist";
     }
 
+    /**
+     * Añade una película a la watchlist del usuario.
+     *
+     * @param movieId El ID de la película a añadir.
+     * @param session La sesión HTTP.
+     * @return Redirección a la página principal del recomendador.
+     */
     @PostMapping("/watchlist/add")
     public String anyadirAWatchlist(@RequestParam("movieId") Integer movieId, HttpSession session) {
         UserDTO user = (UserDTO) session.getAttribute("user");
@@ -305,6 +441,13 @@ public class RecommenderController extends BaseController{
         return "redirect:/recommender/";
     }
 
+    /**
+     * Elimina una película de la watchlist del usuario.
+     *
+     * @param movieId El ID de la película a eliminar.
+     * @param session La sesión HTTP.
+     * @return Redirección a la watchlist.
+     */
     @PostMapping("/watchlist/remove")
     public String eliminarDeWatchlist(@RequestParam("movieId") Integer movieId, HttpSession session) {
         UserDTO user = (UserDTO) session.getAttribute("user");
@@ -316,6 +459,16 @@ public class RecommenderController extends BaseController{
         return "redirect:/recommender/watchlist";
     }
 
+    /**
+     * Añade o elimina una película de la watchlist.
+     *
+     * @param movieId El ID de la película.
+     * @param action La acción a realizar ("add" o "remove").
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @param request La petición HTTP.
+     * @return Redirección a la página anterior o a la principal.
+     */
     @PostMapping("/watchlist/toggle")
     public String toggleWatchlist(@RequestParam("movieId") Integer movieId,
                                   @RequestParam("action") String action,
@@ -340,6 +493,14 @@ public class RecommenderController extends BaseController{
         return "redirect:/recommender/";
     }
 
+    /**
+     * Muestra el formulario para añadir una recomendación a una película.
+     *
+     * @param originalMovieId El ID de la película a la que se le añade la recomendación.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return La vista "recommender/add_recommendation".
+     */
     @GetMapping("/recommend/add")
     public String addRecommendation(@RequestParam("id") Integer originalMovieId, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
@@ -362,6 +523,15 @@ public class RecommenderController extends BaseController{
         return "recommender/add_recommendation";
     }
 
+    /**
+     * Filtra la lista de películas en el formulario de añadir recomendación.
+     *
+     * @param originalMovieId El ID de la película original.
+     * @param filter El filtro a aplicar.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return La vista "recommender/add_recommendation" con la lista de películas filtrada.
+     */
     @PostMapping("/recommend/add/filtrar")
     public String doFiltrarForRecommendation(@RequestParam("originalMovieId") Integer originalMovieId,
                                              @ModelAttribute("filtro") Filtro filter,
@@ -392,6 +562,15 @@ public class RecommenderController extends BaseController{
         return "recommender/add_recommendation";
     }
 
+    /**
+     * Guarda una nueva recomendación de una película por parte de un usuario.
+     *
+     * @param originalMovieId El ID de la película original.
+     * @param recommendedMovieId El ID de la película recomendada.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return Redirección a la página de visualización de recomendaciones.
+     */
     @PostMapping("/recommend/save")
     public String saveRecommendation(@RequestParam("originalMovieId") Integer originalMovieId,
                                      @RequestParam("recommendedMovieId") Integer recommendedMovieId,
@@ -406,6 +585,15 @@ public class RecommenderController extends BaseController{
         return "redirect:/recommender/recommend/view?id=" + originalMovieId;
     }
 
+    /**
+     * Muestra las recomendaciones para una película.
+     * Incluye recomendaciones basadas en género, recomendaciones de otros usuarios y las del usuario actual.
+     *
+     * @param originalMovieId El ID de la película.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
+     * @return La vista "recommender/view_recommendations".
+     */
     @GetMapping("/recommend/view")
     public String viewRecommendations(@RequestParam("id") Integer originalMovieId, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
@@ -436,6 +624,15 @@ public class RecommenderController extends BaseController{
         return "recommender/view_recommendations";
     }
 
+    /**
+     * Elimina una recomendación hecha por el usuario.
+     *
+     * @param originalMovieId El ID de la película original.
+     * @param recommendedMovieId El ID de la película recomendada.
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return Redirección a la página de visualización de recomendaciones.
+     */
     @PostMapping("/recommend/delete")
     public String deleteRecommendation(@RequestParam("originalMovieId") Integer originalMovieId,
                                        @RequestParam("recommendedMovieId") Integer recommendedMovieId,
@@ -452,13 +649,13 @@ public class RecommenderController extends BaseController{
 
 
     /**
-     * Comprueba si el usuario en sesión tiene el rol de usuario.
+     * Comprueba si el usuario en sesión tiene el rol de recomendador.
      * Utiliza el método centralizado de BaseController para realizar la verificación.
      * Si la autorización es exitosa, añade automáticamente el usuario al modelo.
      *
      * @param session La sesión HTTP actual.
      * @param model El modelo para la vista.
-     * @return {@code true} si el usuario tiene el rol "usuario", {@code false} en caso contrario.
+     * @return {@code true} si el usuario tiene el rol "recomendador", {@code false} en caso contrario.
      */
     private boolean checkAuth(HttpSession session, Model model) {
         return super.checkAuth(session, model, "recomendador");

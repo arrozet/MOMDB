@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Controlador para gestionar las operaciones de login, autenticación y logout de usuarios.
  *
- * @author - arrozet (Rubén Oliva)
- * @co-authors - Artur797 (Artur Vargas), edugbau (Eduardo González), projectGeorge (Jorge Repullo), amcgiluma  (Juan Manuel Valenzuela)
+ * @author arrozet (Rubén Oliva), Artur797 (Artur Vargas), edugbau (Eduardo González), projectGeorge (Jorge Repullo), amcgiluma  (Juan Manuel Valenzuela)
  */
 
 @Controller
