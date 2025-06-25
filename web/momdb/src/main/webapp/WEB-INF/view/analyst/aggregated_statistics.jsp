@@ -36,11 +36,11 @@
                             <c:set var="valueClass" value="${value.getClass().simpleName}" />
                             <c:set var="isChartable" value="${valueClass.contains('List') || valueClass.contains('Map')}" />
                             <div class="card statistic-card ${isChartable ? 'chartable' : ''}"
-                                 <c:if test="${isChartable}">
-                                     data-chart-id="chart-${status.index}"
-                                     data-chart-type="${valueClass.contains('Map') ? 'map' : 'list'}"
-                                     data-stat-name="${stat.name}"
-                                 </c:if>
+                                    <c:if test="${isChartable}">
+                                        data-chart-id="chart-${status.index}"
+                                        data-chart-type="${valueClass.contains('Map') ? 'map' : 'list'}"
+                                        data-stat-name="${stat.name}"
+                                    </c:if>
                             >
                                 <div class="card-content">
                                     <div class="content">
@@ -130,30 +130,53 @@
                             const strongEl = item.querySelector('strong');
                             if (strongEl && strongEl.nextSibling) {
                                 labels.push(strongEl.innerText.replace(':', ''));
-                                const valueText = strongEl.nextSibling.textContent.trim().replace(/,/g, '');
-                                data.push(parseFloat(valueText));
+                                let valueString = strongEl.nextSibling.textContent.trim();
+                                const lastComma = valueString.lastIndexOf(',');
+                                const lastDot = valueString.lastIndexOf('.');
+
+                                if (lastComma > lastDot) { // Format is 1.234,56
+                                    valueString = valueString.replace(/\./g, '').replace(',', '.');
+                                } else { // Format is 1,234.56
+                                    valueString = valueString.replace(/,/g, '');
+                                }
+                                data.push(parseFloat(valueString));
                             }
                         });
                     } else { // list
                         const items = this.querySelectorAll('.statistic-list li');
                         items.forEach(item => {
                             const text = item.innerText;
-                            const parts = text.split(' (Rentabilidad: $');
+                            let parts;
+
+                            // Case 1: Rentabilidad (e.g., "Actor Name (Rentabilidad: $1,234.56M)")
+                            parts = text.split(' (Rentabilidad:');
                             if (parts.length === 2) {
                                 const name = parts[0];
-                                let valueString = parts[1].replace('M)', '').trim();
+                                let valueString = parts[1].replace(/[^\d,.-]/g, ''); // Keep only numbers and separators
                                 const lastComma = valueString.lastIndexOf(',');
                                 const lastDot = valueString.lastIndexOf('.');
 
-                                if (lastComma > lastDot) {
-                                    // Format is like 1.234,56
+                                if (lastComma > lastDot) { // Format is 1.234,56
                                     valueString = valueString.replace(/\./g, '').replace(',', '.');
-                                } else {
-                                    // Format is like 1,234.56
+                                } else { // Format is 1,234.56
                                     valueString = valueString.replace(/,/g, '');
                                 }
                                 labels.push(name);
                                 data.push(parseFloat(valueString));
+                            }
+                            // Case 2: Evolución de duración (e.g., "Década de 1990: 105,5 minutos")
+                            else {
+                                parts = text.split(':');
+                                if (parts.length > 1) {
+                                    const name = parts[0].trim();
+                                    let valueString = parts.slice(1).join(':').trim();
+                                    // Remove any text after the number, e.g., " minutos"
+                                    valueString = valueString.split(' ')[0];
+                                    // Standardize decimal separator to dot for parseFloat
+                                    valueString = valueString.replace(',', '.');
+                                    labels.push(name);
+                                    data.push(parseFloat(valueString));
+                                }
                             }
                         });
                     }
