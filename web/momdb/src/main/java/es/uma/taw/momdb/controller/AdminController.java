@@ -51,6 +51,12 @@ public class AdminController extends BaseController {
             return "redirect:/";
         }
 
+        if (filterName != null) {
+            session.setAttribute("userFilterName", filterName);
+        } else {
+            filterName = (String) session.getAttribute("userFilterName");
+        }
+
         handleUsersData(model, filterName);
 
         return "admin/users";
@@ -293,12 +299,11 @@ public class AdminController extends BaseController {
      * @param filterName El filtro para buscar usuarios por nombre.
      */
     private void handleUsersData(Model model, String filterName) {
-        List<UserDTO> users = this.adminService.getUsers(filterName);
         UsersFormDTO usersForm = new UsersFormDTO();
-        usersForm.setUsers(users);
+        usersForm.setUsers(adminService.getUsers(filterName));
 
         model.addAttribute("usersForm", usersForm);
-        model.addAttribute("userRoles", this.adminService.getUserRoles());
+        model.addAttribute("userRoles", adminService.getUserRoles());
         model.addAttribute("filterName", filterName);
     }
 
