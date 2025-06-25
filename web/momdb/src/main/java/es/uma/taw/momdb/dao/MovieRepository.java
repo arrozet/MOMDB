@@ -103,4 +103,19 @@ public interface MovieRepository extends JpaRepository<Movie, Integer> {
 
     @Query("SELECT DISTINCT c1.person.id FROM Crew c1 WHERE c1.movie.id = :movieId1 AND c1.person.id IN (SELECT c2.person.id FROM Crew c2 WHERE c2.movie.id = :movieId2)")
     List<Integer> findCommonPersonIds(@Param("movieId1") Integer movieId1, @Param("movieId2") Integer movieId2);
+
+    @Query("SELECT g.genre, AVG(m.revenue) as avg_revenue FROM Movie m JOIN m.genres g GROUP BY g.id, g.genre ORDER BY avg_revenue DESC")
+    List<Object[]> findGenreWithHighestAverageRevenue();
+
+    @Query(value = "SELECT (AVG(m.budget * m.revenue) - AVG(m.budget) * AVG(m.revenue)) / (STDDEV_POP(m.budget) * STDDEV_POP(m.revenue)) FROM movie m WHERE m.budget > 0 AND m.revenue > 0", nativeQuery = true)
+    Double findBudgetRevenueCorrelation();
+
+    @Query("SELECT p.name, SUM(m.revenue) as total_revenue FROM Movie m JOIN m.crews c JOIN c.person p WHERE c.crewRole.role = 'Actor' GROUP BY p.id, p.name ORDER BY total_revenue DESC")
+    List<Object[]> findMostProfitableActors(Pageable pageable);
+
+    @Query("SELECT p.name, SUM(m.revenue) as total_revenue FROM Movie m JOIN m.crews c JOIN c.person p WHERE c.crewRole.role = 'Director' GROUP BY p.id, p.name ORDER BY total_revenue DESC")
+    List<Object[]> findMostProfitableDirectors(Pageable pageable);
+
+    @Query("SELECT (year(m.releaseDate) / 10) * 10, AVG(m.runtime) FROM Movie m WHERE m.releaseDate IS NOT NULL GROUP BY (year(m.releaseDate) / 10) * 10 ORDER BY (year(m.releaseDate) / 10) * 10")
+    List<Object[]> findAverageRuntimeEvolutionByDecade();
 }

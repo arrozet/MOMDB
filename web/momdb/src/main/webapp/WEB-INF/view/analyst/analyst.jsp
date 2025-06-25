@@ -42,7 +42,7 @@
                 <div class="dropdown-content">
                     <a href="${pageContext.request.contextPath}/analyst/compare" class="dropdown-item">Compare movies</a>
                     <a href="${pageContext.request.contextPath}/analyst/tool2" class="dropdown-item">Genre Analytics</a>
-                    <a href="#" class="dropdown-item">Tool 3 (Coming Soon)</a>
+                    <a href="${pageContext.request.contextPath}/analyst/aggregated-statistics" class="dropdown-item">Aggregated Statistics</a>
                 </div>
             </div>
         </div>

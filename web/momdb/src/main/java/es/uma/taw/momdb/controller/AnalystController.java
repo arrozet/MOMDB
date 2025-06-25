@@ -336,6 +336,17 @@ public class AnalystController extends BaseController {
         return "analyst/genre_analytics";
     }
 
+    @GetMapping("/aggregated-statistics")
+    public String showAggregatedStatistics(HttpSession session, Model model) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+
+        model.addAttribute("statistics", movieService.getAggregatedStatistics());
+
+        return "analyst/aggregated_statistics";
+    }
+
     /**
      * Comprueba si el usuario en sesión tiene el rol de analista.
      * Utiliza el método centralizado de BaseController para realizar la verificación.
