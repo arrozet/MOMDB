@@ -129,6 +129,7 @@ public class Movie implements Serializable, DTO<MovieDTO> {
         movie.setImageLink(this.imageLink);
         movie.setTagline(this.tagline);
         movie.setDuracion(this.runtime);
+        movie.setPopularity(this.popularity);
 
         List<GenreDTO> listaGeneros = new ArrayList<>();
         List<Integer> listaGeneroIds = new ArrayList<>();
