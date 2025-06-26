@@ -8,6 +8,7 @@ import es.uma.taw.momdb.ui.Filtro;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/recommender")
 public class RecommenderController extends BaseController{
+
+    private static final int PAGE_SIZE = 48;
 
     @Autowired
     protected MovieService movieService;
@@ -51,17 +54,23 @@ public class RecommenderController extends BaseController{
      * Inicializa la página principal del recomendador.
      * Muestra una lista de películas sin filtrar.
      *
+     * @param page El número de página a mostrar.
      * @param session La sesión HTTP.
      * @param model El modelo para la vista.
      * @return La vista "recommender/recommender" o una redirección si no hay autorización.
      */
     @GetMapping("/")
-    public String doInit(HttpSession session, Model model) {
+    public String doInit(@RequestParam(name = "page", defaultValue = "1") int page, HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
-        } else {
-            return this.listarPeliculasConFiltro(null, model, session);
         }
+
+        Filtro filtro = (Filtro) session.getAttribute("filtro");
+        if (filtro != null && filtro.isEmpty()) {
+            filtro = null;
+            session.removeAttribute("filtro");
+        }
+        return this.listarPeliculasConFiltro(filtro, page, model, session);
     }
 
     /**
@@ -76,50 +85,44 @@ public class RecommenderController extends BaseController{
     public String doFiltrar(HttpSession session, @ModelAttribute("filtro") Filtro filter, Model model) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
-        } else {
-            return this.listarPeliculasConFiltro(filter, model, session);
         }
+        session.setAttribute("filtro", filter);
+        return this.listarPeliculasConFiltro(filter, 1, model, session);
     }
 
     /**
-     * Prepara el modelo con la lista de películas filtradas.
+     * Prepara el modelo con la lista de películas filtradas y paginadas.
      *
      * @param filtro El filtro a aplicar.
+     * @param page El número de página.
      * @param model El modelo para la vista.
      * @param session La sesión HTTP.
      * @return El nombre de la vista a renderizar.
      */
-    protected String listarPeliculasConFiltro(Filtro filtro, Model model, HttpSession session) {
-        List<MovieDTO> movies;
-
+    protected String listarPeliculasConFiltro(Filtro filtro, int page, Model model, HttpSession session) {
         if (filtro == null) {
             filtro = new Filtro();
-            movies = movieService.listarPeliculas();
-        } else if (filtro.getTexto() != null && !filtro.getTexto().isBlank()) {
-            // Si hay texto, filtra solo por texto
-            movies = movieService.listarPeliculas(filtro.getTexto());
-        } else {
-            // Si no hay texto, filtra por los selects
-            movies = movieService.listarPeliculasBySelectFilters(filtro);
         }
 
-        // Verificar estado de favoritos para cada película
+        Page<MovieDTO> moviePage = this.movieService.findPaginatedWithFilters(filtro, page - 1, PAGE_SIZE);
+
+        // Verificar estado de favoritos/watchlist para cada película
         UserDTO user = (UserDTO) session.getAttribute("user");
         if (user != null) {
-            for (MovieDTO movie : movies) {
-                boolean isFavorite = favoriteService.isFavorite(user.getUserId(), movie.getId());
+            for (MovieDTO movie : moviePage.getContent()) {
+                boolean isFavorite = this.favoriteService.isFavorite(user.getUserId(), movie.getId());
                 movie.setFavorite(isFavorite);
-
-                boolean isInWatchlist = watchlistService.isInWatchlist(user.getUserId(), movie.getId());
+                boolean isInWatchlist = this.watchlistService.isInWatchlist(user.getUserId(), movie.getId());
                 movie.setInWatchlist(isInWatchlist);
-
             }
         }
 
         List<GenreDTO> generos = this.generoService.listarGeneros();
         model.addAttribute("generos", generos);
-        model.addAttribute("movies", movies);
+        model.addAttribute("movies", moviePage.getContent());
         model.addAttribute("filtro", filtro);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", moviePage.getTotalPages());
         return "recommender/recommender";
     }
 
@@ -497,12 +500,15 @@ public class RecommenderController extends BaseController{
      * Muestra el formulario para añadir una recomendación a una película.
      *
      * @param originalMovieId El ID de la película a la que se le añade la recomendación.
+     * @param page El número de página para la lista de películas.
      * @param model El modelo para la vista.
      * @param session La sesión HTTP.
      * @return La vista "recommender/add_recommendation".
      */
     @GetMapping("/recommend/add")
-    public String addRecommendation(@RequestParam("id") Integer originalMovieId, Model model, HttpSession session) {
+    public String addRecommendation(@RequestParam("id") Integer originalMovieId,
+                                    @RequestParam(name = "page", defaultValue = "1") int page,
+                                    Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
         }
@@ -512,13 +518,16 @@ public class RecommenderController extends BaseController{
             return "redirect:/recommender/";
         }
 
-        List<MovieDTO> allMovies = movieService.listarPeliculas();
+        Filtro filtro = new Filtro();
+        Page<MovieDTO> moviePage = movieService.findPaginatedWithFilters(filtro, page - 1, PAGE_SIZE);
         List<GenreDTO> generos = this.generoService.listarGeneros();
 
         model.addAttribute("originalMovie", originalMovie);
-        model.addAttribute("movies", allMovies);
+        model.addAttribute("movies", moviePage.getContent());
         model.addAttribute("generos", generos);
-        model.addAttribute("filtro", new Filtro());
+        model.addAttribute("filtro", filtro);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", moviePage.getTotalPages());
 
         return "recommender/add_recommendation";
     }
@@ -528,6 +537,7 @@ public class RecommenderController extends BaseController{
      *
      * @param originalMovieId El ID de la película original.
      * @param filter El filtro a aplicar.
+     * @param page El número de página.
      * @param model El modelo para la vista.
      * @param session La sesión HTTP.
      * @return La vista "recommender/add_recommendation" con la lista de películas filtrada.
@@ -535,6 +545,7 @@ public class RecommenderController extends BaseController{
     @PostMapping("/recommend/add/filtrar")
     public String doFiltrarForRecommendation(@RequestParam("originalMovieId") Integer originalMovieId,
                                              @ModelAttribute("filtro") Filtro filter,
+                                             @RequestParam(name = "page", defaultValue = "1") int page,
                                              Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
@@ -545,19 +556,15 @@ public class RecommenderController extends BaseController{
             return "redirect:/recommender/";
         }
 
-        List<MovieDTO> filteredMovies;
-        if (filter.getTexto() != null && !filter.getTexto().isBlank()) {
-            filteredMovies = movieService.listarPeliculas(filter.getTexto());
-        } else {
-            filteredMovies = movieService.listarPeliculasBySelectFilters(filter);
-        }
-
+        Page<MovieDTO> moviePage = movieService.findPaginatedWithFilters(filter, page - 1, PAGE_SIZE);
         List<GenreDTO> generos = this.generoService.listarGeneros();
 
         model.addAttribute("originalMovie", originalMovie);
-        model.addAttribute("movies", filteredMovies);
+        model.addAttribute("movies", moviePage.getContent());
         model.addAttribute("generos", generos);
         model.addAttribute("filtro", filter);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", moviePage.getTotalPages());
 
         return "recommender/add_recommendation";
     }
@@ -660,5 +667,5 @@ public class RecommenderController extends BaseController{
     private boolean checkAuth(HttpSession session, Model model) {
         return super.checkAuth(session, model, "recomendador");
     }
-    
+
 }
