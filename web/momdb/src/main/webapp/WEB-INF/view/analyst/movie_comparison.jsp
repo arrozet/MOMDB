@@ -22,55 +22,73 @@
     <title>Movie Comparison | MOMDB</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/analyst.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/movie_details.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-<jsp:include page="../user/cabecera_user.jsp" />
+<jsp:include page="cabecera_analyst.jsp" />
 
 <section class="section">
     <div class="container">
-        <h1 class="title">Comparisons for <%= movie.getTitulo() %></h1>
-        <a href="/analyst/movie/<%= movie.getId() %>" class="button is-link is-light mb-4">Back to Details</a>
+        <div class="level">
+            <div class="level-left">
+                <div>
+                    <h1 class="title has-text-white">Comparisons for <%= movie.getTitulo() %></h1>
+                    <a href="/analyst/movie/<%= movie.getId() %>" class="button is-link is-light">
+                        <span class="icon"><i class="fas fa-arrow-left"></i></span>
+                        <span>Back to Details</span>
+                    </a>
+                </div>
+            </div>
+        </div>
 
-        <div class="grid-container">
+        <div class="columns is-multiline is-centered mt-5">
             <% for (MovieComparisonDTO comparison : comparisons) { %>
             <% if (comparison.getMovieValue() != null) { %>
-            <div class="card">
-                <header class="card-header has-background-primary">
-                    <p class="card-header-title has-text-white"><%= comparison.getMetricName() %></p>
-                </header>
-                <div class="card-content">
+            <div class="column is-one-third-desktop is-half-tablet">
+                <div class="box movie-details-box has-text-centered">
+                    <h3 class="title is-4 has-text-white"><%= comparison.getMetricName() %></h3>
+                    <hr class="is-divider" style="background-color: #444;">
                     <div class="content">
-                        <p><strong>Movie Value:</strong>
-                            <%
-                                Object movieValue = comparison.getMovieValue();
-                                if (movieValue instanceof Number) {
-                                    out.print(df.format(movieValue));
-                                } else {
-                                    out.print(movieValue);
-                                }
-                            %>
-                        </p>
-                        <p><strong>Overall Average:</strong>
-                            <%
-                                Object overallAverage = comparison.getOverallAverage();
-                                if (overallAverage instanceof Number) {
-                                    out.print(df.format(overallAverage));
-                                } else {
-                                    out.print(overallAverage != null ? overallAverage : "N/A");
-                                }
-                            %>
-                        </p>
-                        <p><strong>Genre Average:</strong>
-                            <%
-                                Object genreAverage = comparison.getGenreAverage();
-                                if (genreAverage instanceof Number) {
-                                    out.print(df.format(genreAverage));
-                                } else {
-                                    out.print(genreAverage != null ? genreAverage : "N/A");
-                                }
-                            %>
-                        </p>
+                        <div class="tags has-addons is-centered are-medium">
+                            <span class="tag movie-info-tag">Movie</span>
+                            <span class="tag is-primary">
+                                <%
+                                    Object movieValue = comparison.getMovieValue();
+                                    if (movieValue instanceof Number) {
+                                        out.print(df.format(movieValue));
+                                    } else {
+                                        out.print(movieValue);
+                                    }
+                                %>
+                            </span>
+                        </div>
+                        <div class="tags has-addons is-centered are-medium mt-3">
+                            <span class="tag movie-info-tag">Overall Avg.</span>
+                            <span class="tag is-info">
+                                <%
+                                    Object overallAverage = comparison.getOverallAverage();
+                                    if (overallAverage instanceof Number) {
+                                        out.print(df.format(overallAverage));
+                                    } else {
+                                        out.print(overallAverage != null ? overallAverage : "N/A");
+                                    }
+                                %>
+                            </span>
+                        </div>
+                        <div class="tags has-addons is-centered are-medium mt-3">
+                            <span class="tag movie-info-tag">Genre Avg.</span>
+                            <span class="tag is-info">
+                                <%
+                                    Object genreAverage = comparison.getGenreAverage();
+                                    if (genreAverage instanceof Number) {
+                                        out.print(df.format(genreAverage));
+                                    } else {
+                                        out.print(genreAverage != null ? genreAverage : "N/A");
+                                    }
+                                %>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>

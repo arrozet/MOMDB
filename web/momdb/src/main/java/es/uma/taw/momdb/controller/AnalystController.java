@@ -3,6 +3,7 @@ package es.uma.taw.momdb.controller;
 import es.uma.taw.momdb.dto.*;
 import es.uma.taw.momdb.service.GeneroService;
 import es.uma.taw.momdb.service.MovieService;
+import es.uma.taw.momdb.service.ReviewService;
 import es.uma.taw.momdb.ui.Filtro;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +34,9 @@ public class AnalystController extends BaseController {
 
     @Autowired
     private GeneroService generoService;
+
+    @Autowired
+    protected ReviewService reviewService;
 
     /**
      * Inicializa la página principal del analista.
@@ -128,7 +133,16 @@ public class AnalystController extends BaseController {
         }
 
         MovieDTO movie = this.movieService.findPeliculaById(id);
+        if (movie == null) {
+            return "redirect:/analyst/";
+        }
 
+        List<ReviewDTO> reviews = this.reviewService.getReviewsByMovieId(id);
+        BigDecimal averageReviewRating = this.reviewService.getAverageReviewRating(id);
+
+        model.addAttribute("averageReviewRating", averageReviewRating);
+        model.addAttribute("reviews", reviews);
+        model.addAttribute("generos", movie.getGeneros());
         model.addAttribute("movie", movie);
         return "analyst/movie_details";
     }
@@ -324,7 +338,7 @@ public class AnalystController extends BaseController {
      * @param model El modelo para la vista.
      * @return La vista "analyst/genre_analytics" o una redirección si no hay autorización.
      */
-    @GetMapping("/tool2")
+    @GetMapping("/genre-analytics")
     public String showTool2(HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
