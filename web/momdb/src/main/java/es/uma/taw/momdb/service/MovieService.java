@@ -385,52 +385,44 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
      *         y otra para el equipo técnico en común ("sharedCrew").
      */
     public Map<String, List<PersonDTO>> getCommonCrew(Integer movieId1, Integer movieId2) {
-        //TODO: optimizar pasando cosas a repository
         List<Integer> commonPersonIds = movieRepository.findCommonPersonIds(movieId1, movieId2);
 
-        List<PersonDTO> sharedCast = new ArrayList<>();
-        List<PersonDTO> sharedCrew = new ArrayList<>();
+        Map<String, List<PersonDTO>> result = new HashMap<>();
+        result.put("sharedCast", new ArrayList<>());
+        result.put("sharedCrew", new ArrayList<>());
 
         if (commonPersonIds == null || commonPersonIds.isEmpty()) {
-            return java.util.Map.of("sharedCast", sharedCast, "sharedCrew", sharedCrew);
+            return result;
         }
 
-        MovieDTO movie1 = this.findPeliculaById(movieId1);
-        MovieDTO movie2 = this.findPeliculaById(movieId2);
+        // Optimización: Obtener solo los datos de crew necesarios
+        List<Crew> crews1 = crewRepository.findByMovieIdAndPersonIdIn(movieId1, commonPersonIds);
+        List<Crew> crews2 = crewRepository.findByMovieIdAndPersonIdIn(movieId2, commonPersonIds);
 
-        Map<Integer, List<CrewDTO>> crewMap1 = movie1.getEquipo().stream()
-                .collect(Collectors.groupingBy(CrewDTO::getPersonaId));
-        Map<Integer, List<CrewDTO>> crewMap2 = movie2.getEquipo().stream()
-                .collect(Collectors.groupingBy(CrewDTO::getPersonaId));
+        Map<Integer, List<Crew>> crewMap1 = crews1.stream().collect(Collectors.groupingBy(c -> c.getPerson().getId()));
+        Map<Integer, List<Crew>> crewMap2 = crews2.stream().collect(Collectors.groupingBy(c -> c.getPerson().getId()));
 
         for (Integer personId : commonPersonIds) {
-            List<es.uma.taw.momdb.dto.CrewDTO> roles1 = crewMap1.get(personId);
-            List<es.uma.taw.momdb.dto.CrewDTO> roles2 = crewMap2.get(personId);
+            List<Crew> roles1 = crewMap1.get(personId);
+            List<Crew> roles2 = crewMap2.get(personId);
 
-            if (roles1 == null || roles1.isEmpty() || roles2 == null || roles2.isEmpty()) continue;
+            if (roles1 == null || roles2 == null) continue;
 
-            boolean isActor1 = roles1.stream().anyMatch(c -> c.getPersonajes() != null && !c.getPersonajes().isEmpty());
-            boolean isActor2 = roles2.stream().anyMatch(c -> c.getPersonajes() != null && !c.getPersonajes().isEmpty());
+            boolean isActorInMovie1 = roles1.stream().anyMatch(c -> "Actor".equals(c.getCrewRole().getRole()));
+            boolean isActorInMovie2 = roles2.stream().anyMatch(c -> "Actor".equals(c.getCrewRole().getRole()));
+            boolean isCrewInMovie1 = roles1.stream().anyMatch(c -> !"Actor".equals(c.getCrewRole().getRole()));
+            boolean isCrewInMovie2 = roles2.stream().anyMatch(c -> !"Actor".equals(c.getCrewRole().getRole()));
 
-            boolean isNonActingCrew1 = roles1.stream().anyMatch(c -> c.getPersonajes() == null || c.getPersonajes().isEmpty());
-            boolean isNonActingCrew2 = roles2.stream().anyMatch(c -> c.getPersonajes() == null || c.getPersonajes().isEmpty());
+            PersonDTO person = roles1.get(0).getPerson().toDTO();
 
-            es.uma.taw.momdb.dto.PersonDTO person = new es.uma.taw.momdb.dto.PersonDTO();
-            person.setId(personId);
-            person.setName(roles1.get(0).getPersona());
-
-            if (isActor1 && isActor2) {
-                sharedCast.add(person);
+            if (isActorInMovie1 && isActorInMovie2) {
+                result.get("sharedCast").add(person);
             }
-
-            if(isNonActingCrew1 && isNonActingCrew2) {
-                sharedCrew.add(person);
+            if (isCrewInMovie1 && isCrewInMovie2) {
+                result.get("sharedCrew").add(person);
             }
         }
 
-        Map<String, List<es.uma.taw.momdb.dto.PersonDTO>> result = new java.util.HashMap<>();
-        result.put("sharedCast", sharedCast);
-        result.put("sharedCrew", sharedCrew);
         return result;
     }
 
