@@ -29,7 +29,7 @@
                 </span>
                 <span>Compare movies</span>
             </a>
-            <a href="${pageContext.request.contextPath}/analyst/tool2" class="navbar-item">
+            <a href="${pageContext.request.contextPath}/analyst/genre-analytics" class="navbar-item">
                 <span class="icon">
                     <i class="fas fa-chart-line"></i>
                 </span>
