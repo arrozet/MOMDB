@@ -350,6 +350,13 @@ public class AnalystController extends BaseController {
         return "analyst/genre_analytics";
     }
 
+    /**
+     * Muestra la página de estadísticas agregadas.
+     *
+     * @param session La sesión HTTP.
+     * @param model El modelo para la vista.
+     * @return La vista "analyst/aggregated_statistics" o una redirección si no hay autorización.
+     */
     @GetMapping("/aggregated-statistics")
     public String showAggregatedStatistics(HttpSession session, Model model) {
         if (!checkAuth(session, model)) {
