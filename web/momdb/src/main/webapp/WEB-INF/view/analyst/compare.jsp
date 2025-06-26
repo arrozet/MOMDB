@@ -169,10 +169,20 @@
                     <div class="field">
                         <label class="label has-text-white is-hidden-mobile">&nbsp;</label>
                         <div class="control">
-                            <button type="submit" class="button is-info is-fullwidth">
-                                <span class="icon"><i class="fas fa-search"></i></span>
-                                <span>Filter</span>
-                            </button>
+                            <div class="field is-grouped">
+                                <p class="control">
+                                    <button type="submit" class="button is-info">
+                                        <span class="icon"><i class="fas fa-search"></i></span>
+                                        <span>Filter</span>
+                                    </button>
+                                </p>
+                                <p class="control">
+                                    <button type="button" id="clear-selection-button" class="button is-danger">
+                                        <span class="icon"><i class="fas fa-times"></i></span>
+                                        <span>Clear</span>
+                                    </button>
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -272,6 +282,7 @@
         const filterMovieId2Input = document.getElementById('filter-form-movieId2');
         const compareButton = document.getElementById('compare-button');
         const paginationLinks = document.querySelectorAll('a.pagination-previous, a.pagination-next');
+        const clearSelectionButton = document.getElementById('clear-selection-button');
 
         const urlParams = new URLSearchParams(window.location.search);
         let selectedMovies = [];
@@ -347,6 +358,24 @@
                 updateState();
             });
         });
+
+        if (clearSelectionButton) {
+            clearSelectionButton.addEventListener('click', () => {
+                if (confirm('¿Estás seguro de que quieres limpiar la selección y los filtros?')) {
+                    selectedMovies = [];
+                    updateState();
+                    const url = new URL(window.location);
+                    url.searchParams.delete('movieId1');
+                    url.searchParams.delete('movieId2');
+                    window.history.replaceState({}, '', url.toString());
+
+                    document.querySelector('form[action$="/filtrar"] [name="texto"]').value = '';
+                    document.querySelector('form[action$="/filtrar"] [name="generoId"]').value = '';
+                    document.querySelector('form[action$="/filtrar"] [name="year"]').value = '';
+                    document.querySelector('form[action$="/filtrar"] [name="rating"]').value = '';
+                }
+            });
+        }
 
         updateState();
     });
