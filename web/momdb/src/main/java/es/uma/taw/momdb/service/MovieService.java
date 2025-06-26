@@ -15,6 +15,7 @@ import es.uma.taw.momdb.entity.Status;
 import es.uma.taw.momdb.ui.Filtro;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -430,6 +431,7 @@ public class MovieService extends DTOService<MovieDTO, Movie>{
      * Calcula una serie de estadísticas agregadas sobre todas las películas.
      * @return Una lista de DTOs, cada uno representando una estadística.
      */
+    @Cacheable("aggregatedStatistics") //Para no tener que recalcular si se llama en una misma sesion
     public List<AggregatedStatisticDTO> getAggregatedStatistics() {
         List<AggregatedStatisticDTO> statistics = new ArrayList<>();
 
