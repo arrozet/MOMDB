@@ -5,3 +5,7 @@
 .subtitle {
     color: white !important;
 }
+
+.button.is-black.watchlist-btn .icon {
+    color: #ffdd57;
+}

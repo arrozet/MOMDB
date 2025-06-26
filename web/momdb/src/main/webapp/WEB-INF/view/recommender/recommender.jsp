@@ -12,6 +12,7 @@ Author: amcgiluma (Juan Manuel Valenzuela)
     <title>My movies | MOMDB</title>
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/user.css">
+    <link rel="stylesheet" href="/css/recommender.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
@@ -140,7 +141,7 @@ Author: amcgiluma (Juan Manuel Valenzuela)
                             <form method="POST" action="/recommender/favorites/toggle">
                                 <input type="hidden" name="movieId" value="<%= movie.getId() %>">
                                 <input type="hidden" name="action" value="add">
-                                <button type="submit" class="button is-warning is-small favorite-btn">
+                                <button type="submit" class="button is-light is-small favorite-btn">
                                     <span class="icon">
                                         <i class="fas fa-heart"></i>
                                     </span>
@@ -152,7 +153,7 @@ Author: amcgiluma (Juan Manuel Valenzuela)
                             <form method="POST" action="/recommender/watchlist/toggle">
                                 <input type="hidden" name="movieId" value="<%= movie.getId() %>">
                                 <input type="hidden" name="action" value="remove">
-                                <button type="submit" class="button is-warning is-small favorite-btn watchlist-btn">
+                                <button type="submit" class="button is-black is-small favorite-btn watchlist-btn">
                                     <span class="icon">
                                         <i class="far fa-bookmark"></i>
                                     </span>
