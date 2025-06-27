@@ -1,8 +1,6 @@
 package es.uma.taw.momdb.controller;
 
-import es.uma.taw.momdb.dao.UserRepository;
 import es.uma.taw.momdb.dto.*;
-import es.uma.taw.momdb.entity.User;
 import es.uma.taw.momdb.service.*;
 import es.uma.taw.momdb.ui.Filtro;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,8 +36,6 @@ public class RecommenderController extends BaseController{
     @Autowired
     protected FavoriteService favoriteService;
 
-    @Autowired
-    protected UserRepository userRepository;
 
     @Autowired
     protected ReviewService reviewService;
@@ -49,6 +45,9 @@ public class RecommenderController extends BaseController{
 
     @Autowired
     protected RecommendationService recommendationService;
+
+    @Autowired
+    protected UserService userService;
 
     /**
      * Inicializa la página principal del recomendador.
@@ -302,19 +301,16 @@ public class RecommenderController extends BaseController{
         if (!checkAuth(session, model)) {
             return "redirect:/";
         }
-        User user = this.userRepository.findById(userDTO.getUserId()).orElse(null);
-        if (user == null) {
+
+        UserDTO updatedUserDTO = this.userService.updateUserProfile(userDTO);
+        if (updatedUserDTO == null) {
             model.addAttribute("error", "Usuario no encontrado");
-            return "recommender/profile";
+            return "user/profile";
         }
-        // Actualizar los campos editables
-        user.setUsername(userDTO.getUsername());
-        user.setProfilePicLink(userDTO.getProfilePic());
-        this.userRepository.save(user);
+
         // Actualizar el usuario en la sesión
-        UserDTO updatedUserDTO = user.toDTO();
         session.setAttribute("user", updatedUserDTO);
-        return "redirect:/recommender/profile";
+        return "redirect:/recommender/";
     }
 
     /**
