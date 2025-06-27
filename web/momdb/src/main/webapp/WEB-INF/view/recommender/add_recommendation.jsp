@@ -18,6 +18,8 @@
 <%
     MovieDTO originalMovie = (MovieDTO) request.getAttribute("originalMovie");
     List<MovieDTO> movies = (List<MovieDTO>) request.getAttribute("movies");
+    Integer currentPage = (Integer) request.getAttribute("currentPage");
+    Integer totalPages = (Integer) request.getAttribute("totalPages");
 %>
 
 <section class="hero is-dark is-small page-banner">
@@ -97,6 +99,32 @@
             </div>
             <% } %>
         </div>
+
+        <% if (totalPages != null && totalPages > 1) { %>
+        <nav class="pagination is-centered mt-5" role="navigation" aria-label="pagination">
+            <%-- Previous Button --%>
+            <% if (currentPage > 1) { %>
+            <a href="/recommender/recommend/add?id=<%= originalMovie.getId() %>&page=<%= currentPage - 1 %>" class="pagination-previous">Previous</a>
+            <% } else { %>
+            <a class="pagination-previous" disabled>Previous</a>
+            <% } %>
+
+            <%-- Next Button --%>
+            <% if (currentPage < totalPages) { %>
+            <a href="/recommender/recommend/add?id=<%= originalMovie.getId() %>&page=<%= currentPage + 1 %>" class="pagination-next">Next</a>
+            <% } else { %>
+            <a class="pagination-next" disabled>Next</a>
+            <% } %>
+
+            <ul class="pagination-list">
+                <li>
+                    <span class="pagination-link is-current has-background-warning has-text-black" aria-current="page">
+                        Page <%= currentPage %> of <%= totalPages %>
+                    </span>
+                </li>
+            </ul>
+        </nav>
+        <% } %>
     </div>
 </section>
 
