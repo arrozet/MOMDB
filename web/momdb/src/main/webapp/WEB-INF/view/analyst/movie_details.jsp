@@ -1,4 +1,7 @@
-<%--Autor: edugbau (Eduardo González)--%>
+<%--
+author: edugbau (Eduardo González)
+--%>
+
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page import="java.util.List" %>
 <%@ page import="es.uma.taw.momdb.dto.*" %>

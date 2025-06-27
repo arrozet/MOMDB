@@ -1,9 +1,5 @@
 <%--
-  Created by IntelliJ IDEA.
-  User: edugbau (Eduardo González)
-  Date: 23/04/2025
-  Time: 13:27
-  To change this template use File | Settings | File Templates.
+author: edugbau (Eduardo González - 92.9%), arrozet (Rubén Oliva - 7.1%)
 --%>
 
 <%@ page import="es.uma.taw.momdb.entity.Movie" %>

@@ -21,7 +21,7 @@ import java.util.Map;
  * Controlador para la gestión de las funcionalidades del analista.
  * Permite visualizar películas, compararlas y ver analíticas de géneros.
  *
- * @author edugbau (Eduardo González), arrozet (Rubén Oliva - refactorización para auth, Javadocs)
+ * @author edugbau (Eduardo González - 69.9%), arrozet (Rubén Oliva - refactorización para auth, Javadocs - 30.1%)
  */
 
 @Controller

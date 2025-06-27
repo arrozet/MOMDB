@@ -6,8 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 /*
- * @author - arrozet (Rubén Oliva)
- * @co-authors -
+ * @author arrozet (Rubén Oliva)
  */
 public interface ProductionCompanyRepository extends JpaRepository<Productioncompany, Integer> {
     List<Productioncompany> findByCompanyContainingIgnoreCase(String company);

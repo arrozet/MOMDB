@@ -8,8 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 /*
- * @author - arrozet (Rubén Oliva)
- * @co-authors -
+ * @author arrozet (Rubén Oliva - 77.4%), projectGeorge (Jorge Repullo - 16.1%), amcgiluma (Juan Manuel Valenzuela - 6.5%)
  */
 
 public interface UserRepository extends JpaRepository<User, Integer> {

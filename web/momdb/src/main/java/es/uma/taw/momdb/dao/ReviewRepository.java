@@ -10,6 +10,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/*
+ * @author Artur797 (Artur Vargas - 73.9%), projectGeorge (Jorge Repullo - 26.1%)
+ */
+
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, ReviewId> {
     @Query("SELECT r FROM Review r WHERE r.movie.id = :movieId")

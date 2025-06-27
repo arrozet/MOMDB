@@ -5,7 +5,6 @@ import es.uma.taw.momdb.dao.GenreRepository;
 import es.uma.taw.momdb.dao.MovieRepository;
 import es.uma.taw.momdb.dao.StatusRepository;
 import es.uma.taw.momdb.dto.AggregatedStatisticDTO;
-import es.uma.taw.momdb.dto.CrewDTO;
 import es.uma.taw.momdb.dto.MovieDTO;
 import es.uma.taw.momdb.dto.PersonDTO;
 import es.uma.taw.momdb.entity.Crew;
@@ -30,7 +29,7 @@ import java.util.stream.Collectors;
  * Proporciona métodos para buscar, crear, actualizar y eliminar películas, así como
  * calcular estadísticas y generar recomendaciones.
  * 
- * @author Artur797 (Artur Vargas), projectGeorge (Jorge Repullo), edugbau (Eduardo González), amcgiluma (Juan Manuel Valenzuela), arrozet (Rubén Oliva, Javadocs)
+ * @author edugbau (Eduardo González - 35.7%), arrozet (Rubén Oliva, Javadocs - 27.1%), Artur797 (Artur Vargas - 22.5%), projectGeorge (Jorge Repullo - 10.6%), amcgiluma (Juan Manuel Valenzuela - 4.0%)
  */
 
 @Service

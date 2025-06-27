@@ -1,5 +1,8 @@
 package es.uma.taw.momdb.dto;
 
+/*
+ * @author edugbau (Eduardo González)
+ */
 public class AggregatedStatisticDTO {
     private String name;
     private Object value;

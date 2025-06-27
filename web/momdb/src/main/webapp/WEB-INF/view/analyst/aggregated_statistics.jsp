@@ -1,9 +1,5 @@
 <%--
-  Created by IntelliJ IDEA.
-  User: edugbau (Eduardo González)
-  Date: 25/06/2025
-  Time: 13:27
-  To change this template use File | Settings | File Templates.
+author: edugbau (Eduardo González)
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * Servicio para gestionar las operaciones de personajes.
  * Proporciona métodos para interactuar con las entidades y usuarios del sistema.
  * 
- * @author Artur797 (Artur Vargas)
+ * @author Artur797 (Artur Vargas - 55.3%), arrozet (Rubén Oliva, Javadocs - 44.7%)
  */
 
 @Service

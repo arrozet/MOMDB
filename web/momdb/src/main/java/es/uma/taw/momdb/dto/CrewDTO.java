@@ -3,11 +3,10 @@ package es.uma.taw.momdb.dto;
 import lombok.Data;
 
 import java.util.List;
-/*
- * @author - projectGeorge (Jorge Repullo)
- * @co-authors -
- */
 
+/*
+ * @author projectGeorge (Jorge Repullo - 63.6%), Artur797 (Artur Vargas - 36.4%)
+ */
 @Data
 public class CrewDTO {
     private int id = -1;

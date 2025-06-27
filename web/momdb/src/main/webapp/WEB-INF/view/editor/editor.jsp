@@ -1,9 +1,5 @@
 <%--
-  Created by IntelliJ IDEA.
-  User: Artur797 (Artur Vargas)
-  Date: 11/05/2025
-  Time: 20:22
-  To change this template use File | Settings | File Templates.
+author: Artur797 (Artur Vargas - 78.7%), arrozet (Rubén Oliva - 21.3%)
 --%>
 
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>

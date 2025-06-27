@@ -1,8 +1,5 @@
 <%--
-  Created by IntelliJ IDEA.
-  User: arrozet (Rubén Oliva)
-  Date: 20/06/2025
-  Time: 12:00
+author: arrozet (Rubén Oliva)
 --%>
 
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>

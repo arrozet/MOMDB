@@ -1,5 +1,5 @@
 <%--
-Author: amcgiluma (Juan Manuel Valenzuela)
+author: amcgiluma (Juan Manuel Valenzuela - 58.4%), projectGeorge (Jorge Repullo - 41.6%)
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>

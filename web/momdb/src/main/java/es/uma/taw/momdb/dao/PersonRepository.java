@@ -7,8 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 
 /*
- * @author - Artur797 (Artur Vargas)
- * @co-authors -
+ * @author Artur797 (Artur Vargas)
  */
 
 public interface PersonRepository extends JpaRepository<Person, Integer> {

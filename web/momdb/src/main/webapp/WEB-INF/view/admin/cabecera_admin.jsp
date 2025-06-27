@@ -1,9 +1,5 @@
 <%--
-  Created by IntelliJ IDEA.
-  User: Jorge
-  Date: 15/05/2024
-  Time: 12:35
-  To change this template use File | Settings | File Templates.
+author: arrozet (Rubén Oliva)
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="es.uma.taw.momdb.dto.UserDTO" %>

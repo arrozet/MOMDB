@@ -15,7 +15,7 @@ import java.util.List;
  * Servicio para gestionar la lógica de negocio de las operaciones sobre los usuarios.
  * Proporciona métodos para registrar, actualizar y gestionar perfiles de usuarios.
  * 
- * @author projectGeorge (Jorge Repullo), arrozet (Rubén Oliva), amcgiluma (Juan Manuel Valenzuela)
+ * @author arrozet (Rubén Oliva - 67.2%), amcgiluma (Juan Manuel Valenzuela - 22.1%), projectGeorge (Jorge Repullo - 10.8%)
  */
 @Service
 public class UserService extends DTOService<UserDTO, User> {

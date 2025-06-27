@@ -1,9 +1,7 @@
 <%--
-  Created by IntelliJ IDEA.
-  User: edugbau (Eduardo González)
-  Date: 24/06/2025
-  Time: 13:00
+author: edugbau (Eduardo González)
 --%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>

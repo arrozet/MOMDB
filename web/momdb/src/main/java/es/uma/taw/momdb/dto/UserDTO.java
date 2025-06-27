@@ -4,8 +4,7 @@ import lombok.Data;
 import java.util.List;
 
 /*
- * @author - arrozet (Rubén Oliva)
- * @co-authors - Artur797 (Artur Vargas)
+ * @author arrozet (Rubén Oliva - 85.7%), Artur797 (Artur Vargas - 9.5%), projectGeorge (Jorge Repullo - 4.8%)
  */
 
 @Data

@@ -1,14 +1,13 @@
+<%--
+author: edugbau (Eduardo González)
+--%>
+
 <%@ page import="es.uma.taw.momdb.dto.UserDTO" %>
 <%@ page import="java.util.List" %>
 <%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>
 <%@ page import="es.uma.taw.momdb.dto.PersonDTO" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
-<%--
-* @author - edugbau (Eduardo González)
-* @co-authors - 
---%>
 
 <html>
 <head>

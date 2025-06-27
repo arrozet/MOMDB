@@ -27,7 +27,7 @@ import java.util.List;
  * Permite a los usuarios navegar por las películas, gestionar sus favoritos y watchlist,
  * editar su perfil y escribir reseñas.
  *
- * @author projectGeorge (Jorge Repullo), arrozet (Rubén Oliva - refactorización para auth, Javadocs)
+ * @author projectGeorge (Jorge Repullo - 59.6%), arrozet (Rubén Oliva - refactorización para auth, Javadocs - 33.1%), amcgiluma (Juan Manuel Valenzuela - 7.3%)
  */
 
 @Controller

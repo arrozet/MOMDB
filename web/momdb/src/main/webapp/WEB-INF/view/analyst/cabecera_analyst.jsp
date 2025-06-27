@@ -1,4 +1,6 @@
-<%--Autor: Eduardo González--%>
+<%--
+author: edugbau (Eduardo González - 98.9%), arrozet (Rubén Oliva - 1.1%)
+--%>
 
 <%@ page import="java.util.Date" %>
 <%@ page import="es.uma.taw.momdb.dto.UserDTO" %>

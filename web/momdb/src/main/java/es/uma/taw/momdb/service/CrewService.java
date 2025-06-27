@@ -23,7 +23,7 @@ import java.util.*;
  * Proporciona métodos para buscar, actualizar y eliminar miembros del equipo, así como gestionar
  * la relación entre actores, personajes y películas.
  * 
- * @author Artur797 (Artur Vargas)
+ * @author Artur797 (Artur Vargas - 79.8%), arrozet (Rubén Oliva, Javadocs - 20.2%)
  */
 @Slf4j
 @Service

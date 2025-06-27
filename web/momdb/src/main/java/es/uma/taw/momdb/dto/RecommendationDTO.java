@@ -4,8 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /*
- * @author - amcgiluma (Juan Manuel Valenzuela)
- * @co-authors -
+ * @author amcgiluma (Juan Manuel Valenzuela)
  */
 @Data
 @NoArgsConstructor

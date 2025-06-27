@@ -8,6 +8,10 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+/*
+ * @author arrozet (Rubén Oliva - 72.9%), Artur797 (Artur Vargas - 27.1%)
+ */
+
 @Getter
 @Setter
 @Entity

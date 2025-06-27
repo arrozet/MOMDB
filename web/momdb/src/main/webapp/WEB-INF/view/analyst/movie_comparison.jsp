@@ -1,9 +1,7 @@
 <%--
-  Created by IntelliJ IDEA.
-  User: edugbau (Eduardo González)
-  Date: 20/06/2025
-  Time: 10:00
+author: edugbau (Eduardo González)
 --%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="es.uma.taw.momdb.dto.UserDTO" %>
 <%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>

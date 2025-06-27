@@ -1,5 +1,5 @@
 <%--
-Author: Artur797 (Artur Vargas)
+author: Artur797 (Artur Vargas - 94.4%), arrozet (Rubén Oliva - 5.6%)
 --%>
 
 <%@ page import="java.util.Date" %>

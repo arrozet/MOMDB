@@ -1,6 +1,5 @@
 <%--
-Author: projectGeorge (Jorge Repullo)
-co-author: amcgiluma (Juan Manuel Valenzuela)
+author: projectGeorge (Jorge Repullo - 85.1%), amcgiluma (Juan Manuel Valenzuela - 8.9%), arrozet (Rubén Oliva - 4.0%), Artur797 (Artur Vargas - 2.0%)
 --%>
 
 <%@ page import="java.util.Date" %>

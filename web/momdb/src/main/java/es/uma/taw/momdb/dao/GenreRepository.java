@@ -7,8 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 /*
- * @author - arrozet (Rubén Oliva)
- * @co-authors - edugbau (Eduardo González)
+ * @author arrozet (Rubén Oliva - 73.7%), edugbau (Eduardo González - 26.3%)
  */
 
 public interface GenreRepository extends JpaRepository<Genre, Integer> {

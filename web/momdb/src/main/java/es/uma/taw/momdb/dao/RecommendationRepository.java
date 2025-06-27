@@ -8,8 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 /*
- * @author - amcgiluma (Juan Manuel Valenzuela)
- * @co-authors -
+ * @author amcgiluma (Juan Manuel Valenzuela)
  */
 public interface RecommendationRepository extends JpaRepository<Recommendation, RecommendationId> {
     @Query("SELECT r FROM Recommendation r WHERE r.mainMovie.id = :movieId")

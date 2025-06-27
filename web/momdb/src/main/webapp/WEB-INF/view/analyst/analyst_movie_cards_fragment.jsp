@@ -1,5 +1,5 @@
 <%--
-Author: edugbau (Eduardo González)
+Author: edugbau (Eduardo González - 94.0%), arrozet (Rubén Oliva - 6.0%)
 --%>
 <%@ page import="es.uma.taw.momdb.entity.Movie" %>
 <%@ page import="java.util.List" %>

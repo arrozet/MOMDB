@@ -19,7 +19,7 @@ import java.util.List;
  * Permite la gestión de películas, incluyendo su creación, edición y borrado,
  * así como la gestión de su reparto, equipo técnico y reseñas.
  *
- * @author Artur797 (Artur Vargas), arrozet (Rubén Oliva - refactorización para auth, Javadocs)
+ * @author Artur797 (Artur Vargas - 61.3%), arrozet (Rubén Oliva - refactorización para auth, Javadocs - 38.7%)
  */
 @Controller
 @RequestMapping("/editor")

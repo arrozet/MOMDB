@@ -5,8 +5,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 /*
- * @author - Artur797 (Artur Vargas)
- * @co-authors - projectGeorge (Jorge Repullo)
+ * @author projectGeorge (Jorge Repullo - 58.6%), Artur797 (Artur Vargas - 27.6%), arrozet (Rubén Oliva - 13.8%)
  */
 
 @Data

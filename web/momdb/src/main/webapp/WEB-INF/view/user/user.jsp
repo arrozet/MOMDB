@@ -1,5 +1,5 @@
 <%--
-Author: projectGeorge (Jorge Repullo)
+author: projectGeorge (Jorge Repullo - 96.3%), arrozet (Rubén Oliva - 3.7%)
 --%>
 
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>

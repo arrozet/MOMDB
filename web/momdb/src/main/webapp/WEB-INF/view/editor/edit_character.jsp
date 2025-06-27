@@ -1,3 +1,7 @@
+<%--
+author: Artur797 (Artur Vargas)
+--%>
+
 <%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>
 <%@ page import="es.uma.taw.momdb.dto.CrewDTO" %>
 <%@ page import="es.uma.taw.momdb.dto.CharacterDTO" %>

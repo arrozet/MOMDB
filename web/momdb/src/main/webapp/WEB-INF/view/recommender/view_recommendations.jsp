@@ -1,7 +1,7 @@
 <%--
-  File: view_recommendations.jsp
-  User: amcgiluma (Juan Manuel Valenzuela)
+author: amcgiluma (Juan Manuel Valenzuela)
 --%>
+
 <%@ page import="java.util.List" %>
 <%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>
 <%@ page import="es.uma.taw.momdb.dto.RecommendationDTO" %>

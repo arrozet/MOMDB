@@ -1,10 +1,5 @@
 <%--
-  Created by IntelliJ IDEA.
-  User: arrozet (Rubén Oliva)
-  CO-author: amcgiluma (Juan Manuel Valenzuela)
-  Date: 15/04/2025
-  Time: 13:12
-  To change this template use File | Settings | File Templates.
+author: arrozet (Rubén Oliva - 93.8%), amcgiluma (Juan Manuel Valenzuela - 6.2%)
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>

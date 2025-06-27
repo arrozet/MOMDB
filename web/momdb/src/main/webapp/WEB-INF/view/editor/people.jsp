@@ -1,3 +1,7 @@
+<%--
+author: Artur797 (Artur Vargas)
+--%>
+
 <%@ page import="es.uma.taw.momdb.dto.PersonDTO" %>
 <%@ page import="java.util.List" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>

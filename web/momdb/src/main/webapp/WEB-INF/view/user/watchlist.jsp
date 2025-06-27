@@ -1,5 +1,5 @@
 <%--
-Author: projectGeorge (Jorge Repullo)
+author: projectGeorge (Jorge Repullo)
 --%>
 
 <%@ page import="java.util.List" %>

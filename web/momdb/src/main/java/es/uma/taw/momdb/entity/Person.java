@@ -9,6 +9,10 @@ import lombok.Setter;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/*
+ * @author arrozet (Rubén Oliva - 69.4%), Artur797 (Artur Vargas - 30.6%)
+ */
+
 @Getter
 @Setter
 @Entity

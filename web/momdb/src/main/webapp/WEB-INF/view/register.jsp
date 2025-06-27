@@ -1,9 +1,5 @@
 <%--
-  Created by IntelliJ IDEA.
-  User: amcgiluma (Juan Manuel Valenzuela)
-  Date: 20/06/2025
-  Time: 17:47
-  To change this template use File | Settings | File Templates.
+author: amcgiluma (Juan Manuel Valenzuela - 89.7%), projectGeorge (Jorge Repullo - 10.3%)
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>

@@ -7,8 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 /*
- * @author - arrozet (Rubén Oliva)
- * @co-authors - Artur797 (Artur Vargas)
+ * @author arrozet (Rubén Oliva - 60.9%), Artur797 (Artur Vargas - 39.1%)
  */
 
 public interface CrewRoleRepository extends JpaRepository<Crewrole, Integer> {

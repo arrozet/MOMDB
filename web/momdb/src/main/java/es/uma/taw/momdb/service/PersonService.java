@@ -15,7 +15,7 @@ import java.util.List;
  * Servicio para gestionar la lógica de negocio de las operaciones sobre las personas.
  * Proporciona métodos para buscar, crear, actualizar y eliminar personas del sistema.
  * 
- * @author Artur797 (Artur Vargas)
+ * @author Artur797 (Artur Vargas - 63.9%), arrozet (Rubén Oliva, Javadocs - 36.1%)
  */
 
 @Service

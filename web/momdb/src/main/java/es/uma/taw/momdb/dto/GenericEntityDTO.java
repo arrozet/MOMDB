@@ -2,16 +2,13 @@ package es.uma.taw.momdb.dto;
 
 import lombok.Data;
 
-/*
- * @author - arrozet (Rubén Oliva)
- * @co-authors -
- */
-
 /**
  * DTO genérico para manejar entidades simples con ID y nombre en la capa de administración.
  * Se utiliza para transferir datos de formularios de filtrado y edición,
  * permitiendo una gestión flexible de diferentes tipos de entidades (Genre, Keyword, etc.)
  * sin necesidad de crear un DTO específico para cada una en estos contextos.
+ * 
+ * @author arrozet (Rubén Oliva)
  */
 @Data
 public class GenericEntityDTO {

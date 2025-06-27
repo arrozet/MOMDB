@@ -1,5 +1,5 @@
 <%--
-Author: amcgiluma (Juan Manuel Valenzuela)
+author: amcgiluma (Juan Manuel Valenzuela)
 --%>
 
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>

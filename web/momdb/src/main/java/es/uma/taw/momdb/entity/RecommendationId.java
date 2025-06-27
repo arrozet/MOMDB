@@ -8,6 +8,10 @@ import org.hibernate.Hibernate;
 
 import java.util.Objects;
 
+/*
+ * @author arrozet (Rubén Oliva)
+ */
+
 @Getter
 @Setter
 @Embeddable

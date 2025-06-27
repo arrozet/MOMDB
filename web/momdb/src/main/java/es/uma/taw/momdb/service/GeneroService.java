@@ -15,7 +15,7 @@ import java.util.List;
  * Servicio para gestionar la lógica de negocio de las operaciones sobre los géneros cinematográficos.
  * Proporciona métodos para buscar, crear, actualizar y eliminar géneros del sistema.
  * 
- * @author Artur797 (Artur Vargas), arrozet (Rubén Oliva), edugbau (Eduardo González)
+ * @author arrozet (Rubén Oliva - 58.5%), edugbau (Eduardo González - 21.2%), Artur797 (Artur Vargas - 20.3%)
  */
 
 @Service

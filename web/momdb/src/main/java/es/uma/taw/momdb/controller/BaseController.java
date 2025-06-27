@@ -9,7 +9,7 @@ import org.springframework.ui.Model;
  * para el resto de controladores de la aplicación.
  * Centraliza la lógica de comprobación de sesión y roles.
  * 
- * @author arrozet (Rubén Oliva)
+ * @author arrozet (Rubén Oliva - 98.4%), Artur797 (Artur Vargas - 1.6%)
  */
 public class BaseController {
     /**

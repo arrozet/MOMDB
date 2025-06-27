@@ -1,12 +1,10 @@
+<%--
+author: amcgiluma (Juan Manuel Valenzuela - 70.0%), projectGeorge (Jorge Repullo - 30.0%)
+--%>
+
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page import="es.uma.taw.momdb.dto.UserDTO" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: amcgiluma (Juan Manuel Valenzuela)
-  Date: 20/06/2025
-  Time: 16:09
-  To change this template use File | Settings | File Templates.
---%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>

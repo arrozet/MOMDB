@@ -1,11 +1,8 @@
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%--
-  Created by IntelliJ IDEA.
-  User: amcgiluma (Juan Manuel Valenzuela)
-  Date: 20/06/2025
-  Time: 16:09
-  To change this template use File | Settings | File Templates.
+author: amcgiluma (Juan Manuel Valenzuela - 92.6%), projectGeorge (Jorge Repullo - 7.4%)
 --%>
+
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <%@ page import="java.util.List" %>
 <%@ page import="es.uma.taw.momdb.dto.*" %>

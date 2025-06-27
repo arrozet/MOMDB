@@ -6,8 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 /*
- * @author - Artur797 (Artur Vargas)
- * @co-authors -
+ * @author Artur797 (Artur Vargas - 94.4%), edugbau (Eduardo González - 5.6%)
  */
 
 import java.util.List;

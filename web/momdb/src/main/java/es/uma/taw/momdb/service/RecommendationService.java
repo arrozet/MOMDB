@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * Servicio para gestionar las recomendaciones de películas.
  * Permite guardar, buscar y eliminar recomendaciones hechas por los usuarios.
  *
- * @author amcgiluma (Juan Manuel Valenzuela), arrozet (Rubén Oliva, Javadocs)
+ * @author amcgiluma (Juan Manuel Valenzuela - 69.1%), arrozet (Rubén Oliva, Javadocs - 30.9%)
  */
 @Service
 public class RecommendationService {

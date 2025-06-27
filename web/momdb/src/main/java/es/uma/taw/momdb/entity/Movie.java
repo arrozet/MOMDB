@@ -14,6 +14,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
+/*
+ * @author arrozet (Rubén Oliva - 62.5%), Artur797 (Artur Vargas - 28.8%), projectGeorge (Jorge Repullo - 8.1%), edugbau (Eduardo González - 0.6%)
+ */
+
 @Getter
 @Setter
 @Entity

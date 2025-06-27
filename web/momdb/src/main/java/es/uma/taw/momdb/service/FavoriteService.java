@@ -15,7 +15,7 @@ import java.util.List;
  * Servicio para gestionar la lógica de negocio de las operaciones sobre las listas de favoritos.
  * Proporciona métodos para añadir, eliminar y consultar películas en las listas de favoritos de los usuarios.
  * 
- * @author projectGeorge (Jorge Repullo)
+ * @author projectGeorge (Jorge Repullo - 72.6%), arrozet (Rubén Oliva, Javadocs - 27.4%)
  */
 
 @Service

@@ -19,7 +19,7 @@ import java.util.List;
  * Gestiona la visualización de películas, favoritos, watchlist, perfiles de usuario,
  * reseñas y recomendaciones de películas.
  *
- * @author amcgiluma (Juan Manuel Valenzuela), arrozet (Rubén Oliva, Javadocs)
+ * @author amcgiluma (Juan Manuel Valenzuela - 69.4%), arrozet (Rubén Oliva, Javadocs - 30.0%), projectGeorge (Jorge Repullo - 0.6%)
  */
 @Controller
 @RequestMapping("/recommender")

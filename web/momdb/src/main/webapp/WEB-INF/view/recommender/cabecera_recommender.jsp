@@ -1,5 +1,5 @@
 <%--
-Author: amcgiluma (Juan Manuel Valenzuela)
+author: amcgiluma (Juan Manuel Valenzuela - 95.8%), projectGeorge (Jorge Repullo - 4.2%)
 --%>
 
 <%@ page import="java.util.Date" %>

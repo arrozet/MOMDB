@@ -18,7 +18,7 @@ import java.util.List;
  * Servicio para gestionar la lógica de negocio de las operaciones sobre las reseñas de películas.
  * Proporciona métodos para crear, actualizar, eliminar y consultar reseñas de usuarios.
  * 
- * @author projectGeorge (Jorge Repullo), Artur797 (Artur Vargas)
+ * @author projectGeorge (Jorge Repullo - 51.4%), arrozet (Rubén Oliva, Javadocs - 26.8%), Artur797 (Artur Vargas - 21.7%)
  */
 @Service
 public class ReviewService extends DTOService<ReviewDTO, Review> {

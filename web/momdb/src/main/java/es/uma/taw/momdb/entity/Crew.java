@@ -13,6 +13,10 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/*
+ * @author arrozet (Rubén Oliva - 53.2%), Artur797 (Artur Vargas - 24.2%), projectGeorge (Jorge Repullo - 22.6%)
+ */
+
 @Getter
 @Setter
 @Entity

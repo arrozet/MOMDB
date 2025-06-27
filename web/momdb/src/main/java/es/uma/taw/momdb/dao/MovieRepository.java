@@ -11,8 +11,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /*
- * @author - arrozet (Rubén Oliva)
- * @co-authors - edugbau (Eduardo González)
+ * @author edugbau (Eduardo González - 54.5%), projectGeorge (Jorge Repullo - 31.4%), arrozet (Rubén Oliva - 10.7%), amcgiluma (Juan Manuel Valenzuela - 2.5%), Artur797 (Artur Vargas - 0.8%)
  */
 
 public interface MovieRepository extends JpaRepository<Movie, Integer> {

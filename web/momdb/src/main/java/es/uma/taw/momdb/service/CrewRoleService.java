@@ -13,7 +13,7 @@ import java.util.List;
  * Servicio para gestionar la lógica de negocio de las operaciones sobre los roles del equipo (CrewRole).
  * Proporciona métodos para buscar, actualizar y eliminar roles.
  * 
- * @author arrozet (Rubén Oliva)
+ * @author arrozet (Rubén Oliva - 87.6%), Artur797 (Artur Vargas - 12.4%)
  */
 @Service
 public class CrewRoleService extends DTOService<CrewRoleDTO, Crewrole>{

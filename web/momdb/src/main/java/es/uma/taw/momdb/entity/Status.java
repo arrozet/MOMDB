@@ -7,6 +7,10 @@ import lombok.Setter;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/*
+ * @author arrozet (Rubén Oliva)
+ */
+
 @Getter
 @Setter
 @Entity

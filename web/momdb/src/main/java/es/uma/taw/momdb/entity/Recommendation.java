@@ -6,6 +6,10 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+/*
+ * @author arrozet (Rubén Oliva)
+ */
+
 @Getter
 @Setter
 @Entity

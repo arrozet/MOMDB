@@ -5,8 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 /*
- * @author - arrozet (Rubén Oliva)
- * @co-authors -
+ * @author arrozet (Rubén Oliva)
  */
 
 @Data

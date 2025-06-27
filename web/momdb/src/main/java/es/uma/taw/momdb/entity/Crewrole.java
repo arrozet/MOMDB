@@ -10,6 +10,10 @@ import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/*
+ * @author arrozet (Rubén Oliva - 70.3%), Artur797 (Artur Vargas - 29.7%)
+ */
+
 @Getter
 @Setter
 @Entity

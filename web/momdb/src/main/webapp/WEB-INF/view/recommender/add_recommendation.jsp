@@ -1,7 +1,7 @@
 <%--
-  File: add_recommendation.jsp
-  User: amcgiluma (Juan Manuel Valenzuela)
+author: amcgiluma (Juan Manuel Valenzuela)
 --%>
+
 <%@ page import="java.util.List" %>
 <%@ page import="es.uma.taw.momdb.dto.MovieDTO" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>

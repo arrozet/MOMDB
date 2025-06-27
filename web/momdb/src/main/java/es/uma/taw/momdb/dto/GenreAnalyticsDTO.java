@@ -1,10 +1,12 @@
 package es.uma.taw.momdb.dto;
-//Autor: edugbau (Eduardo González)
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 
+/*
+ * @author edugbau (Eduardo González)
+ */
 @Getter
 @Setter
 public class GenreAnalyticsDTO {

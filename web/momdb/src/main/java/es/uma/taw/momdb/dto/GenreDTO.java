@@ -3,10 +3,8 @@ package es.uma.taw.momdb.dto;
 import lombok.Data;
 
 /*
- * @author - Artur797 (Artur Vargas)
- * @co-authors -
+ * @author arrozet (Rubén Oliva - 55.6%), Artur797 (Artur Vargas - 44.4%)
  */
-
 @Data
 public class GenreDTO implements DTOWithNameAndId<Integer> {
     private Integer id;

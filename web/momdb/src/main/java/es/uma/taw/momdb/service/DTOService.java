@@ -14,7 +14,7 @@ import java.util.List;
  * @param <DTOClass> La clase del Data Transfer Object.
  * @param <EntityClass> La clase de la entidad, que debe implementar la interfaz DTO.
  * 
- * @author Artur797 (Artur Vargas)
+ * @author arrozet (Rubén Oliva, Javadocs - 52.9%), Artur797 (Artur Vargas - 47.1%)
  */
 public abstract class DTOService<DTOClass, EntityClass extends DTO<DTOClass>> {
 
