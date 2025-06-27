@@ -9,3 +9,27 @@
 .button.is-black.watchlist-btn .icon {
     color: #ffdd57;
 }
+
+a.pagination-previous,
+a.pagination-next {
+    background-color: #363636;
+    color: white;
+    border-color: #363636;
+    transition: transform 0.2s ease-in-out;
+}
+
+a.pagination-previous:hover,
+a.pagination-next:hover {
+    background-color: #363636;
+    color: white;
+    border-color: #363636;
+    transform: scale(1.05);
+}
+
+.pagination-previous[disabled],
+.pagination-next[disabled] {
+    background-color: #222;
+    border-color: #444;
+    color: #7a7a7a;
+    opacity: 0.5;
+}
