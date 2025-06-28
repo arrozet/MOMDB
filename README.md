@@ -1,5 +1,7 @@
 # MOMDB
-
+<p align="center">
+  <img src="!boceto/main_page.png" alt="Main screen">
+</p>
 MOMDB (My Own Movie Database) is a web application designed to be a smaller, personal version of IMDb (Internet Movie Database). It allows users to browse movies, manage watchlists, write reviews, and get recommendations. The project includes a full database schema, data, and a web application with multiple user roles.
 
 ## Project Structure
