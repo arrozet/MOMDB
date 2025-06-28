@@ -15,6 +15,7 @@ author: Artur797 (Artur Vargas)
 </head>
 <%
     MovieDTO movie =  (MovieDTO) request.getAttribute("movie");
+    String error = (String) request.getAttribute("error");
 %>
 <body class="page-background">
 <jsp:include page="cabecera_editor.jsp" />
@@ -35,7 +36,15 @@ author: Artur797 (Artur Vargas)
         <h1 class="title is-4">Create movie</h1>
         <%}%>
 
-        
+        <%
+            if (error != null && !error.isEmpty()) {
+        %>
+            <div class="notification is-danger has-text-centered">
+                <%= error %>
+            </div>
+        <%
+            }
+        %>
 
         <form:form method="post" action="/editor/saveMovie" modelAttribute="movie">
             <form:hidden path="id"/>

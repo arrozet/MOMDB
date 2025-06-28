@@ -16,6 +16,7 @@ author: Artur797 (Artur Vargas)
 </head>
 <%
     PersonDTO person = (PersonDTO) request.getAttribute("person");
+    String error = (String) request.getAttribute("error");
 %>
 <body class="page-background">
 <jsp:include page="cabecera_editor.jsp" />
@@ -23,6 +24,15 @@ author: Artur797 (Artur Vargas)
     <div class="container">
         <div class="box">
             <h1 class="title is-3 has-text-centered"><%= person.getId() == -1 ? "New Person" : "Edit Person" %></h1>
+            <%
+                if (error != null && !error.isEmpty()) {
+            %>
+                <div class="notification is-danger has-text-centered">
+                    <%= error %>
+                </div>
+            <%
+                }
+            %>
             <div class="columns is-centered">
                 <div class="column is-half">
                     <form:form method="POST" action="/editor/person/save" modelAttribute="person">

@@ -240,10 +240,22 @@ public class EditorController extends BaseController{
      * Si el ID es -1, crea una nueva película; de lo contrario, la actualiza.
      *
      * @param movie DTO de la película con los datos a guardar.
+     * @param model El modelo para la vista.
+     * @param session La sesión HTTP.
      * @return Redirige a la página principal del editor.
      */
     @PostMapping("/saveMovie")
-    public String doGuardar (@ModelAttribute("movie") MovieDTO movie) {
+    public String doGuardar (@ModelAttribute("movie") MovieDTO movie, Model model, HttpSession session) {
+        if (!checkAuth(session, model)) {
+            return "redirect:/";
+        }
+        if (movie.getTitulo() == null || movie.getTitulo().trim().isEmpty()) {
+            model.addAttribute("error", "The movie's title cannot be empty.");
+            model.addAttribute("movie", movie);
+            List<GenreDTO> generos = this.generoService.listarGeneros();
+            model.addAttribute("generos", generos);
+            return "editor/movie_editor";
+        }
         if (movie.getId() == -1) {
             // Es una nueva película
             this.movieService.crearPelicula(movie);
@@ -496,6 +508,15 @@ public class EditorController extends BaseController{
     public String savePerson(@ModelAttribute("person") PersonDTO person, Model model, HttpSession session) {
         if (!checkAuth(session, model)) {
             return "redirect:/";
+        }
+        if (person.getName() == null || person.getName().trim().isEmpty()) {
+            model.addAttribute("error", "The person's name cannot be empty.");
+            model.addAttribute("person", person);
+            if (person.getId() != null && person.getId() != -1) {
+                model.addAttribute("actorMovies", crewService.findMoviesWherePersonIsActor(person.getId()));
+                model.addAttribute("crewMovies", crewService.findMoviesWherePersonIsCrewNoActor(person.getId()));
+            }
+            return "editor/edit_person";
         }
         personService.save(person);
         return "redirect:/editor/people";
