@@ -58,12 +58,19 @@ public class ProductionCountryService extends DTOService<ProductionCountryDTO, P
      * @throws IllegalArgumentException si ya existe un país de producción con el mismo código ISO 3166-1.
      */
     public void createProductionCountry(String name) {
-        Productioncountry productionCountry = new Productioncountry();
-        productionCountry.setIso31661(name.substring(0, 2).toUpperCase());
-        if(this.findProductionCountry(productionCountry.getIso31661()) != null) {
-            throw new IllegalArgumentException("A production country with ISO code '" + productionCountry.getIso31661() + "' already exists");
+        if (name == null || name.trim().length() < 2) {
+            throw new IllegalArgumentException("Country name must have at least 2 characters.");
         }
-        productionCountry.setCountry(name);
+        String countryName = name.trim();
+        String isoCode = countryName.substring(0, 2).toUpperCase();
+
+        if (this.findProductionCountry(isoCode) != null) {
+            throw new IllegalArgumentException("A production country with ISO code '" + isoCode + "' already exists");
+        }
+
+        Productioncountry productionCountry = new Productioncountry();
+        productionCountry.setIso31661(isoCode);
+        productionCountry.setCountry(countryName);
         productionCountryRepository.save(productionCountry);
     }
 

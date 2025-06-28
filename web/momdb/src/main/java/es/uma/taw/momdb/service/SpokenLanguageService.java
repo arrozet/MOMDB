@@ -75,12 +75,19 @@ public class SpokenLanguageService extends DTOService<SpokenLanguageDTO, Spokenl
      * @throws IllegalArgumentException si ya existe un idioma con el mismo código ISO 639-1.
      */
     public void createSpokenLanguage(String name) {
-        Spokenlanguage spokenLanguage = new Spokenlanguage();
-        spokenLanguage.setIso6391(name.substring(0, 2).toLowerCase());
-        if(this.findSpokenLanguage(spokenLanguage.getIso6391()) != null) {
-            throw new IllegalArgumentException("A spoken language with ISO code '" + spokenLanguage.getIso6391() + "' already exists");
+        if (name == null || name.trim().length() < 2) {
+            throw new IllegalArgumentException("Language name must have at least 2 characters.");
         }
-        spokenLanguage.setLanguage(name);
+        String languageName = name.trim();
+        String isoCode = languageName.substring(0, 2).toLowerCase();
+
+        if(this.findSpokenLanguage(isoCode) != null) {
+            throw new IllegalArgumentException("A spoken language with ISO code '" + isoCode + "' already exists");
+        }
+
+        Spokenlanguage spokenLanguage = new Spokenlanguage();
+        spokenLanguage.setIso6391(isoCode);
+        spokenLanguage.setLanguage(languageName);
         spokenLanguageRepository.save(spokenLanguage);
     }
 } 

@@ -272,14 +272,6 @@ public class AdminService {
             throw new IllegalArgumentException("The name cannot be empty");
         }
 
-        // Para ProductionCountry y SpokenLanguage, el formato es "ID,Nombre"
-        if ("ProductionCountry".equals(entityType) || "SpokenLanguage".equals(entityType)) {
-            String[] parts = name.split(",", 2);
-            if (parts.length < 2 || parts[0].trim().length() < 2) {
-                throw new IllegalArgumentException("For " + entityType + ", the ID must have at least 2 characters and the format must be 'ID,Name'");
-            }
-        }
-
         switch (entityType) {
             case "Genre" -> generoService.createGenre(name);
             case "Keyword" -> keywordService.createKeyword(name);
