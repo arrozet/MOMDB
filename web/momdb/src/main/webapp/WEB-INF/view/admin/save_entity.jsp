@@ -26,6 +26,21 @@ author: arrozet (Rubén Oliva)
 <section class="section">
     <div class="container">
         <h1 class="title admin-title"><%= isNew ? "Add" : "Edit" %> <%= entityType %></h1>
+
+        <%-- Mostrar mensaje de error si existe --%>
+        <%
+            if (session.getAttribute("entityErrorMessage") != null) {
+        %>
+        <div class="notification is-danger">
+            <button class="delete" onclick="this.parentElement.remove();"></button>
+            <strong>Error:</strong> <%= session.getAttribute("entityErrorMessage") %>
+        </div>
+        <%-- Limpiar el atributo de error de la sesión --%>
+        <%
+                session.removeAttribute("entityErrorMessage");
+            }
+        %>
+
         <div class="box">
             <form:form method="post" action='<%= isNew ? "/admin/createEntity" : "/admin/updateEntity" %>' modelAttribute="entity">
                 <% if (!isNew) { %>

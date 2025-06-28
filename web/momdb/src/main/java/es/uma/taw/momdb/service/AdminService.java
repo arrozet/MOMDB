@@ -247,6 +247,10 @@ public class AdminService {
      * @param name El nuevo nombre para la entidad.
      */
     public void updateEntity(String entityType, String id, String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("The name cannot be empty");
+        }
+
         switch (entityType) {
             case "Genre" -> generoService.updateGenre(Integer.parseInt(id), name);
             case "Keyword" -> keywordService.updateKeyword(Integer.parseInt(id), name);
@@ -261,9 +265,21 @@ public class AdminService {
     /**
      * Crea una nueva entidad.
      * @param entityType El tipo de la entidad a crear.
-     * @param name El nombre de la nueva entidad.
+     * @param name El nombre de la entidad a crear.
      */
     public void createEntity(String entityType, String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("The name cannot be empty");
+        }
+
+        // Para ProductionCountry y SpokenLanguage, el formato es "ID,Nombre"
+        if ("ProductionCountry".equals(entityType) || "SpokenLanguage".equals(entityType)) {
+            String[] parts = name.split(",", 2);
+            if (parts.length < 2 || parts[0].trim().length() < 2) {
+                throw new IllegalArgumentException("For " + entityType + ", the ID must have at least 2 characters and the format must be 'ID,Name'");
+            }
+        }
+
         switch (entityType) {
             case "Genre" -> generoService.createGenre(name);
             case "Keyword" -> keywordService.createKeyword(name);

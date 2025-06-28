@@ -184,9 +184,15 @@ public class AdminController extends BaseController {
             return "redirect:/";
         }
 
-        adminService.updateEntity(entityType, entity.getId(), entity.getName());
-
-        return "redirect:/admin/entities";
+        try {
+            adminService.updateEntity(entityType, entity.getId(), entity.getName());
+            return "redirect:/admin/entities";
+        } catch (IllegalArgumentException e) {
+            session.setAttribute("entityErrorMessage", e.getMessage());
+            model.addAttribute("entity", entity);
+            model.addAttribute("entityType", entityType);
+            return "admin/save_entity";
+        }
     }
 
     /**
@@ -247,7 +253,12 @@ public class AdminController extends BaseController {
             adminService.createEntity(entityType, entity.getName());
             return "redirect:/admin/entities";
         } catch (IllegalArgumentException e) {
-            // Guardar el mensaje de error en la sesión para mostrarlo en la vista
+            session.setAttribute("entityErrorMessage", e.getMessage());
+            model.addAttribute("entity", entity);
+            model.addAttribute("entityType", entityType);
+            return "admin/save_entity";
+        } catch (Exception e) {
+            // Para otros errores (p. ej. duplicados), mostrar en la lista
             session.setAttribute("errorMessage", e.getMessage());
             session.setAttribute("errorEntityType", entityType);
             session.setAttribute("errorEntityName", entity.getName());

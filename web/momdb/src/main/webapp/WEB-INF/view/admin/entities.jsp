@@ -35,11 +35,26 @@ author: arrozet (Rubén Oliva)
         <% if (session.getAttribute("errorMessage") != null) { %>
             <div class="notification is-danger">
                 <button class="delete" onclick="this.parentElement.remove();"></button>
-                <strong>Error:</strong> <%= session.getAttribute("errorMessage") %>
-                <% if (session.getAttribute("errorEntityType") != null && session.getAttribute("errorEntityName") != null) { %>
-                    <br>
-                    <small>Could not create <%= session.getAttribute("errorEntityType") %> with value "<%= session.getAttribute("errorEntityName") %>" because one with the same ID already exists.</small>
-                <% } %>
+                <%
+                    String errorName = (String) session.getAttribute("errorEntityName");
+                    String errorType = (String) session.getAttribute("errorEntityType");
+
+                    if (errorType != null) {
+                        if (errorName == null || errorName.trim().isEmpty()) {
+                %>
+                            <strong>Error:</strong> Could not create <%= errorType %> because the provided name was empty.
+                <%
+                        } else {
+                %>
+                            <strong>Error:</strong> Could not create <%= errorType %> with value "<strong><%= errorName %></strong>" because one with the same name or ID already exists.
+                <%
+                        }
+                    } else {
+                %>
+                        <strong>Error:</strong> <%= session.getAttribute("errorMessage") %>
+                <%
+                    }
+                %>
             </div>
             <%-- Limpiar los atributos de error de la sesión --%>
             <% session.removeAttribute("errorMessage"); %>
