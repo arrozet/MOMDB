@@ -380,6 +380,4 @@ public class AnalystController extends BaseController {
     private boolean checkAuth(HttpSession session, Model model) {
         return super.checkAuth(session, model, "analista");
     }
-
-    //TODO: entrar a una parte de analisis por película
 }
